@@ -13,9 +13,7 @@ def publish_integer():
     
             str=x
 
-            print str
-
-            rospy.logwarn(str)
+            rospy.loginfo(str)
             pub.publish(str)
 
             r = rospy.Rate(1) # 1hz
