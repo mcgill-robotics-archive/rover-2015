@@ -54,3 +54,11 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# NodeJS logs
+logs
+*.log
+
+# Dependencies
+node_modules
+bower_components
+
