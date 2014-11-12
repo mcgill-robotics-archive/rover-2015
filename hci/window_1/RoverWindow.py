@@ -1,7 +1,6 @@
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 import sys
-from qtthread import qtThread
 import numpy as np
 import time
 
