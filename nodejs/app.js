@@ -55,7 +55,7 @@ listener.subscribe(function(message) {
 
 
   cmdVel.subscribe(function(message) {
-	console.log('Received message on ' + listener.name + ': ' + message.data);
+	console.log(message);
 	// If desired, we can unsubscribe from the topic as well.
 	
 });
