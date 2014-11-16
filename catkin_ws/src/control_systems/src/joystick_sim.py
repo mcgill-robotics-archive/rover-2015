@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+#Program simulates readings from a joystick and publishes them to "cmd_vel"
 from geometry_msgs.msg import Twist
 import rospy
 import math

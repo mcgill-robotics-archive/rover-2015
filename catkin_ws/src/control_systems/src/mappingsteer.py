@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-import math,numpy
-import rospy
-from std_msgs.msg import String
+import math #for trig functions
 # amrv: middle wheel rotation velocity.
 # afsa: actural front wheel steering angle.
 # rho:  radius of the rover around ICR
@@ -9,8 +7,8 @@ from std_msgs.msg import String
 # pfsa: port front wheel steering angle
 # pmsa: starboard middle wheel steering angle 
 # smsa: port middle wheel steering angle
-# srsa: starboard front wheel steering angle
-# prsa: port front wheel steering angle
+# srsa: starboard rear wheel steering angle
+# prsa: port rear wheel steering angle
 # w_s_a: = [pfsa,sfsa,pmsa,smsa,prsa,srsa,afsa]; 
 
 D = 50e-2  # distance between wheels of: front and middle/middle and rear[cm]   
@@ -24,7 +22,7 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 def steer(vBody, wBody):
 	vBody,wBody = float(vBody),float(wBody)
 
-	amrv = (1/R)*vBody
+	amrv = (1/R)*vBody #middle wheel rotation velocity
 	if abs(amrv) < zero or abs(wBody) < zero:
 		afsa = math.pi/2 #rho is zero, so steering angle is 90 degrees to
 		rho = 0
@@ -47,8 +45,5 @@ def steer(vBody, wBody):
  		pfsa = math.atan(D/(rho-B))
 	srsa = -sfsa
 	prsa = -pfsa
-	pmsa = 0
-	smsa = 0
-	return [pfsa,sfsa,pmsa,smsa,prsa,srsa,afsa]
-
-print steer(1,1)
+	#return theta(FL), FR, RL, RR, speedMW
+	return [pfsa,sfsa,prsa,srsa,amrv]
