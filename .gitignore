@@ -4,6 +4,9 @@ devel/
 __pycache__/
 *.py[cod]
 
+# IDE projects
+.idea/
+
 # C extensions
 *.so
 

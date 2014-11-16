@@ -22,4 +22,4 @@ def publish_integer():
     
 if __name__ == '__main__':
     publish_integer()
-  
+
