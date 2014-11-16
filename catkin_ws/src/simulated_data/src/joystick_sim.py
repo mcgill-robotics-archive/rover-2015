@@ -11,19 +11,21 @@ def publish_twist_continuous():
 
     MAX_LIN_VEL = rospy.get_param('/controls/max_lin_vel', 0.1)
     joy_lin = -math.pi
+    joy_ang = math.pi
     while not rospy.is_shutdown():
         if joy_lin > math.pi:
-            joy = -math.pi
+            joy_lin = -math.pi
+        
 
         v_body = math.sin(joy_lin)*MAX_LIN_VEL
-        w_body = 0
+        w_body = math.cos(joy_lin)*MAX_LIN_VEL
 
         joy_lin = joy_lin + math.radians(2)
         
         twist = Twist()
 
         twist.linear.x = v_body
-        twist.angular.z = 0
+        twist.angular.z = w_body
         
         rospy.loginfo(twist)
 
