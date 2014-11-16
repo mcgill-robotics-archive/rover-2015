@@ -3,6 +3,9 @@
  */
 
  console.log("app.js");
+//var EventEmitter2 = require('eventemitter2').EventEmitter2;
+var ROSLIB = require('roslib');
+console.log(ROSLIB);
 var express = require('express');
 var stylus = require('stylus');
 var path = require('path');
@@ -14,6 +17,55 @@ var debug = require('debug')('ToolsFrontend');
 var http = require('http');
 var socketio = require('socket.io');
 
+var ros = new ROSLIB.Ros({
+  	     url : 'ws://localhost:9090'
+   		 })
+
+ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+   	   });
+
+ros.on('error', function(error) {
+     console.log('Error connecting to websocket server: ', error);
+    });
+
+
+var listener = new ROSLIB.Topic({
+	ros : ros,
+	name : '/listener',
+	messageType : 'std_msgs/String'
+});
+
+
+// Then we add a callback to be called every time a message is published on this topic.
+listener.subscribe(function(message) {
+	console.log('Received message on ' + listener.name + ': ' + message.data);
+	// If desired, we can unsubscribe from the topic as well.
+	
+});
+
+ // First, we create a Topic object with details of the topic's name and message type.
+  var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+  // Then we create the payload to be published. The object we pass in to ros.Message matches the
+  // fields defined in the geometry_msgs/Twist.msg definition.
+  var twist = new ROSLIB.Message({
+    linear : {
+      x : 0.1,
+      y : 0.2,
+      z : 0.3
+    },
+    angular : {
+      x : -0.1,
+      y : -0.2,
+      z : -0.3
+    }
+  });
+
+  cmdVel.publish(twist);
 /*
  * Modules
  */
