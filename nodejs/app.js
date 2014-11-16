@@ -44,12 +44,21 @@ listener.subscribe(function(message) {
 	
 });
 
+
+
  // First, we create a Topic object with details of the topic's name and message type.
   var cmdVel = new ROSLIB.Topic({
     ros : ros,
     name : '/cmd_vel',
     messageType : 'geometry_msgs/Twist'
   });
+
+
+  cmdVel.subscribe(function(message) {
+	console.log('Received message on ' + listener.name + ': ' + message.data);
+	// If desired, we can unsubscribe from the topic as well.
+	
+});
   // Then we create the payload to be published. The object we pass in to ros.Message matches the
   // fields defined in the geometry_msgs/Twist.msg definition.
   var twist = new ROSLIB.Message({
@@ -65,7 +74,8 @@ listener.subscribe(function(message) {
     }
   });
 
-  cmdVel.publish(twist);
+  //cmdVel.publish(twist);
+  console.log('published');
 /*
  * Modules
  */
