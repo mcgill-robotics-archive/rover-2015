@@ -44,8 +44,8 @@ def steer(vBody, wBody):
  		pfsa = math.atan(D/(rho-B))
 	srsa = -sfsa
 	prsa = -pfsa
-	pmsa = numpy.zeros(1)
-	smsa = pmsa
+	pmsa = 0
+	smsa = 0
 	return [pfsa,sfsa,pmsa,smsa,prsa,srsa,afsa]
 
-print steer(10.,0.)
+print steer(1,1)
