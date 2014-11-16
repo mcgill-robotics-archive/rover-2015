@@ -53,10 +53,10 @@ listener.subscribe(function(message) {
     messageType : 'geometry_msgs/Twist'
   });
 
-  var poseListerner = new ROSLIB.Topic({
+  var poseListener = new ROSLIB.Topic({
   	ros : ros,
   	name : '/pose_listener',
-  	messageType : 'geometry_msgs_Pose'
+  	messageType : 'geometry_msgs/Pose'
   });
   
   cmdVel.subscribe(function(message) {
@@ -65,16 +65,18 @@ listener.subscribe(function(message) {
 	
   });
 
-  cmdVel.subscribe(function(message) {
-	console.log('Received message on ' + poseListerner.name + ': ' + message);
+  poseListener.subscribe(function(message) {
+	console.log('Received message on ' + poseListener.name + ': ' + message.orientation.x);
 	// If desired, we can unsubscribe from the topic as well.
 	
   });
 
-  poseListerner.subscribe(function(message)
+
+
+
   // Then we create the payload to be published. The object we pass in to ros.Message matches the
   // fields defined in the geometry_msgs/Twist.msg definition.
-  var twist = new ROSLIB.Message({
+/*  var twist = new ROSLIB.Message({
     linear : {
       x : 0.1,
       y : 0.2,
@@ -88,7 +90,7 @@ listener.subscribe(function(message) {
   });
 
   //cmdVel.publish(twist);
-  console.log('published');
+  console.log('published');*/
 /*
  * Modules
  */
