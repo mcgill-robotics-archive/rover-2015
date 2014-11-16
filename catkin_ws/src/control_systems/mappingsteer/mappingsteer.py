@@ -1,4 +1,7 @@
+#!/usr/bin/env python
 import math,numpy
+import rospy
+from std_msgs.msg import String
 # amrv: middle wheel rotation velocity.
 # afsa: actural front wheel steering angle.
 # rho:  radius of the rover around ICR
