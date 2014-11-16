@@ -105,16 +105,14 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(simulated_data_node src/simulated_data_node.cpp)
+add_executable(posePublisher src/posePublisher.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(simulated_data_node simulated_data_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(simulated_data_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(posePublisher ${catkin_LIBRARIES})
 
 #############
 ## Install ##
