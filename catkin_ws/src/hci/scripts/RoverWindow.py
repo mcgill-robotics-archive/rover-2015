@@ -5,7 +5,7 @@ import numpy as np
 import time
 
 
-class Window(QtGui.QWidget):
+class Ui_RoverMain(QtGui.QWidget):
 
     def __init__(self):
         super(Window,self).__init__()
@@ -135,7 +135,7 @@ class Window(QtGui.QWidget):
 if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
-    w = Window()
+    w = Ui_RoverMain()
     sys.exit(app.exec_())
     
     
