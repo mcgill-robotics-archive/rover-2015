@@ -46,4 +46,11 @@ def steer(vBody, wBody):
 	srsa = -sfsa
 	prsa = -pfsa
 	#return theta(FL), FR, RL, RR, speedMW
+
+	#unsure if this would be right or left side
+	radiusright = sqrt((rho-B)^2+D^2)
+	radiusleft = sqrt((rho+B)^2+D^2)
+	
 	return [pfsa,sfsa,prsa,srsa,amrv]
+
+steer(1,1)
