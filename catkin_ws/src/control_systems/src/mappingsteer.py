@@ -22,13 +22,16 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 def steer(vBody, wBody):
 	vBody,wBody = float(vBody),float(wBody)
 
-	amrv = (1/R)*vBody #middle wheel rotation velocity
-	if abs(amrv) < zero or abs(wBody) < zero:
+	smrv = (1/R)*vBody #starboard middle wheel rotation velocity
+	
+	if abs(smrv) < zero or abs(wBody) < zero:
 		afsa = math.pi/2 #rho is zero, so steering angle is 90 degrees to
 		rho = 0
 	else:
-		afsa = D*math.atan(wBody/amrv)
+		afsa = D*math.atan(wBody/smrv)
 		rho = D/math.tan(afsa)
+
+	pmrv = smrv/(rho-B)*(rho+B) #port is a bit faster as it is on the far side
 	if abs(rho+B) < zero:
 		if (rho+B) > 0:#atan will tend to positive infinity
 			sfsa = math.pi/2
@@ -48,9 +51,20 @@ def steer(vBody, wBody):
 	#return theta(FL), FR, RL, RR, speedMW
 
 	#unsure if this would be right or left side
-	radiusright = sqrt((rho-B)^2+D^2)
-	radiusleft = sqrt((rho+B)^2+D^2)
-	
-	return [pfsa,sfsa,prsa,srsa,amrv]
+	#starboard, port radius about angular motion
+	sr = math.sqrt((rho-B)**2+D**2)
+	pr = math.sqrt((rho+B)**2+D**2)
 
-steer(1,1)
+	#starboard front and back rotation velocity 
+	#CURRENTLY INNER WHEEL
+	sfrv = wBody*sr*R
+	srrv = sfrv #for this type of motion, speed of wheel is same
+	pfrv = wBody*pr*R
+	prrv = pfrv
+
+	#print first angles, then velocities
+	#first front, then middle, then rear
+	#first port, then starboard
+	return [pfsa,sfsa,0,0,prsa,srsa,pfrv,sfrv,pmrv,smrv,prrv,srrv]
+
+#print steer(1,1)
