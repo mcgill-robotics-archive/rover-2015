@@ -112,8 +112,8 @@ def steer(vBody, wBody):
 		else:
 
 			#need to modulate this
-			pfsa = (math.pi/2-math.atan(D/(rho-B)))%(math.pi)
-			sfsa = (math.pi/2-math.atan(D/(rho+B)))%(math.pi)
+			pfsa = math.atan(D/(rho-B))
+			sfsa = math.atan(D/(rho+B))
 			if abs(pfsa) > math.pi/2:
 				pfsa = math.pi/2 - pfsa
 			if abs(sfsa) > math.pi/2:
@@ -143,7 +143,7 @@ def steer(vBody, wBody):
 	out.update({'srrv': srrv})
 	return out
 
-a= steer(20000,-1)
+a= steer(10000,-10000)
 print a['pfrv']
 print a['pfsa']
 print a['prsa']
