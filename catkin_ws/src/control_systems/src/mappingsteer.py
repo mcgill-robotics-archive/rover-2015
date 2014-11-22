@@ -20,13 +20,16 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 
 #also incorporate point steering!
 
+def sign(n): return float(n)/abs(float(n))
+
 #this function maps joystick input to steering angle of 6 wheels
 def steer(vBody, wBody):
 	
 	vBody,wBody = float(vBody),float(wBody)
+	#I could make an adjustment at start to force wbody positive, then change later
 	
 	#if robot not moving
-	if abs(wBody) < zero abs(vBody) < zero:
+	if abs(wBody) < zero and abs(vBody) < zero:
 		return [False,0,0,0,0,0,0,0,0,0,0,0,0]#first bool indicates no movement
 
 	elif abs(wBody) < zero: #straight velocity
@@ -46,23 +49,51 @@ def steer(vBody, wBody):
 	#so the rover is not constantly trying to change to this state
 	################
 	elif abs(vBody) < zero: #nonzero angle, rover should do 
-	#a point rotation
-		pfsa = math.pi/4 #45 deg to right
-		sfsa = -math.pi/4 #45 deg to left
+	#a rotation on point
+		pfsa = math.pi/2 - math.atan(B/D) #forms circle
+		sfsa = -pfsa #45 deg to left
 		pmsa = 0
 		smsa = 0
-		prsa = -math.pi/4
-		srsa = math.pi/4
+		prsa = -pfsa
+		srsa = pfsa
 
-		pfrv = vBody/R
-		sfrv = pfrv
+		r = math.sqrt(D**2+B**2)
+		v = wBody*r #linear velocity of each wheel
+
+		pfrv = v/R #match angular velocity to rotation of wheel
+		sfrv = -pfrv #should all move in circle
 		pmrv = 0
 		smrv = 0
 		prrv = pfrv
-		srrv = pfrv
+		srrv = -pfrv
+		return [True,pfsa,sfsa,pmsa,smsa,prsa,srsa,pfrv,sfrv,pmrv,smrv,prrv,srrv]
+
+	else: #moving forward at an angle
+		#impose a limit on this
+		#get radius for circular motion
+		rho = vBody/wBody
+		#need to modulate this
+		pfsa = (math.pi/2-math.atan(D/(rho-B)))%(math.pi)
+		sfsa = (math.pi/2-math.atan(D/(rho+B)))%(math.pi)
+		if pfsa > math.pi/2:
+			pfsa = math.pi/2 - pfsa
+		if sfsa > math.pi/2:
+			sfsa = math.pi/2 - sfsa
+		pmsa = 0
+		smsa = 0
+		prsa = -pfsa
+		srsa = -sfsa
+		rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
+		rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
+
+		vpLin = abs(wBody*rp) * sign(vBody)
+		vsLin = abs(wBody*rs) * sign(vBody)
+		print vpLin,vsLin, pfsa, prsa
+		#print [True,pfsa,sfsa,pmsa,smsa,prsa,srsa]#,pfrv,sfrv,pmrv,smrv,prrv,srrv]
 
 
-	return """
+
+	"""
 
 	
 	smrv = (1/R)*vBody #starboard middle wheel rotation velocity
@@ -129,4 +160,4 @@ def steer(vBody, wBody):
 	return [pfsa,sfsa,0,0,prsa,srsa,pfrv,sfrv,pmrv,smrv,prrv,srrv]
 	"""
 
-print steer(10,0)
+print steer(-1,-1)
