@@ -67,7 +67,7 @@ def steer(vBody, wBody):
 	#a rotation on point
 		movement = True
 		pfsa = math.pi/2 - math.atan(B/D) #forms circle
-		sfsa = -pfsa #45 deg to left
+		sfsa = -pfsa 
 		pmsa = 0
 		smsa = 0
 		prsa = -pfsa
@@ -89,28 +89,47 @@ def steer(vBody, wBody):
 		movement = True
 		#get radius for circular motion
 		rho = vBody/wBody
-		#need to modulate this
-		pfsa = (math.pi/2-math.atan(D/(rho-B)))%(math.pi)
-		sfsa = (math.pi/2-math.atan(D/(rho+B)))%(math.pi)
-		if pfsa > math.pi/2:
-			pfsa = math.pi/2 - pfsa
-		if sfsa > math.pi/2:
-			sfsa = math.pi/2 - sfsa
-		pmsa = 0
-		smsa = 0
-		prsa = -pfsa
-		srsa = -sfsa
-		rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
-		rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
 
-		vpLin = abs(wBody*rp) * sign(vBody)
-		vsLin = abs(wBody*rs) * sign(vBody)
-		pfrv = vpLin/R
-		sfrv = vsLin/R
-		pmrv = (rho-B)*wBody/R
-		smrv = (rho+B)*wBody/R
-		prrv = pfrv
-		srrv = sfrv
+		#make sure radius outside of cart
+		#eventually this should include the limit of the wheel motion
+		if abs(rho) <= B:
+			movement = False		
+			pfsa = 0
+			sfsa = 0
+			pmsa = 0
+			smsa = 0
+			prsa = 0
+			srsa = 0
+			pfrv = 0
+			sfrv = 0
+			pmrv = 0
+			smrv = 0
+			prrv = 0
+			srrv = 0
+		else:
+
+			#need to modulate this
+			pfsa = (math.pi/2-math.atan(D/(rho-B)))%(math.pi)
+			sfsa = (math.pi/2-math.atan(D/(rho+B)))%(math.pi)
+			if pfsa > math.pi/2:
+				pfsa = math.pi/2 - pfsa
+			if sfsa > math.pi/2:
+				sfsa = math.pi/2 - sfsa
+			pmsa = 0
+			smsa = 0
+			prsa = -pfsa
+			srsa = -sfsa
+			rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
+			rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
+
+			vpLin = abs(wBody*rp) * sign(vBody)
+			vsLin = abs(wBody*rs) * sign(vBody)
+			pfrv = vpLin/R
+			sfrv = vsLin/R
+			pmrv = (rho-B)*wBody/R
+			smrv = (rho+B)*wBody/R
+			prrv = pfrv
+			srrv = sfrv
 
 	#I split them up to stay within 80 columns
 	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
