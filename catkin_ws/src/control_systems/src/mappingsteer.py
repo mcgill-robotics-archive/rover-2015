@@ -30,10 +30,28 @@ def steer(vBody, wBody):
 	
 	#if robot not moving
 	if abs(wBody) < zero and abs(vBody) < zero:
-		return [False,0,0,0,0,0,0,0,0,0,0,0,0]#first bool indicates no movement
-
+		movement = False
+		pfsa = 0
+		sfsa = 0
+		pmsa = 0
+		smsa = 0
+		prsa = 0
+		srsa = 0
+		pfrv = 0
+		sfrv = 0
+		pmrv = 0
+		smrv = 0
+		prrv = 0
+		srrv = 0
 	elif abs(wBody) < zero: #straight velocity
 		#all wheels should be the same
+		movement = True
+		pfsa = 0
+		sfsa = 0
+		pmsa = 0
+		smsa = 0
+		prsa = 0
+		srsa = 0
 		pfrv = vBody/R
 		sfrv = pfrv
 		pmrv = pfrv
@@ -41,15 +59,13 @@ def steer(vBody, wBody):
 		prrv = pfrv
 		srrv = pfrv
 
-		#no angle on wheels, #True for change movement
-		return [True,0,0,0,0,0,0,pfrv,sfrv,pmrv,smrv,prrv,srrv]
-
 	###############
 	#Might be better to implement a button to do this (or at least a delay), 
 	#so the rover is not constantly trying to change to this state
 	################
 	elif abs(vBody) < zero: #nonzero angle, rover should do 
 	#a rotation on point
+		movement = True
 		pfsa = math.pi/2 - math.atan(B/D) #forms circle
 		sfsa = -pfsa #45 deg to left
 		pmsa = 0
@@ -66,10 +82,11 @@ def steer(vBody, wBody):
 		smrv = 0
 		prrv = pfrv
 		srrv = -pfrv
-		return [True,pfsa,sfsa,pmsa,smsa,prsa,srsa,pfrv,sfrv,pmrv,smrv,prrv,srrv]
+		
 
 	else: #moving forward at an angle
 		#impose a limit on this
+		movement = True
 		#get radius for circular motion
 		rho = vBody/wBody
 		#need to modulate this
@@ -88,76 +105,21 @@ def steer(vBody, wBody):
 
 		vpLin = abs(wBody*rp) * sign(vBody)
 		vsLin = abs(wBody*rs) * sign(vBody)
-		print vpLin,vsLin, pfsa, prsa
-		#print [True,pfsa,sfsa,pmsa,smsa,prsa,srsa]#,pfrv,sfrv,pmrv,smrv,prrv,srrv]
-
-
-
-	"""
-
-	
-	smrv = (1/R)*vBody #starboard middle wheel rotation velocity
-	
-	#if not moving or no rotation, rho is zero
-	if abs(smrv) < zero or abs(wBody) < zero:
-		afsa = math.pi/2 #rho is zero, so steering angle is 90 degrees to
-		rho = 0
-		rotation = False
-	else:
-		afsa = D*math.atan(wBody/smrv)
-		rho = D/math.tan(afsa)
-		rotation = True
-	if rotation:
-		pmrv = smrv/(rho-B)*(rho+B) #port is a bit faster as it is on the far side
-	else:
-		pmrv = smrv
-	if abs(rho+B) < zero:
-		if (rho+B) > 0:#atan will tend to positive infinity
-			sfsa = math.pi/2
-		else: #negative infinity
- 			sfsa = -math.pi/2
-	else:
-		sfsa = math.atan(D/(rho+B))
-	if abs(rho-B) < zero:
-		if (rho-B) > 0: #positive infinity
-			pfsa = math.pi/2
-		else:
-			pfsa = -math.pi/2
-	else:
- 		pfsa = math.atan(D/(rho-B))
-	srsa = -sfsa
-	prsa = -pfsa
-	#return theta(FL), FR, RL, RR, speedMW
-
-	#rho-b is for port
-	if not rotation:
-		sfrv = smrv
-		srrv = smrv
-	else:
-		sr = math.sqrt((rho+B)**2+D**2)
-		sfrv = wBody*sr/R
-		srrv = sfrv #for this type of motion, speed of wheel is same
-	
-	if not rotation:
-		pfrv = pmrv
-		prrv = pmrv
-	else:
-
-		#unsure if this would be right or left side
-		#starboard, port radius about angular motion
-		
-		pr = math.sqrt((rho-B)**2+D**2)
-
-		#starboard front and back rotation velocity 
-		#CURRENTLY INNER WHEEL
-
-		pfrv = wBody*pr/R
+		pfrv = vpLin/R
+		sfrv = vsLin/R
+		pmrv = (rho-B)*wBody/R
+		smrv = (rho+B)*wBody/R
 		prrv = pfrv
+		srrv = sfrv
 
-	#print first angles, then velocities
-	#first front, then middle, then rear
-	#first port, then starboard
-	return [pfsa,sfsa,0,0,prsa,srsa,pfrv,sfrv,pmrv,smrv,prrv,srrv]
-	"""
+	#I split them up to stay within 80 columns
+	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
+	out.update({'smsa': smsa,'prsa': prsa,'srsa': srsa,'pfrv': pfrv})
+	out.update({'sfrv': sfrv,'pmrv': pmrv,'smrv': smrv,'prrv': prrv})
+	out.update({'srrv': srrv})
+	return out
 
-print steer(-1,-1)
+a= steer(1,-1)
+print a['pfrv']
+print a['pfsa']
+print a['prsa']
