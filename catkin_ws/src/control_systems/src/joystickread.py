@@ -26,11 +26,18 @@ class JoystickReader(object):
 		output = steer(self.value[0],self.value[1])
 
 		#Convert output of function to setpoint variable type
-		self.settings.thetaFL = output[0]
-		self.settings.thetaFR = output[1]
-		self.settings.thetaRL = output[2]
-		self.settings.thetaRR = output[3]
-		self.settings.speedMW = output[4]
+		self.settings.move = output['movement']
+		self.settings.thetaFL = output['pfsa']
+		self.settings.thetaFR = output['sfsa']
+		self.settings.thetaRL = output['prsa']
+		self.settings.thetaRR = output['srsa']
+		self.settings.speedFL = output['pfrv']
+		self.settings.speedFR = output['sfrv']
+		self.settings.speedML = output['pmrv']
+		self.settings.speedMR = output['smrv']
+		self.settings.speedRL = output['prrv']
+		self.settings.speedRR = output['srrv']
+
 
 	#function publishes
 	def run(self):
