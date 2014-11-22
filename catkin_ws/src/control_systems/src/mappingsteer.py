@@ -26,6 +26,7 @@ def sign(n): return float(n)/abs(float(n))
 def steer(vBody, wBody):
 	#To be used in the final calculation of the velocity
 	sgnv = sign(vBody)
+	#angle of the wheels also depend on which way the rover is moving
 	sgnw = sgnv*sign(wBody)
 	#absolute values used in the calculations
 	vBody,wBody = abs(float(vBody)),abs(float(wBody))
@@ -33,6 +34,9 @@ def steer(vBody, wBody):
 	
 	#if robot not moving
 	if abs(wBody) < zero and abs(vBody) < zero:
+		#indicates that no settings should change, robot
+		#should just stop movement
+		#in the future we might want to put a button to
 		movement = False
 		pfsa = 0
 		sfsa = 0
@@ -46,15 +50,19 @@ def steer(vBody, wBody):
 		smrv = 0
 		prrv = 0
 		srrv = 0
-	elif abs(wBody) < zero: #straight velocity
+	elif abs(wBody) < zero: 
+		#straight velocity
 		#all wheels should be the same
 		movement = True
+		#angles are zero -> wheels point forward
 		pfsa = 0
 		sfsa = 0
 		pmsa = 0
 		smsa = 0
 		prsa = 0
 		srsa = 0
+		#translate linear velocity to rotational velocity of wheel
+		#along with the correct direction
 		pfrv = vBody/R*sgnv
 		sfrv = pfrv
 		pmrv = pfrv
@@ -66,7 +74,7 @@ def steer(vBody, wBody):
 	#Might be better to implement a button to do this (or at least a delay), 
 	#so the rover is not constantly trying to change to this state
 	################
-	elif abs(vBody) < zero: #nonzero angle, rover should do 
+	elif vBody/wBody <= B: #angle that the wheels cannot do, rover should do
 	#a rotation on point
 		movement = True
 		pfsa = math.pi/2 - math.atan(B/D) #forms circle
@@ -95,7 +103,7 @@ def steer(vBody, wBody):
 
 		#make sure radius outside of cart
 		#eventually this should include the limit of the wheel motion
-		if abs(rho) <= B:
+		if rho <= B:
 			movement = False		
 			pfsa = 0
 			sfsa = 0
@@ -110,40 +118,48 @@ def steer(vBody, wBody):
 			prrv = 0
 			srrv = 0
 		else:
-
-			#need to modulate this
+			#Simple trig to get angle to each wheel
 			pfsa = math.atan(D/(rho-B))
 			sfsa = math.atan(D/(rho+B))
-			if abs(pfsa) > math.pi/2:
-				pfsa = math.pi/2 - pfsa
-			if abs(sfsa) > math.pi/2:
-				sfsa = math.pi/2 - sfsa
+
+			#incorporate the correct direction of the angular
+			#displacement of the wheels
 			pfsa *= sgnw
 			sfsa *= sgnw
 			pmsa = 0
 			smsa = 0
 			prsa = -pfsa
 			srsa = -sfsa
+
+			#distance to front/rear wheels on each side of rover from ICR
 			rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
 			rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
-
+			#the linear velocity of the front/rear wheels on each side
 			vpLin = abs(wBody*rp)*sgnv
 			vsLin = abs(wBody*rs)*sgnv
+
+			#the individual velocities of each of the wheels
 			pfrv = vpLin/R
 			sfrv = vsLin/R
+			#notice the middle wheels have different distance to ICR
 			pmrv = sgnv*abs((rho-B))*wBody/R
 			smrv = sgnv*abs((rho+B))*wBody/R
 			prrv = pfrv
 			srrv = sfrv
 
-	#I split them up to stay within 80 columns
+	#I split them up to stay within 80 columns 
 	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
+	#add more values
 	out.update({'smsa': smsa,'prsa': prsa,'srsa': srsa,'pfrv': pfrv})
 	out.update({'sfrv': sfrv,'pmrv': pmrv,'smrv': smrv,'prrv': prrv})
 	out.update({'srrv': srrv})
 	return out
 
-a= steer(10000,-10000)
+
+"""
+#testing code and sample usage
+a= steer(1,-1000)
 print a['pfrv']
 print a['pfsa']
 print a['prsa']
+"""
