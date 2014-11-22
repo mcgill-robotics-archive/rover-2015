@@ -24,8 +24,11 @@ def sign(n): return float(n)/abs(float(n))
 
 #this function maps joystick input to steering angle of 6 wheels
 def steer(vBody, wBody):
-	
-	vBody,wBody = float(vBody),float(wBody)
+	#To be used in the final calculation of the velocity
+	sgnv = sign(vBody)
+	sgnw = sgnv*sign(wBody)
+	#absolute values used in the calculations
+	vBody,wBody = abs(float(vBody)),abs(float(wBody))
 	#I could make an adjustment at start to force wbody positive, then change later
 	
 	#if robot not moving
@@ -52,7 +55,7 @@ def steer(vBody, wBody):
 		smsa = 0
 		prsa = 0
 		srsa = 0
-		pfrv = vBody/R
+		pfrv = vBody/R*sgnv
 		sfrv = pfrv
 		pmrv = pfrv
 		smrv = pfrv
@@ -74,7 +77,7 @@ def steer(vBody, wBody):
 		srsa = pfsa
 
 		r = math.sqrt(D**2+B**2)
-		v = wBody*r #linear velocity of each wheel
+		v = sgnw*wBody*r #linear velocity of each wheel
 
 		pfrv = v/R #match angular velocity to rotation of wheel
 		sfrv = -pfrv #should all move in circle
@@ -111,10 +114,12 @@ def steer(vBody, wBody):
 			#need to modulate this
 			pfsa = (math.pi/2-math.atan(D/(rho-B)))%(math.pi)
 			sfsa = (math.pi/2-math.atan(D/(rho+B)))%(math.pi)
-			if pfsa > math.pi/2:
+			if abs(pfsa) > math.pi/2:
 				pfsa = math.pi/2 - pfsa
-			if sfsa > math.pi/2:
+			if abs(sfsa) > math.pi/2:
 				sfsa = math.pi/2 - sfsa
+			pfsa *= sgnw
+			sfsa *= sgnw
 			pmsa = 0
 			smsa = 0
 			prsa = -pfsa
@@ -122,12 +127,12 @@ def steer(vBody, wBody):
 			rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
 			rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
 
-			vpLin = abs(wBody*rp) * sign(vBody)
-			vsLin = abs(wBody*rs) * sign(vBody)
+			vpLin = abs(wBody*rp)*sgnv
+			vsLin = abs(wBody*rs)*sgnv
 			pfrv = vpLin/R
 			sfrv = vsLin/R
-			pmrv = (rho-B)*wBody/R
-			smrv = (rho+B)*wBody/R
+			pmrv = sgnv*abs((rho-B))*wBody/R
+			smrv = sgnv*abs((rho+B))*wBody/R
 			prrv = pfrv
 			srrv = sfrv
 
@@ -138,7 +143,7 @@ def steer(vBody, wBody):
 	out.update({'srrv': srrv})
 	return out
 
-a= steer(1,-1)
+a= steer(20000,-1)
 print a['pfrv']
 print a['pfsa']
 print a['prsa']
