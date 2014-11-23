@@ -1,4 +1,4 @@
-from RoverWindow import *
+from mainWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
 
@@ -17,8 +17,8 @@ class CentralUi(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         super(CentralUi,self).__init__(parent)
-        self.ui = Ui_RoverMain()
-        self.ui.initUI(self)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
 
         ## creates the timers to enable or disable the ps3 controller for the controls systems
         self.ps3_timer_with_controls = QtCore.QTimer()
