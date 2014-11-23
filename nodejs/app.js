@@ -165,6 +165,13 @@ var userIO = function(socket) {
 };
 io.on('connection', userIO);
 
+io.listen(3000);
+io.on('sendros', function(socket){
+  setInterval(function(){
+    socket.send('sendros', ros);
+  },50);
+});
+
 /*
  * Timeout
  */
@@ -180,6 +187,7 @@ app.use(function(req, res, next) {
  * Server set routes
  */
 app.use('/', routes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

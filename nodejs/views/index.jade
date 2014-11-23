@@ -23,31 +23,39 @@ html(lang='en')
     script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
     
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
-
     script.
-     function init() {
+        function init() {
+
+            
+            var viewer = new ROS2D.Viewer({
+                divID : 'libmap',
+                width : 400,
+                height : 300
+            });
+
+            var ros;
+            var socket = io(); 
+            socket.on('sendros', function(data){
+                ros = data;
+                var gridClient = new ROS2D.OccupancyGridClient({
+                  ros : data,
+                  rootObject : viewer.scene
+                });
+                console.log('ros is ' + data);
+
+                gridClient.on('change', function(){
+                  viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+                });
+             });
+                // Setup the map client.
+                
+                // Scale the canvas to fit to the map
         // Connect to ROS.
-        var ros2 = new ROSLIB.Ros({
-          url : 'ws://localhost:9090'
-        });
-
+        //var ros2 = new ROSLIB.Ros({
+          //url : 'ws://localhost:9090'
+        //});
         // Create the main viewer.
-        var viewer = new ROS2D.Viewer({
-          divID : 'libmap',
-          width : 600,
-          height : 500
-        });
-
-        // Setup the map client.
-        var gridClient = new ROS2D.OccupancyGridClient({
-          ros : ros2,
-          rootObject : viewer.scene
-        });
-        // Scale the canvas to fit to the map
-        gridClient.on('change', function(){
-          viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-        });
-     } 
+        } 
 
   body(onload="init()")
     auv-card
@@ -58,6 +66,6 @@ html(lang='en')
         h3.heading Hello Polymer!
     polymer-ui-card
         img(src='img/favicon.gif')
-    script.
-      var socket = io();
+    //script.
+      //var socket = io();
     #libmap.centered
