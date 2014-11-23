@@ -18,7 +18,37 @@ html(lang='en')
     script(src='platform/platform.js')
     link(rel='import', href='components/elements/index_elements.html')
     script(src='/socket.io/socket.io.js')
-  body(fullbleed unresolved)
+    script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
+    script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
+    script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
+    script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
+
+    script.
+     function init() {
+        // Connect to ROS.
+        var ros2 = new ROSLIB.Ros({
+          url : 'ws://localhost:9090'
+        });
+
+        // Create the main viewer.
+        var viewer = new ROS2D.Viewer({
+          divID : 'libmap',
+          width : 600,
+          height : 500
+        });
+
+        // Setup the map client.
+        var gridClient = new ROS2D.OccupancyGridClient({
+          ros : ros2,
+          rootObject : viewer.scene
+        });
+        // Scale the canvas to fit to the map
+        gridClient.on('change', function(){
+          viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+        });
+     } 
+
+  body(onload="init()")
     auv-card
         h3.heading Hello World!
     polymer-ui-card
@@ -29,3 +59,4 @@ html(lang='en')
         img(src='img/favicon.gif')
     script.
       var socket = io();
+    #libmap

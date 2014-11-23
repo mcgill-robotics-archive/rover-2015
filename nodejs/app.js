@@ -18,12 +18,12 @@ var http = require('http');
 var socketio = require('socket.io');
 
 var ros = new ROSLIB.Ros({
-  	     url : 'ws://localhost:9090'
-   		 })
+         url : 'ws://localhost:9090'
+       })
 
 ros.on('connection', function() {
       console.log('Connected to websocket server.');
-   	   });
+       });
 
 ros.on('error', function(error) {
      console.log('Error connecting to websocket server: ', error);
@@ -31,17 +31,17 @@ ros.on('error', function(error) {
 
 
 var listener = new ROSLIB.Topic({
-	ros : ros,
-	name : '/listener',
-	messageType : 'std_msgs/String'
+  ros : ros,
+  name : '/listener',
+  messageType : 'std_msgs/String'
 });
 
 
 // Then we add a callback to be called every time a message is published on this topic.
 listener.subscribe(function(message) {
-	console.log('Received message on ' + listener.name + ': ' + message.data);
-	// If desired, we can unsubscribe from the topic as well.
-	
+  console.log('Received message on ' + listener.name + ': ' + message.data);
+  // If desired, we can unsubscribe from the topic as well.
+  
 });
 
 
@@ -54,21 +54,21 @@ listener.subscribe(function(message) {
   });
 
   var poseListener = new ROSLIB.Topic({
-  	ros : ros,
-  	name : '/pose_listener',
-  	messageType : 'geometry_msgs/Pose'
+    ros : ros,
+    name : '/pose_listener',
+    messageType : 'geometry_msgs/Pose'
   });
   
   cmdVel.subscribe(function(message) {
-	console.log('Received message on ' + cmdVel.name + ': ' + message);
-	// If desired, we can unsubscribe from the topic as well.
-	
+  console.log('Received message on ' + cmdVel.name + ': ' + message);
+  // If desired, we can unsubscribe from the topic as well.
+  
   });
 
   poseListener.subscribe(function(message) {
-	console.log('Received message on ' + poseListener.name + ': ' + message.orientation.x);
-	// If desired, we can unsubscribe from the topic as well.
-	
+  console.log('Received message on ' + poseListener.name + ': ' + message.orientation.x);
+  // If desired, we can unsubscribe from the topic as well.
+  
   });
 
 
