@@ -28,6 +28,9 @@ class CentralUi(QtGui.QMainWindow):
         self.thrust_pub_timer = QtCore.QTimer()
         ## create the ps3 controller object
         self.ps3 = PS3Controller_central.PS3Controller()
+        self.ui.label_7.setText(vel_vars.tester)
+        self.set_controller_timer()
+        print("Starting...")
 
         ##button connects
 
@@ -38,13 +41,16 @@ class CentralUi(QtGui.QMainWindow):
     def set_controller_timer(self):
         if self.ps3.controller_isPresent:
             self.ps3_timer_with_controls.start(misc_vars.controller_updateFrequency)
+            print("HURRAHHH\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n@@@@@@@@@@@@@@@@")
         else:
+            self.ui.label_7.setText("Controller not found")
             self.log_info("PS3 Controller not found")
 
 
     def update_test(self):
         self.ps3.updateController_for_control_systems()
-        self.ui.main_menu_label.setText(vel_vars.tester)
+      #  self.ui.label_7.setText(vel_vars.tester)
+        self.ui.label_7.setText("Hello WOrld")
 
     def log_info(self, string_data):
         ##self.ui.logObject.append("[INFO] "+string_data)
