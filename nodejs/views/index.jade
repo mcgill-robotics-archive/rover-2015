@@ -18,9 +18,10 @@ html(lang='en')
     script(src='platform/platform.js')
     link(rel='import', href='components/elements/index_elements.html')
     script(src='/socket.io/socket.io.js')
+    script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
     script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
     script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
-    script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
+    
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
 
     script.
@@ -59,4 +60,4 @@ html(lang='en')
         img(src='img/favicon.gif')
     script.
       var socket = io();
-    #libmap
+    #libmap.centered
