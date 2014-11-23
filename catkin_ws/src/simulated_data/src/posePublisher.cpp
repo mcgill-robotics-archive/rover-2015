@@ -11,7 +11,7 @@ float randomFloat() {
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "posePublisher");
-  ros::NodeHandle n;
+//  ros::NodeHandle n;
   ros::Publisher pose_pub = n.advertise<geometry_msgs::Pose>("pose", 1000);
   ros::Rate loop_rate(10);
 
