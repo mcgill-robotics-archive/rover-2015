@@ -23,7 +23,7 @@ T = math.pi/4 # max angle of front and rear wheels [rad]
 
 zero = 1e-10 # Offers protection against numbers very close to zero
 
-#the minimum distance of the ICR that the wheels can accomodate
+#the minimum distance of the IPCR that the wheels can accomodate
 rhoMin = D*math.tan(math.pi/2-T)+B
 
 #function returns the sign of a variable (1,0 or -1)
@@ -170,11 +170,8 @@ def pointTurn(wBody):
 	out.update({'srrv': srrv})
 	return out
 
-
 #testing code and sample usage
-
-a= pointTurn(-1)
-print a['pfrv']
-print a['pfsa']
-print a['prsa']
-
+#a= pointTurn(-1)
+#print a['pfrv']
+#print a['pfsa']
+#print a['prsa']
