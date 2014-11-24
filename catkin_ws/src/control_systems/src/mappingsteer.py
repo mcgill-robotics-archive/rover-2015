@@ -32,7 +32,7 @@ def sign(n): return float(n)/abs(float(n))
 #this function maps joystick input to steering angle of 6 wheels
 #wBody is only always true in magnitude 
 #(except for when wheels cannot accomodate)
-def steer(vBody, wBody):
+def steer(vBody, wBody):er
 	#To be used in the final calculation of the velocity
 	sgnv = sign(vBody)
 	#angle of the wheels also depend on which way the rover is moving
@@ -42,7 +42,7 @@ def steer(vBody, wBody):
 	#I could make an adjustment at start to force wbody positive, then change later
 	
 	#if robot not moving
-	if abs(wBody) < zero and abs(vBody) < zero:
+	if abs(vBody) < zero:
 		#indicates that no settings should change, robot
 		#should just stop movement
 		#in the future we might want to put a button to
