@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 import math #for trig functions
-# amrv: middle wheel rotation velocity.
-# afsa: actural front wheel steering angle.
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
 # pfsa: port front wheel steering angle
@@ -9,12 +7,18 @@ import math #for trig functions
 # smsa: port middle wheel steering angle
 # srsa: starboard rear wheel steering angle
 # prsa: port rear wheel steering angle
-# w_s_a: = [pfsa,sfsa,pmsa,smsa,prsa,srsa,afsa]; 
+# pfrv: port front wheel rotation velocity
+# sfrv: starboard front wheel rotation velocity
+# pmrv: port middle wheel rotation velocity
+# smrv: starboard middle wheel rotation velocity
+# prrv: port rear wheel rotation velocity
+# srrv: starboard rear wheel rotation velocity
+ 
 
-D = 50e-2  # distance between wheels of: front and middle/middle and rear[cm]   
-B = 40e-2  # distance between longitudinal axis and port/startboard wheels[cm]
-R = 16.5e-2 # wheel radius [cm]
-W = 15e-2 # wheel width [cm]
+D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
+B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
+R = 16.5e-2 # wheel radius [m]
+W = 15e-2 # wheel width [m]
 T = math.pi/4 # max angle of front and rear wheels [rad]
 
 zero = 1e-10 # Offers protection against numbers very close to zero
@@ -168,9 +172,9 @@ def pointTurn(wBody):
 
 
 #testing code and sample usage
-"""
-a= steer(-1,-1)
+
+a= pointTurn(-1)
 print a['pfrv']
 print a['pfsa']
 print a['prsa']
-"""
+
