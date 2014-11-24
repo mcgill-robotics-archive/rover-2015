@@ -22,8 +22,7 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 #the minimum distance of the ICR that the wheels can accomodate
 rhoMin = D*math.tan(math.pi/2-T)+B
 
-#also incorporate point steering!
-
+#function returns the sign of a variable (1,0 or -1)
 def sign(n): return float(n)/abs(float(n))
 
 #this function maps joystick input to steering angle of 6 wheels
@@ -56,7 +55,10 @@ def steer(vBody, wBody):
 		smrv = 0
 		prrv = 0
 		srrv = 0
-	elif abs(wBody) < zero: 
+
+	#higher value of "zero" is so that when the user aims straight,
+	#even if the joystick is a little bit off, the robot will go straight
+	elif abs(wBody) < zero*1e7: 
 		#straight velocity
 		#all wheels should be the same
 		movement = True
@@ -75,29 +77,6 @@ def steer(vBody, wBody):
 		smrv = pfrv
 		prrv = pfrv
 		srrv = pfrv
-
-	###############
-	#Might be better to implement a button to do this (or at least a delay), 
-	#so the rover is not constantly trying to change to this state
-	################
-	
-	#elif vBody/wBody <= B: #angle that the wheels cannot do, rover should do
-	##a rotation on point
-	#	movement = True
-	#	pfsa = math.pi/2 - math.atan(B/D) #forms circle
-	#	sfsa = -pfsa 
-	#	pmsa = 0
-	#	smsa = 0
-	#	prsa = -pfsa
-	#	srsa = pfsa
-	#	r = math.sqrt(D**2+B**2)
-	#	v = sgnw*wBody*r #linear velocity of each wheel
-	#	pfrv = v/R #match angular velocity to rotation of wheel
-	#	sfrv = -pfrv #should all move in circle
-	#	pmrv = 0
-	#	smrv = 0
-	#	prrv = pfrv
-	#	srrv = -pfrv
 	
 
 	else: #moving forward at an angle
@@ -154,9 +133,15 @@ def steer(vBody, wBody):
 	out.update({'srrv': srrv})
 	return out
 
-def pointTurnSteer(wBody):
+#Function will do a point turn, so there is no velocity
+#note that the wheels be turned at a different angle than above
+########################
+#also note this does not respect the max angle of the wheel
+#######################
+def pointTurn(wBody):
 	wBody = float(wBody)
 	movement = True
+	#wheels have specific angle - all of them should form a circle together
 	pfsa = math.pi/2 - math.atan(B/D) #forms circle
 	sfsa = -pfsa 
 	pmsa = 0
