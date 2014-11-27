@@ -1,0 +1,3 @@
+int8 ACKREMAN
+int8 POINT
+int8 TRANSLATE
