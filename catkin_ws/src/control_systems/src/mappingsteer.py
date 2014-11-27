@@ -105,8 +105,15 @@ def steer(vBody, wBody):
 			wBody = vBody/rho
 
 		#Simple trig to get angle to each wheel
-		pfsa = math.atan(D/(rho-B)) 
-		sfsa = math.atan(D/(rho+B))
+		if sgnw < 0:
+			pfsa = math.atan(D/(rho-B)) 
+			sfsa = math.atan(D/(rho+B))
+		else:
+			pfsa = math.atan(D/(rho+B)) 
+			sfsa = math.atan(D/(rho-B))
+
+
+
 		#incorporate the correct direction of the angular
 		#displacement of the wheels
 		#multiplying this by the sign of the velocity makes the angular
