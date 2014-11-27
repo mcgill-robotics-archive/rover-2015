@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from mappingsteer import steer #convert linear,angular speed to wheel settings
+#convert linear,angular speed to wheel settings
 import rospy #for reading and publishing to topics
+from mappingsteer import steer, pointTurn, translationalMotion 
 from geometry_msgs.msg import Twist #type of joystick input
 from control_systems.msg import SetPoints #type of wheel setting output
 from std_msgs.msg import Int8
@@ -10,6 +11,7 @@ class JoystickReader(object):
 		self.value = [0,0] #Default settings so vehicle should not move
 		self.settings = SetPoints() #Type of output
 		self.motion = Int8()
+		#self.motion.data = 0
 		rospy.init_node('joystick_reader') #Name of this node
 
 		#Open publisher - whih publishes to wheel
@@ -18,23 +20,19 @@ class JoystickReader(object):
 		rospy.Subscriber('/cmd_vel',Twist,self.update_value_settings,queue_size=10)
 		rospy.Subscriber('/cmd_motion',Int8,self.update_value_motion,queue_size=10)
 		
-
 	#update_settings depending on reading from topic
 	def update_value_settings(self,msg):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
-
-	def update_value_motion(self,msg): self.motion = msg.data
-
-
-
-	#function publishes
-	def run(self):
-		#calculate required wheel angles, speeds
-		output = steer(self.value[0],self.value[1],self.motion)
-
+		if self.motion == 2:
+			output = translationalMotion(self.value[0],self.value[1])
+		elif self.motion == 1:
+			output = pointTurn(self.value[1])
+		else:
+			output = steer(self.value[0],self.value[1])
+		
 		#Convert output of function to setpoint variable type
 		self.settings.move = output['movement']
 		self.settings.thetaFL = output['pfsa']
@@ -48,6 +46,14 @@ class JoystickReader(object):
 		self.settings.speedRL = output['prrv']
 		self.settings.speedRR = output['srrv']
 
+
+	def update_value_motion(self,msg): 
+		#read in values from Int8
+		self.motion = msg.data
+
+	#function publishes
+	def run(self):
+		#calculate required wheel angles, speeds
 		r = rospy.Rate(10)
 	#continue endlessly
 		while not rospy.is_shutdown():

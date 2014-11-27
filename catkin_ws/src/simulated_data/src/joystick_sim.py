@@ -24,14 +24,14 @@ def publish_twist_continuous():
         w_body = math.cos(joy_lin)*MAX_LIN_VEL
 
         joy_lin = joy_lin + math.radians(2)
-        motionFloat += 0.1
+        motionFloat += 0.05
         if motionFloat < 3:
             motion.data = 0
             typePublisher.publish(motion) #ackermann
-        elif motionFloat < 4:
+        elif motionFloat < 4+2:
             motion.data = 1
             typePublisher.publish(motion) #point
-        elif motionFloat < 5:
+        elif motionFloat < 5+4:
             motion.data = 2
             typePublisher.publish(motion)
         else:
