@@ -104,12 +104,9 @@ def steer(vBody, wBody):
 			#the angular velocity must be changed
 			wBody = vBody/rho
 
-		if sgnw<0:
-			rp = rho-B
-			rs = rho+B
-		else:
-			rp = rho+B
-			rs = rho-B
+		#distance from ICR to side changes depending on side of ICR
+		rp = rho+sgnw*B
+		rs = rho-sgnw*B
 
 		#Simple trig to get angle to each wheel
 		pfsa = math.atan(D/(rp)) 
@@ -127,12 +124,12 @@ def steer(vBody, wBody):
 		prsa = -pfsa
 		srsa = -sfsa
 
-		#distance to front/rear wheels on each side of rover from ICR
+		#distance to front wheels on each side of rover from ICR
 		rpf = math.sqrt(rp**2+D**2)#distance to port side front wheels
 		rsf = math.sqrt(rs**2+D**2)#starboard side
 		#the linear velocity of the front/rear wheels on each side
-		vpLin = abs(wBody*rpf)*sgnv
-		vsLin = abs(wBody*rsf)*sgnv
+		vpLin = sgnv*wBody*rpf
+		vsLin = sgnv*wBody*rsf
 
 		#the individual velocities of each of the wheels
 		pfrv = vpLin/R
@@ -219,7 +216,7 @@ def translationalMotion(y,x):
 	smrv = 0
 	prrv = pfrv
 	srrv = pfrv
-	#I split them up to stay within 80 columns 
+	#I split them up to stay within 80 columns
 	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
 	#add more values
 	out.update({'smsa': smsa,'prsa': prsa,'srsa': srsa,'pfrv': pfrv})
@@ -232,4 +229,3 @@ def translationalMotion(y,x):
 #print a['pfrv']
 #print a['pfsa']
 #print a['prsa']
-print steer(-1,1)
