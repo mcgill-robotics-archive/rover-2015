@@ -3,27 +3,37 @@ from mappingsteer import steer #convert linear,angular speed to wheel settings
 import rospy #for reading and publishing to topics
 from geometry_msgs.msg import Twist #type of joystick input
 from control_systems.msg import SetPoints #type of wheel setting output
+from std_msgs.msg import Int8
 
 class JoystickReader(object):
 	def __init__(self):
 		self.value = [0,0] #Default settings so vehicle should not move
 		self.settings = SetPoints() #Type of output
+		self.motion = Int8()
 		rospy.init_node('joystick_reader') #Name of this node
 
 		#Open publisher - whih publishes to wheel
 		self.pub = rospy.Publisher('/wheels',SetPoints,queue_size=10,latch=True)
 		#Subscribe to the topic "/cmd_vel", and print out output to function
-		rospy.Subscriber('/cmd_vel',Twist,self.update_value,queue_size=10)
+		rospy.Subscriber('/cmd_vel',Twist,self.update_value_settings,queue_size=10)
+		rospy.Subscriber('/cmd_motion',Int8,self.update_value_motion,queue_size=10)
 		
 
 	#update_settings depending on reading from topic
-	def update_value(self,msg):
+	def update_value_settings(self,msg):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
+
+	def update_value_motion(self,msg): self.motion = msg.data
+
+
+
+	#function publishes
+	def run(self):
 		#calculate required wheel angles, speeds
-		output = steer(self.value[0],self.value[1])
+		output = steer(self.value[0],self.value[1],self.motion)
 
 		#Convert output of function to setpoint variable type
 		self.settings.move = output['movement']
@@ -38,9 +48,6 @@ class JoystickReader(object):
 		self.settings.speedRL = output['prrv']
 		self.settings.speedRR = output['srrv']
 
-
-	#function publishes
-	def run(self):
 		r = rospy.Rate(10)
 	#continue endlessly
 		while not rospy.is_shutdown():
