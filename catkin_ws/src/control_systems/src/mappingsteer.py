@@ -44,7 +44,7 @@ def steer(vBody, wBody):
 	#To be used in the final calculation of the velocity
 	sgnv = sign(vBody)
 	#angle of the wheels also depend on which way the rover is moving
-	sgnw = sgnv*sign(wBody)
+	sgnw = sign(wBody)
 	#absolute values used in the calculations
 	vBody,wBody = abs(float(vBody)),abs(float(wBody))
 	#I could make an adjustment at start to force wbody positive, then change later
@@ -104,41 +104,42 @@ def steer(vBody, wBody):
 			#the angular velocity must be changed
 			wBody = vBody/rho
 
-		#Simple trig to get angle to each wheel
-		if sgnw < 0:
-			pfsa = math.atan(D/(rho-B)) 
-			sfsa = math.atan(D/(rho+B))
+		if sgnw<0:
+			rp = rho-B
+			rs = rho+B
 		else:
-			pfsa = math.atan(D/(rho+B)) 
-			sfsa = math.atan(D/(rho-B))
+			rp = rho+B
+			rs = rho-B
 
-
+		#Simple trig to get angle to each wheel
+		pfsa = math.atan(D/(rp)) 
+		sfsa = math.atan(D/(rs))
 
 		#incorporate the correct direction of the angular
 		#displacement of the wheels
 		#multiplying this by the sign of the velocity makes the angular
 		#velocity of the rover different than the input, but is of a more
 		#natural movement 
-		pfsa *= sgnw*sgnv
-		sfsa *= sgnw*sgnv
+		pfsa *= sgnw
+		sfsa *= sgnw
 		pmsa = 0
 		smsa = 0
 		prsa = -pfsa
 		srsa = -sfsa
 
 		#distance to front/rear wheels on each side of rover from ICR
-		rp = math.sqrt((rho-B)**2+D**2)#distance to starboard side
-		rs = math.sqrt((rho+B)**2+D**2)#radius a bit larger
+		rpf = math.sqrt(rp**2+D**2)#distance to port side front wheels
+		rsf = math.sqrt(rs**2+D**2)#starboard side
 		#the linear velocity of the front/rear wheels on each side
-		vpLin = abs(wBody*rp)*sgnv
-		vsLin = abs(wBody*rs)*sgnv
+		vpLin = abs(wBody*rpf)*sgnv
+		vsLin = abs(wBody*rsf)*sgnv
 
 		#the individual velocities of each of the wheels
 		pfrv = vpLin/R
 		sfrv = vsLin/R
 		#notice the middle wheels have different distance to ICR
-		pmrv = sgnv*abs((rho-B))*wBody/R
-		smrv = sgnv*abs((rho+B))*wBody/R
+		pmrv = sgnv*rp*wBody/R
+		smrv = sgnv*rs*wBody/R
 		prrv = pfrv
 		srrv = sfrv
 
@@ -231,3 +232,4 @@ def translationalMotion(y,x):
 #print a['pfrv']
 #print a['pfsa']
 #print a['prsa']
+print steer(-1,1)
