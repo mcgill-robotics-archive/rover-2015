@@ -1,4 +1,3 @@
-bool move
 float32 thetaFL
 float32 thetaFR
 float32 thetaRL
