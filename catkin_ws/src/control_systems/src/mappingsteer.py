@@ -204,8 +204,8 @@ def translationalMotion(y,x):
 	if abs(x) < zero and abs(y) < zero:
 		#no velocity
 		return stop()
-	elif abs(y) > zero:
-		#just forward/zero motion
+	elif abs(y) < zero:
+		#just forward/zero motion, so can use middle wheels as well
 		return steer(y,0)
 		#determines which side should get the diagonal
 
@@ -213,8 +213,9 @@ def translationalMotion(y,x):
 	#equivalent direction of wheels
 	theta = math.pi/2 - math.atan(y/x)
 	#now find actual direction of wheels, such that
-	#the wheels will maintain a similar direction when
-	#the joystick is pointed right or left
+	#the wheels will maintain a similar direction on each side, 
+	#so that when moving sideways the wheels don't do a full
+	#rotation whenever the joystick goes past 90 from forward
 	if sgnx > 0 and theta < 0:#make theta positive
 		theta = math.pi - theta
 	elif sgnx <0 and theta > 0:#make theta negative
@@ -222,12 +223,16 @@ def translationalMotion(y,x):
 	movement = True
 	pfsa = theta
 	sfsa = theta
-	pmsa = 0 #wheels cannot steer
+	pmsa = 0 #wheels cannot turn
 	smsa = 0
 	prsa = theta
 	srsa = theta
 	#translate linear velocity to rotational velocity of wheel
 	#along with the correct direction
+
+	#because ps3 joystick is being mapped to a square,
+	#this maps it back to a circle (same speed around
+	#edges of joystick)
 	pfrv = max([abs(x),abs(y)])/R
 	sfrv = pfrv
 	pmrv = 0
