@@ -4,15 +4,19 @@ from geometry_msgs.msg import Twist
 import rospy
 import math
 from std_msgs.msg import Int8
+from control_systems.msg import MotionType
 
 
 def publish_twist_continuous():
     rospy.init_node('joy_sim', anonymous=False)
-    publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-    typePublisher = rospy.Publisher('cmd_motion',Int8,queue_size=10)
+    publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    typePublisher = rospy.Publisher('/cmd_motion',MotionType,queue_size=10)
     motionFloat = 0.
-    motion = Int8()
-    motion.data = 0
+    motion = MotionType()
+    motion.ACKERMANN = 1
+    motion.POINT = 0
+    motion.TRANSLATORY = 0
+
     MAX_LIN_VEL = rospy.get_param('/controls/max_lin_vel', 0.1)
     joy_lin = -math.pi
     joy_ang = math.pi
@@ -26,14 +30,17 @@ def publish_twist_continuous():
         joy_lin = joy_lin + math.radians(2)
         motionFloat += 0.05
         if motionFloat < 3:
-            motion.data = 0
-            typePublisher.publish(motion) #ackermann
+            motion.ACKERMANN = 1
+            motion.POINT = 0
+            motion.TRANSLATORY = 0 #ackermann
         elif motionFloat < 4+2:
-            motion.data = 1
-            typePublisher.publish(motion) #point
+            motion.ACKERMANN = 0
+            motion.POINT = 1 #eventually five different numbers will work here
+            motion.TRANSLATORY = 0 #point
         elif motionFloat < 5+4:
-            motion.data = 2
-            typePublisher.publish(motion)
+            motion.ACKERMANN = 0
+            motion.POINT = 0
+            motion.TRANSLATORY = 1
         else:
             motionFloat = 0
 
@@ -46,6 +53,7 @@ def publish_twist_continuous():
         rospy.loginfo(motion)
 
         publisher.publish(twist)
+        typePublisher.publish(motion)
 
         r = rospy.Rate(10) # 10hz
         r.sleep()

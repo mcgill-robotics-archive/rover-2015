@@ -3,22 +3,26 @@
 import rospy #for reading and publishing to topics
 from mappingsteer import steer, pointTurn, translationalMotion 
 from geometry_msgs.msg import Twist #type of joystick input
-from control_systems.msg import SetPoints #type of wheel setting output
+from control_systems.msg import SetPoints,Moving,MotionType #type of wheel setting output
 from std_msgs.msg import Int8
 
 class JoystickReader(object):
 	def __init__(self):
 		self.value = [0,0] #Default settings so vehicle should not move
 		self.settings = SetPoints() #Type of output
-		self.motion = Int8()
+		self.motion = MotionType()
+		self.moving = Moving()
 		#self.motion.data = 0
 		rospy.init_node('joystick_reader') #Name of this node
 
 		#Open publisher - whih publishes to wheel
-		self.pub = rospy.Publisher('/wheels',SetPoints,queue_size=10,latch=True)
+		self.pubwheels = rospy.Publisher('/wheels',SetPoints,queue_size=10,latch=True)
+		#whether or not wheels should be moving
+		self.pubmovement = rospy.Publisher('/movement',Moving, queue_size=10,latch=True)
 		#Subscribe to the topic "/cmd_vel", and print out output to function
 		rospy.Subscriber('/cmd_vel',Twist,self.update_value_settings,queue_size=10)
-		rospy.Subscriber('/cmd_motion',Int8,self.update_value_motion,queue_size=10)
+		#type of motion
+		rospy.Subscriber('/cmd_motion',MotionType,self.update_value_motion,queue_size=10)
 		
 	#update_settings depending on reading from topic
 	def update_value_settings(self,msg):
@@ -26,15 +30,18 @@ class JoystickReader(object):
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
-		if self.motion == 2:
+		#translational motion
+		if self.motion.TRANSLATORY:
 			output = translationalMotion(self.value[0],self.value[1])
-		elif self.motion == 1:
+		#point steering (around middle)
+		elif self.motion.POINT == 1:
 			output = pointTurn(self.value[1])
+		#ackermann steering
 		else:
 			output = steer(self.value[0],self.value[1])
 		
 		#Convert output of function to setpoint variable type
-		self.settings.move = output['movement']
+		self.moving.move = output['movement']
 		self.settings.thetaFL = output['pfsa']
 		self.settings.thetaFR = output['sfsa']
 		self.settings.thetaRL = output['prsa']
@@ -49,7 +56,7 @@ class JoystickReader(object):
 
 	def update_value_motion(self,msg): 
 		#read in values from Int8
-		self.motion = msg.data
+		self.motion = msg
 
 	#function publishes
 	def run(self):
@@ -58,9 +65,11 @@ class JoystickReader(object):
 	#continue endlessly
 		while not rospy.is_shutdown():
 			#log wheel settings
+			rospy.loginfo(self.moving)
 			rospy.loginfo(self.settings)
 			#publish it
-			self.pub.publish(self.settings)
+			self.pubwheels.publish(self.settings)
+			self.pubmovement.publish(self.moving)
 			#10 Hz rate regardless of joystick rate
 			r.sleep()
 
