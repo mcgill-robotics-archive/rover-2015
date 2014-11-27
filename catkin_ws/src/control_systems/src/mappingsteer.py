@@ -37,6 +37,29 @@ def sign(n):
 	else: 
 		return float(n)/abs(float(n))
 
+def stop():
+	movement = False
+	pfsa = 0
+	sfsa = 0
+	pmsa = 0
+	smsa = 0
+	prsa = 0
+	srsa = 0
+	pfrv = 0
+	sfrv = 0
+	pmrv = 0
+	smrv = 0
+	prrv = 0
+	srrv = 0
+	#I split them up to stay within 80 columns 
+	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
+	#add more values
+	out.update({'smsa': smsa,'prsa': prsa,'srsa': srsa,'pfrv': pfrv})
+	out.update({'sfrv': sfrv,'pmrv': pmrv,'smrv': smrv,'prrv': prrv})
+	out.update({'srrv': srrv})
+	return out
+
+
 #this function maps joystick input to steering angle of 6 wheels
 #wBody is only always true in magnitude 
 #(except for when wheels cannot accomodate)
@@ -54,19 +77,7 @@ def steer(vBody, wBody):
 		#indicates that no settings should change, robot
 		#should just stop movement
 		#in the future we might want to put a button to
-		movement = False
-		pfsa = 0
-		sfsa = 0
-		pmsa = 0
-		smsa = 0
-		prsa = 0
-		srsa = 0
-		pfrv = 0
-		sfrv = 0
-		pmrv = 0
-		smrv = 0
-		prrv = 0
-		srrv = 0
+		return stop()
 
 	#higher value of "zero" is so that when the user aims straight,
 	#even if the joystick is a little bit off, the robot will go straight
@@ -154,6 +165,9 @@ def steer(vBody, wBody):
 #also note this does not respect the max angle of the wheel
 #######################
 def pointTurn(wBody):
+	if abs(wBody) < zero:
+		#if no velocity, stop motion and keep angles
+		return stop()
 	wBody = float(wBody)
 	movement = True
 	#wheels have specific angle - all of them should form a circle together
@@ -169,8 +183,8 @@ def pointTurn(wBody):
 
 	pfrv = v/R #match angular velocity to rotation of wheel
 	sfrv = -pfrv #should all move in circle
-	pmrv = 0
-	smrv = 0
+	pmrv = wBody*B/R #same angular velocity
+	smrv = -pmrv
 	prrv = pfrv
 	srrv = -pfrv	
 	#I split them up to stay within 80 columns 
@@ -187,10 +201,14 @@ def translationalMotion(y,x):
 	#eventually this function should pick the angle based on the 
 	#current and accumulated angles of the wheels
 	###########################
-	if abs(x) < zero:
+	if abs(x) < zero and abs(y) < zero:
+		#no velocity
+		return stop()
+	elif abs(y) > zero:
 		#just forward/zero motion
 		return steer(y,0)
 		#determines which side should get the diagonal
+
 	sgnx = sign(x)
 	#equivalent direction of wheels
 	theta = math.pi/2 - math.atan(y/x)
