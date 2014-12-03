@@ -1,151 +1,207 @@
-from PyQt4 import QtGui, QtCore
-import pyqtgraph as pg
-import sys
-import numpy as np
-import time
+# -*- coding: utf-8 -*-
 
+# Form implementation generated from reading ui file 'mainWindowInitialVersion.ui'
+#
+# Created: Wed Dec  3 13:08:22 2014
+#      by: PyQt4 UI code generator 4.10.4
+#
+# WARNING! All changes made in this file will be lost!
 
-class Ui_RoverMain(QtGui.QWidget):
+from PyQt4 import QtCore, QtGui
 
-    def __init__(self):
-        super(Ui_RoverMain,self).__init__()
-        self.initUI()
-        
-    def initUI(self):
-        #setup the window
-        self.main_menu = QtGui.QComboBox()
-        self.second_menu = QtGui.QComboBox()
-        self.third_menu = QtGui.QComboBox()
-        self.main_menu_label = QtGui.QLabel("Main Video Feed")
-        self.second_menu_label = QtGui.QLabel("Secondary Video Feed")
-        self.third_menu_label = QtGui.QLabel("Third Video Feed")
-        self.main_feed = QtGui.QPixmap("Rover_View.jpg")
-        self.second_feed = QtGui.QPixmap("Rover_View_2.jpg")
-        self.third_feed = QtGui.QPixmap("Rover_View_3.jpg")
-        self.main_label = QtGui.QLabel(self)
-        self.second_label = QtGui.QLabel(self)
-        self.third_label = QtGui.QLabel(self)
-        
-        self.miniMap = pg.GraphicsWindow(title='Minimap')
-        self.trail = self.miniMap.addPlot()
-        self.trail.setLabel('bottom','Mini Map')
-        self.trail.showAxis('left', False)
-        
-        self.battery = QtGui.QLabel("Battery Life: ")
-        self.bat_life = QtGui.QLabel("\n\n\n\n\nOVER 9000 years")
-        
-        self.Function_1 = QtGui.QPushButton('Function 1')
-        self.Function_2 = QtGui.QPushButton('Function 2')
-        self.Function_3 = QtGui.QPushButton('Function 3')
-        self.Function_4 = QtGui.QPushButton('Function 4')
-        self.Function_5 = QtGui.QPushButton('Function 5')
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
 
-        self.handType = QtGui.QComboBox()
-        self.handType_label = QtGui.QLabel("Hand Type:")
-        
-        self.wristInfo = QtGui.QLabel("Wrist Information: ")
-        self.theta = QtGui.QLabel("Theta: ")
-        self.distance = QtGui.QLabel("Distance: ")
-        self.height = QtGui.QLabel("Height: ")
-        
-        
-        self.main_label.setGeometry(0,0,650,460)
-        self.second_label.setGeometry(0,0,500,200)
-        self.third_label.setGeometry(0,0,500,200)
-        #self.main_label.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Preferred)
-        
-        self.scaled_main_feed = self.main_feed.scaled(self.main_label.size())
-        self.scaled_second_feed = self.second_feed.scaled(self.second_label.size())
-        self.scaled_third_feed = self.third_feed.scaled(self.third_label.size())
-#size(), QtCore.Qt.KeepAspectRatio
-        
-        self.main_label.setPixmap(self.scaled_main_feed)
-        self.second_label.setPixmap(self.scaled_second_feed)
-        self.third_label.setPixmap(self.scaled_third_feed)
-        
-        self.main_menu.addItem("Head Camera")
-        self.main_menu.addItem("Cam 2")
-        self.main_menu.addItem("Cam 3")
-        self.second_menu.addItem("Left Wheel Camera")
-        self.second_menu.addItem("Cam 4")
-        self.second_menu.addItem("Cam 5")
-        self.third_menu.addItem("Rear Camera")
-        self.third_menu.addItem("Cam 6")
-        
-        self.handType.addItem("Drill")
-        self.handType.addItem("Strong hand")
-        self.handType.addItem("Precise hand")
-        
-        self.functionsLayout = QtGui.QHBoxLayout()
-        self.functionsLayout.addStretch(1)
-        self.functionsLayout.addWidget(self.Function_1)
-        self.functionsLayout.addWidget(self.Function_2)
-        self.functionsLayout.addWidget(self.Function_3)
-        self.functionsLayout.addWidget(self.Function_4)
-        self.functionsLayout.addWidget(self.Function_5)
-        
-        self.handbatLayout = QtGui.QVBoxLayout()
-        self.handbatLayout.addWidget(self.handType_label)
-        self.handbatLayout.addWidget(self.handType)
-        self.handbatLayout.addWidget(self.battery)
-        
-        self.botLeftLayout = QtGui.QHBoxLayout()
-        self.botLeftLayout.addWidget(self.miniMap)
-        self.botLeftLayout.addLayout(self.handbatLayout)
-        
-        self.leftLayout = QtGui.QVBoxLayout()
-        self.leftLayout.addWidget(self.main_menu_label)
-        self.leftLayout.addWidget(self.main_menu)
-        self.leftLayout.addWidget(self.main_label)
-        self.leftLayout.addLayout(self.botLeftLayout)
-        self.leftLayout.addStretch(1)
-        
-        self.infoLayout = QtGui.QVBoxLayout()
-        self.infoLayout.addWidget(self.wristInfo)
-        self.infoLayout.addWidget(self.theta)
-        self.infoLayout.addWidget(self.distance)
-        self.infoLayout.addWidget(self.height)
-        
-        self.handLayout = QtGui.QHBoxLayout()
-        self.handLayout.addWidget(self.bat_life)
-        self.handLayout.addLayout(self.infoLayout)
-        
-        self.rightLayout = QtGui.QVBoxLayout()
-        self.rightLayout.addWidget(self.second_menu_label)
-        self.rightLayout.addWidget(self.second_menu)
-        self.rightLayout.addWidget(self.second_label)
-        self.rightLayout.addWidget(self.third_menu_label)
-        self.rightLayout.addWidget(self.third_menu)
-        self.rightLayout.addWidget(self.third_label)
-        self.rightLayout.addLayout(self.functionsLayout)
-        self.rightLayout.addLayout(self.handLayout)
-        self.rightLayout.addStretch(1)
-        
-        self.horLayout = QtGui.QHBoxLayout()
-        self.horLayout.addLayout(self.leftLayout)
-        self.horLayout.addLayout(self.rightLayout)
-        self.horLayout.addStretch(1)
-        
-        self.setLayout(self.horLayout)
-        self.resize(700,700)
-        self.setWindowTitle('Rover Interaction Window')
-        self.show()
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
-## Start Qt event loop unless running in interactive mode or using pyside.
-if __name__ == '__main__':
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.resize(743, 573)
+        self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.frame_6 = QtGui.QFrame(self.centralwidget)
+        self.frame_6.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_6.setObjectName(_fromUtf8("frame_6"))
+        self.gridLayout_2 = QtGui.QGridLayout(self.frame_6)
+        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
+        self.frame_8 = QtGui.QFrame(self.frame_6)
+        self.frame_8.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_8.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_8.setObjectName(_fromUtf8("frame_8"))
+        self.verticalLayout_3 = QtGui.QVBoxLayout(self.frame_8)
+        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.comboBox_5 = QtGui.QComboBox(self.frame_8)
+        self.comboBox_5.setObjectName(_fromUtf8("comboBox_5"))
+        self.verticalLayout_3.addWidget(self.comboBox_5)
+        self.comboBox_7 = QtGui.QComboBox(self.frame_8)
+        self.comboBox_7.setObjectName(_fromUtf8("comboBox_7"))
+        self.verticalLayout_3.addWidget(self.comboBox_7)
+        self.gridLayout_2.addWidget(self.frame_8, 3, 2, 1, 1)
+        self.frame_9 = QtGui.QFrame(self.frame_6)
+        self.frame_9.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_9.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_9.setObjectName(_fromUtf8("frame_9"))
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.frame_9)
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
+        self.pushButton_5 = QtGui.QPushButton(self.frame_9)
+        self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
+        self.verticalLayout_4.addWidget(self.pushButton_5)
+        self.pushButton_6 = QtGui.QPushButton(self.frame_9)
+        self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
+        self.verticalLayout_4.addWidget(self.pushButton_6)
+        self.gridLayout_2.addWidget(self.frame_9, 3, 3, 1, 1)
+        self.HandTypeBox = QtGui.QFrame(self.frame_6)
+        self.HandTypeBox.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.HandTypeBox.setFrameShadow(QtGui.QFrame.Raised)
+        self.HandTypeBox.setObjectName(_fromUtf8("HandTypeBox"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.HandTypeBox)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.label = QtGui.QLabel(self.HandTypeBox)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.verticalLayout.addWidget(self.label)
+        self.HandTypeChoice = QtGui.QComboBox(self.HandTypeBox)
+        self.HandTypeChoice.setObjectName(_fromUtf8("HandTypeChoice"))
+        self.verticalLayout.addWidget(self.HandTypeChoice)
+        self.label_2 = QtGui.QLabel(self.HandTypeBox)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.verticalLayout.addWidget(self.label_2)
+        self.ArmModeChoice = QtGui.QComboBox(self.HandTypeBox)
+        self.ArmModeChoice.setObjectName(_fromUtf8("ArmModeChoice"))
+        self.verticalLayout.addWidget(self.ArmModeChoice)
+        self.gridLayout_2.addWidget(self.HandTypeBox, 2, 2, 1, 1)
+        self.functionBox = QtGui.QFrame(self.frame_6)
+        self.functionBox.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.functionBox.setFrameShadow(QtGui.QFrame.Raised)
+        self.functionBox.setObjectName(_fromUtf8("functionBox"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.functionBox)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.function1 = QtGui.QPushButton(self.functionBox)
+        self.function1.setObjectName(_fromUtf8("function1"))
+        self.verticalLayout_2.addWidget(self.function1)
+        self.function2 = QtGui.QPushButton(self.functionBox)
+        self.function2.setObjectName(_fromUtf8("function2"))
+        self.verticalLayout_2.addWidget(self.function2)
+        self.function3 = QtGui.QPushButton(self.functionBox)
+        self.function3.setObjectName(_fromUtf8("function3"))
+        self.verticalLayout_2.addWidget(self.function3)
+        self.function4 = QtGui.QPushButton(self.functionBox)
+        self.function4.setObjectName(_fromUtf8("function4"))
+        self.verticalLayout_2.addWidget(self.function4)
+        self.gridLayout_2.addWidget(self.functionBox, 2, 3, 1, 1)
+        self.Minimap = QtGui.QFrame(self.frame_6)
+        self.Minimap.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.Minimap.setFrameShadow(QtGui.QFrame.Raised)
+        self.Minimap.setObjectName(_fromUtf8("Minimap"))
+        self.MinimapLabel = QtGui.QLabel(self.Minimap)
+        self.MinimapLabel.setGeometry(QtCore.QRect(90, 0, 63, 17))
+        self.MinimapLabel.setObjectName(_fromUtf8("MinimapLabel"))
+        self.gridLayout_2.addWidget(self.Minimap, 2, 0, 2, 2)
+        self.OtherData = QtGui.QFrame(self.frame_6)
+        self.OtherData.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.OtherData.setFrameShadow(QtGui.QFrame.Raised)
+        self.OtherData.setObjectName(_fromUtf8("OtherData"))
+        self.OtherDataLabel = QtGui.QLabel(self.OtherData)
+        self.OtherDataLabel.setGeometry(QtCore.QRect(60, 0, 123, 17))
+        self.OtherDataLabel.setObjectName(_fromUtf8("OtherDataLabel"))
+        self.gridLayout_2.addWidget(self.OtherData, 2, 4, 2, 2)
+        self.Camera1 = QtGui.QFrame(self.frame_6)
+        self.Camera1.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.Camera1.setFrameShadow(QtGui.QFrame.Raised)
+        self.Camera1.setObjectName(_fromUtf8("Camera1"))
+        self.Camera1Feed = QtGui.QComboBox(self.Camera1)
+        self.Camera1Feed.setGeometry(QtCore.QRect(0, 0, 70, 27))
+        self.Camera1Feed.setObjectName(_fromUtf8("Camera1Feed"))
+        self.Camera1Feed.addItem(_fromUtf8(""))
+        self.Camera1Feed.addItem(_fromUtf8(""))
+        self.Camera1Feed.addItem(_fromUtf8(""))
+        self.Camera1Label = QtGui.QLabel(self.Camera1)
+        self.Camera1Label.setGeometry(QtCore.QRect(120, 10, 87, 17))
+        self.Camera1Label.setObjectName(_fromUtf8("Camera1Label"))
+        self.gridLayout_2.addWidget(self.Camera1, 0, 0, 2, 2)
+        self.Camera3 = QtGui.QFrame(self.frame_6)
+        self.Camera3.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.Camera3.setFrameShadow(QtGui.QFrame.Raised)
+        self.Camera3.setObjectName(_fromUtf8("Camera3"))
+        self.Camera3Feed = QtGui.QComboBox(self.Camera3)
+        self.Camera3Feed.setGeometry(QtCore.QRect(0, 0, 70, 27))
+        self.Camera3Feed.setObjectName(_fromUtf8("Camera3Feed"))
+        self.Camera3Feed.addItem(_fromUtf8(""))
+        self.Camera3Feed.addItem(_fromUtf8(""))
+        self.Camera3Feed.addItem(_fromUtf8(""))
+        self.Camera3Label = QtGui.QLabel(self.Camera3)
+        self.Camera3Label.setGeometry(QtCore.QRect(150, 10, 81, 17))
+        self.Camera3Label.setObjectName(_fromUtf8("Camera3Label"))
+        self.gridLayout_2.addWidget(self.Camera3, 0, 4, 2, 2)
+        self.Camera2 = QtGui.QFrame(self.frame_6)
+        self.Camera2.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.Camera2.setFrameShadow(QtGui.QFrame.Raised)
+        self.Camera2.setObjectName(_fromUtf8("Camera2"))
+        self.Camera2Feed = QtGui.QComboBox(self.Camera2)
+        self.Camera2Feed.setGeometry(QtCore.QRect(0, 0, 70, 27))
+        self.Camera2Feed.setObjectName(_fromUtf8("Camera2Feed"))
+        self.Camera2Feed.addItem(_fromUtf8(""))
+        self.Camera2Feed.addItem(_fromUtf8(""))
+        self.Camera2Feed.addItem(_fromUtf8(""))
+        self.Camera2Label = QtGui.QLabel(self.Camera2)
+        self.Camera2Label.setGeometry(QtCore.QRect(150, 10, 81, 17))
+        self.Camera2Label.setObjectName(_fromUtf8("Camera2Label"))
+        self.gridLayout_2.addWidget(self.Camera2, 0, 2, 2, 2)
+        self.gridLayout.addWidget(self.frame_6, 0, 0, 1, 1)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 743, 25))
+        self.menubar.setObjectName(_fromUtf8("menubar"))
+        self.menuWindow = QtGui.QMenu(self.menubar)
+        self.menuWindow.setObjectName(_fromUtf8("menuWindow"))
+        MainWindow.setMenuBar(self.menubar)
+        self.toolBar = QtGui.QToolBar(MainWindow)
+        self.toolBar.setObjectName(_fromUtf8("toolBar"))
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setObjectName(_fromUtf8("statusbar"))
+        MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuWindow.menuAction())
 
-    app = QtGui.QApplication(sys.argv)
-    w = Ui_RoverMain()
-    sys.exit(app.exec_())
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.pushButton_5.setText(_translate("MainWindow", "PushButton", None))
+        self.pushButton_6.setText(_translate("MainWindow", "PushButton", None))
+        self.label.setText(_translate("MainWindow", "Hand type", None))
+        self.label_2.setText(_translate("MainWindow", "Arm mode", None))
+        self.function1.setText(_translate("MainWindow", "function 1", None))
+        self.function2.setText(_translate("MainWindow", "function 2", None))
+        self.function3.setText(_translate("MainWindow", "function 3", None))
+        self.function4.setText(_translate("MainWindow", "function 4", None))
+        self.MinimapLabel.setText(_translate("MainWindow", "mini map", None))
+        self.OtherDataLabel.setText(_translate("MainWindow", "display other data", None))
+        self.Camera1Feed.setItemText(0, _translate("MainWindow", "feed 1", None))
+        self.Camera1Feed.setItemText(1, _translate("MainWindow", "feed 2", None))
+        self.Camera1Feed.setItemText(2, _translate("MainWindow", "feed n", None))
+        self.Camera1Label.setText(_translate("MainWindow", "Main camera", None))
+        self.Camera3Feed.setItemText(0, _translate("MainWindow", "feed 1", None))
+        self.Camera3Feed.setItemText(1, _translate("MainWindow", "feed 2", None))
+        self.Camera3Feed.setItemText(2, _translate("MainWindow", "feed n", None))
+        self.Camera3Label.setText(_translate("MainWindow", "side camera", None))
+        self.Camera2Feed.setItemText(0, _translate("MainWindow", "feed 1", None))
+        self.Camera2Feed.setItemText(1, _translate("MainWindow", "feed 2", None))
+        self.Camera2Feed.setItemText(2, _translate("MainWindow", "feed n", None))
+        self.Camera2Label.setText(_translate("MainWindow", "side camera", None))
+        self.menuWindow.setTitle(_translate("MainWindow", "window", None))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
+
