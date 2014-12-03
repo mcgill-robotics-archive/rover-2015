@@ -1,4 +1,4 @@
-from mainWindow import *
+from RoverWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
 
@@ -18,13 +18,13 @@ import pygame
 class CentralUi(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
-        self.message=""
         super(CentralUi,self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         ## creates the timers to enable or disable the ps3 controller for the controls systems
         self.ps3_timer_with_controls = QtCore.QTimer()
+        self.signal=QtCore.QTimer()
         ## creates the timers to enable or disable the keyboard controllers
         self.key_timer = QtCore.QTimer()
         self.ps3_timer_thrusters = QtCore.QTimer()
@@ -36,18 +36,33 @@ class CentralUi(QtGui.QMainWindow):
 
         # controller timer connect
         QtCore.QObject.connect(self.ps3_timer_with_controls, QtCore.SIGNAL("timeout()"), self.update_test)
+        QtCore.QObject.connect(self.signal, QtCore.SIGNAL("timeout()"),self.checksignal)
+    	self.input3=self.ui.Camera3Feed.currentText();
 
-    	self.listener()
+        self.listener()
+        self.signal.start(100)
 
     
     def callback(self, data):
-        self.message="%s is received"%data.data[13:len(data.data)]
-        self.ui.label_7.setText(self.message)
+        message=data.data
+        self.ui.Camera3Label.setText(message)
+
+    def checksignal(self):
+        if self.input3!=self.ui.Camera3Feed.currentText():
+            self.input3=self.ui.Camera3Feed.currentText()
+            self.listen.unregister()
+            if self.ui.Camera3Feed.currentText()=="feed 1":
+                self.listen=rospy.Subscriber('chatter1',String, self.callback)
+            if self.ui.Camera3Feed.currentText()=="feed 2":
+                self.listen=rospy.Subscriber('chatter2',String, self.callback)
+            if self.ui.Camera3Feed.currentText()=="feed n":
+                self.listen=rospy.Subscriber('chatter3',String, self.callback)
 
     def listener(self):
-    	rospy.init_node('listener',anonymous=True)
-	rospy.Subscriber("chatter",String, self.callback)
-	#rospy.spin()
+        rospy.init_node('listener',anonymous=False)
+        self.listen=rospy.Subscriber("chatter1",String, self.callback)
+       
+	#rospy()
 
     def set_controller_timer(self):
         if self.ps3.controller_isPresent:
