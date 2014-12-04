@@ -2,4 +2,9 @@ float32 thetaFL
 float32 thetaFR
 float32 thetaRL
 float32 thetaRR
-float32 speedMW
+float32 speedFL
+float32 speedFR
+float32 speedML
+float32 speedMR
+float32 speedRL
+float32 speedRR

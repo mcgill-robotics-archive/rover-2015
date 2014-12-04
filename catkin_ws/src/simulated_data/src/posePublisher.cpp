@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     ROS_INFO("%s", ss.str().c_str());
 
     pose_pub.publish(pose);
-
+ 
     ros::spinOnce();
     loop_rate.sleep();
   }
