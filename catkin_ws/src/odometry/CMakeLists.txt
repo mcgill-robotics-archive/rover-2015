@@ -5,7 +5,6 @@ project(odometry)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  controls
   geometry_msgs
   roscpp
   rospy
