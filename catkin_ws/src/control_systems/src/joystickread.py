@@ -15,15 +15,17 @@ class JoystickReader(object):
 		self.moving = Moving()
 
 		#Serve motion will consist of:
-		#A variable that tells the interpreter to lock the current orientation
 		#A variable to record current orientation of the rover with respect to
+		self.swerving = Bool()
+		self.swerving.data = False
+
+		#this variable will allow us to calculate the orientation of the
+		#rover, as we can measure the time taken from the last changed
+		#settings
+		self.lastClock = Float32()
 		#the locked one
-		#
-		self.lock = Bool()
-		self.lock.data = False
-		#whether swerve needs to be reset
 		self.swerve = Float32()
-		self.swerve = 0 #start at a 0 rad heading from start
+		self.swerve.data = 0 #start at a 0 rad heading from start
 		#note that this is only used for swerve - it resets upon
 		#resetting swerve
 
@@ -54,8 +56,17 @@ class JoystickReader(object):
 		if self.motion.TRANSLATORY:
 			output = translationalMotion(self.value[0],self.value[1])
 		#point steering (around middle)
-		elif self.motion.POINT == 1:
+		elif self.motion.POINT:
 			output = pointTurn(self.value[1])
+		#swerve drive :)
+		elif self.motion.SWERVE:
+			if self.swerving.data = False:
+				self.swerve.data = 0
+				self.swerving.data = True
+
+
+			#self.lastClock = 
+			output = steer(self.value[0],self.value[1])
 		#ackermann steering
 		else:
 			output = steer(self.value[0],self.value[1])
