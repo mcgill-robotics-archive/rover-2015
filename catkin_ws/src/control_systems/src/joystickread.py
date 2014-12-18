@@ -6,6 +6,8 @@ from geometry_msgs.msg import Twist #type of joystick input
 #type of wheel setting output
 from control_systems.msg import SetPoints,Moving,MotionType 
 from std_msgs.msg import Int8,Float32,Bool
+from time import clock
+
 
 class JoystickReader(object):
 	def __init__(self):
@@ -23,6 +25,7 @@ class JoystickReader(object):
 		#rover, as we can measure the time taken from the last changed
 		#settings
 		self.lastClock = Float32()
+		self.lastClock.data = clock();
 		#the locked one
 		self.swerve = Float32()
 		self.swerve.data = 0 #start at a 0 rad heading from start
@@ -63,9 +66,18 @@ class JoystickReader(object):
 			if self.swerving.data = False:
 				self.swerve.data = 0
 				self.swerving.data = True
+			#find the time passed since the last cycle - 
+			#we still have these settings stored so we can predict
+			#the current position, etc.
+			timePassed = clock() - self.clock.data
+			#use this with the self.settings to find the change
+			#in theta - find tangetnial velocity at each wheel
+			#(I suppose this could later be done with encoder readings)
+			#once the change in angle is discovered, it would be added to
+			#swerve, and then this could be used with the desired direction
+			#to add to the swerve
 
-
-			#self.lastClock = 
+			self.clock.data = clock()
 			output = steer(self.value[0],self.value[1])
 		#ackermann steering
 		else:
