@@ -20,12 +20,6 @@ from std_msgs.msg import Float64
 from std_msgs.msg import Int16
 from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
-from computer_vision.msg import VisibleObjectData
-from controls.msg import motorCommands
-from geometry_msgs.msg import PoseStamped
-from status.msg import temp, usb
-from blinky.msg import RGB
-from blinky.srv import *
 
 class CentralUi(QtGui.QMainWindow):
 
@@ -38,16 +32,18 @@ class CentralUi(QtGui.QMainWindow):
     	
         self.input3=self.ui.Camera3Feed.currentText();
 
-        self.listener()
+        self.listener3()
         self.signal.start(100)
 
     
     def callback3(self, data):
         try:
             image = QtGui.QPixmap.fromImage(QtGui.QImage(data.data, data.width, data.height, QtGui.QImage.Format_RGB888))
+        finally:
+            pass
         if image is not None:
             self.ui.camera3.setPixmap(image)
-        else
+        else:
             self.ui.camera3.setText("No video feed")
 
     def checksignal(self):
