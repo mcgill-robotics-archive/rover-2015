@@ -247,6 +247,8 @@ def translationalMotion(y,x):
 	out.update({'srrv': srrv})
 	return out
 
+def swerve
+
 #testing code and sample usage
 #a= pointTurn(-1)
 #print a['pfrv']

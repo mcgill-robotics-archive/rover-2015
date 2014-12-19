@@ -3,8 +3,9 @@
 import rospy #for reading and publishing to topics
 from mappingsteer import steer, pointTurn, translationalMotion 
 from geometry_msgs.msg import Twist #type of joystick input
-from control_systems.msg import SetPoints,Moving,MotionType #type of wheel setting output
-from std_msgs.msg import Int8
+#type of wheel setting output
+from control_systems.msg import SetPoints,Moving,MotionType 
+from std_msgs.msg import Int8,Float32,Bool
 
 class JoystickReader(object):
 	def __init__(self):
@@ -12,17 +13,36 @@ class JoystickReader(object):
 		self.settings = SetPoints() #Type of output
 		self.motion = MotionType()
 		self.moving = Moving()
+
+		#Serve motion will consist of:
+		#A variable that tells the interpreter to lock the current orientation
+		#A variable to record current orientation of the rover with respect to
+		#the locked one
+		#
+		self.lock = Bool()
+		self.lock.data = False
+		#whether swerve needs to be reset
+		self.swerve = Float32()
+		self.swerve = 0 #start at a 0 rad heading from start
+		#note that this is only used for swerve - it resets upon
+		#resetting swerve
+
+
 		#self.motion.data = 0
 		rospy.init_node('joystick_reader') #Name of this node
 
 		#Open publisher - whih publishes to wheel
-		self.pubwheels = rospy.Publisher('/wheels',SetPoints,queue_size=10,latch=True)
+		self.pubwheels = rospy.Publisher('/wheels',SetPoints,queue_size=10,
+										latch=True)
 		#whether or not wheels should be moving
-		self.pubmovement = rospy.Publisher('/movement',Moving, queue_size=10,latch=True)
+		self.pubmovement = rospy.Publisher('/movement',Moving, queue_size=10,
+										latch=True)
 		#Subscribe to the topic "/cmd_vel", and print out output to function
-		rospy.Subscriber('/cmd_vel',Twist,self.update_value_settings,queue_size=10)
+		rospy.Subscriber('/cmd_vel',Twist,self.update_value_settings,
+						queue_size=10)
 		#type of motion
-		rospy.Subscriber('/cmd_motion',MotionType,self.update_value_motion,queue_size=10)
+		rospy.Subscriber('/cmd_motion',MotionType,self.update_value_motion,
+							queue_size=10)
 		
 	#update_settings depending on reading from topic
 	def update_value_settings(self,msg):
