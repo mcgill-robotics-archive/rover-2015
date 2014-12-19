@@ -46,6 +46,7 @@ class CentralUi(QtGui.QMainWindow):
 				qimage = QtGui.QImage(self.image.data, self.image.width/3, self.image.height/3, QtGui.QImage.Format_RGB888)
 				#TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
 				# wiskey-tango-foxtrot
+				qimage=qimage.scaledToWidth(self.ui.camera3.width())
 				image = QtGui.QPixmap.fromImage(qimage)		
 			finally:
 				pass
