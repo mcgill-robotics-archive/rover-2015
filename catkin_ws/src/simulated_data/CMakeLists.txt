@@ -106,6 +106,7 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(posePublisher src/posePublisher.cpp)
+add_executable(image_duplicate src/image_duplicate.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -113,6 +114,7 @@ add_executable(posePublisher src/posePublisher.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(posePublisher ${catkin_LIBRARIES})
+target_link_libraries(image_duplicate ${catkin_LIBRARIES})
 
 #############
 ## Install ##
