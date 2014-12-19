@@ -45,25 +45,28 @@ class CentralUi(QtGui.QMainWindow):
     def callback3(self, data):
         try:
             image = QtGui.QPixmap.fromImage(QtGui.QImage(data.data, data.width, data.height, QtGui.QImage.Format_RGB888))
-        if image is not None:
+	finally:
+	    pass
+	if image is not None:
             self.ui.camera3.setPixmap(image)
-        else
+        else:
             self.ui.camera3.setText("No video feed")
+	
 
     def checksignal(self):
         if self.input3!=self.ui.Camera3Feed.currentText():
             self.input3=self.ui.Camera3Feed.currentText()
             self.listen.unregister()
             if self.ui.Camera3Feed.currentText()=="feed 1":
-                self.listen=rospy.Subscriber('chatter1',String, self.callback)
+                self.listen=rospy.Subscriber('camera_front_right/camera/image_raw',Image, self.callback)
             if self.ui.Camera3Feed.currentText()=="feed 2":
-                self.listen=rospy.Subscriber('chatter2',String, self.callback)
+                self.listen=rospy.Subscriber('chatter2',Image, self.callback)
             if self.ui.Camera3Feed.currentText()=="feed n":
-                self.listen=rospy.Subscriber('chatter3',String, self.callback)
+                self.listen=rospy.Subscriber('chatter3',Image, self.callback)
 
     def listener3(self):
         rospy.init_node('listener3',anonymous=False)
-        self.listen=rospy.Subscriber("chatter1",String, self.callback3)
+        self.listen=rospy.Subscriber("camera_front_right/camera/image_raw",Image, self.callback3)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
