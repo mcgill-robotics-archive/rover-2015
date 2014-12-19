@@ -43,7 +43,7 @@ class CentralUi(QtGui.QMainWindow):
     def checksignal(self):
 		if self.image is not None:
 			try: 
-				qimage = QtGui.QImage(self.image.data, self.image.width/3, self.image.height/3, QtGui.QImage.Format_RGB32)
+				qimage = QtGui.QImage(self.image.data, self.image.width/3, self.image.height/3, QtGui.QImage.Format_RGB888)
 				#TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
 				# wiskey-tango-foxtrot
 				image = QtGui.QPixmap.fromImage(qimage)		
