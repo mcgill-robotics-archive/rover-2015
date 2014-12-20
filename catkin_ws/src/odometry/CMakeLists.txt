@@ -10,7 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  nav_msgs
 )
+
+find_package(Boost REQUIRED COMPONENTS date_time)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -46,11 +49,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
+ add_message_files(
+   FILES
+   Tachometers.msg
 #   Message2.msg
-# )
+ )
 
 ## Generate services in the 'srv' folder
  add_service_files(
@@ -103,6 +106,7 @@ include_directories( include
 
 ## Declare a cpp executable
 add_executable(mw_odo src/mw_odo.cpp)
+add_executable(odometry src/odometry.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -110,6 +114,7 @@ add_dependencies(mw_odo odometry_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(mw_odo ${catkin_LIBRARIES})
+target_link_libraries(odometry ${catkin_LIBRARIES})
 
 #############
 ## Install ##
