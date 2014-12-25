@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from mainWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui

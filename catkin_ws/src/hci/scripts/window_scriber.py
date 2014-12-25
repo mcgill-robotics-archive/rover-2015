@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from RoverWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
