@@ -27,8 +27,8 @@ class JoystickReader(object):
 		#this variable will allow us to calculate the orientation of the
 		#rover, as we can measure the time taken from the last changed
 		#settings
-		self.lastClock = Float32()
-		self.lastClock.data = clock();
+		self.clock = Float32()
+		self.clock.data = clock();
 		#the locked one
 		self.swerve = Float32()
 		self.swerve.data = 0 #start at a 0 rad heading from start
@@ -57,6 +57,11 @@ class JoystickReader(object):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
+		#this will eventuall feed in the feed from the other joystick
+		spin = 1
+
+		if not self.motion.SWERVE:
+			self.swerving.data = False
 
 		#translational motion
 		if self.motion.TRANSLATORY:
@@ -67,23 +72,37 @@ class JoystickReader(object):
 		#swerve drive :)
 		elif self.motion.SWERVE:
 			#if starting to swerve
-			if self.swerving.data = False:
+			if self.swerving.data == False:
 				self.swerve.data = 0
 				self.swerving.data = True
 				self.rotation = 0
-			#find the time passed since the last cycle - 
-			#we still have these settings stored so we can predict
-			#the current position, etc.
-			#use this with the self.settings to find the change
-			#in theta - find tangetnial velocity at each wheel
-			#(I suppose this could later be done with encoder readings)
-			#once the change in angle is discovered, it would be added to
-			#swerve, and then this could be used with the desired direction
-			#to add to the swerve
+				#do point steering to start off, which will trigger 
+				#wheels to turn in the right direction
+				output = pointTurn(spin)
+				self.clock.data() = clock()
+			else:
+				#find the time passed since the last cycle - 
+				#we still have these settings stored so we can predict
+				#the current position, etc.
+				#use this with the self.settings to find the change
+				#in theta - find tangetnial velocity at each wheel
+				#(I suppose this could later be done with encoder readings)
+				#once the change in angle is discovered, it would be added to
+				#swerve, and then this could be used with the desired direction
+				#to add to the swerve
+				timePassed = clock() - self.clock.data
+				self.clock.data = clock()
+				heading = 0
 
-			timePassed = clock() - self.clock.data
-			self.clock.data = clock()
-			output = steer(self.value[0],self.value[1])
+				#straight or back
+				if self.value[1] = 0:
+					if self.value[0] < 0:
+						heading = math.pi
+				else:
+					heading = self.value[0]/self.value[1]
+
+				(output,self.rotation) = swerve(self.settings,timepassed,spin,\
+					max(self.values),heading,self.rotation)
 		#ackermann steering
 		else:
 			output = steer(self.value[0],self.value[1])
