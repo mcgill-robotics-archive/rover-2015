@@ -9,12 +9,15 @@ from std_msgs.msg import Int8,Float32,Bool
 from time import clock
 
 
+
+
 class JoystickReader(object):
 	def __init__(self):
 		self.value = [0,0] #Default settings so vehicle should not move
 		self.settings = SetPoints() #Type of output
 		self.motion = MotionType()
 		self.moving = Moving()
+		self.rotation = 0
 
 		#Serve motion will consist of:
 		#A variable to record current orientation of the rover with respect to
@@ -59,17 +62,18 @@ class JoystickReader(object):
 		if self.motion.TRANSLATORY:
 			output = translationalMotion(self.value[0],self.value[1])
 		#point steering (around middle)
-		elif self.motion.POINT:
+		elif self.motion.POINT: 
 			output = pointTurn(self.value[1])
 		#swerve drive :)
 		elif self.motion.SWERVE:
+			#if starting to swerve
 			if self.swerving.data = False:
 				self.swerve.data = 0
 				self.swerving.data = True
+				self.rotation = 0
 			#find the time passed since the last cycle - 
 			#we still have these settings stored so we can predict
 			#the current position, etc.
-			timePassed = clock() - self.clock.data
 			#use this with the self.settings to find the change
 			#in theta - find tangetnial velocity at each wheel
 			#(I suppose this could later be done with encoder readings)
@@ -77,6 +81,7 @@ class JoystickReader(object):
 			#swerve, and then this could be used with the desired direction
 			#to add to the swerve
 
+			timePassed = clock() - self.clock.data
 			self.clock.data = clock()
 			output = steer(self.value[0],self.value[1])
 		#ackermann steering
