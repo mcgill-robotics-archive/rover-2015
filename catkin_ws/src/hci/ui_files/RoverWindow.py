@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../ui_files/MainWindow_V2.ui'
+# Form implementation generated from reading ui file 'MainWindow_V2.ui'
 #
-# Created: Fri Dec 19 16:51:01 2014
+# Created: Fri Dec 19 13:05:29 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -76,9 +76,6 @@ class Ui_MainWindow(object):
         self.Camera2Feed.addItem(_fromUtf8(""))
         self.gridLayout_2.addWidget(self.Camera2Feed, 0, 2, 1, 1)
         self.camera1 = QtGui.QLabel(self.frame_6)
-        self.camera1.setMinimumSize(QtCore.QSize(258, 185))
-        self.camera1.setMaximumSize(QtCore.QSize(500, 500))
-        self.camera1.setScaledContents(True)
         self.camera1.setObjectName(_fromUtf8("camera1"))
         self.gridLayout_2.addWidget(self.camera1, 2, 0, 2, 2)
         self.OtherData = QtGui.QFrame(self.frame_6)
@@ -90,9 +87,6 @@ class Ui_MainWindow(object):
         self.OtherDataLabel.setObjectName(_fromUtf8("OtherDataLabel"))
         self.gridLayout_2.addWidget(self.OtherData, 4, 4, 2, 2)
         self.camera2 = QtGui.QLabel(self.frame_6)
-        self.camera2.setMinimumSize(QtCore.QSize(259, 185))
-        self.camera2.setMaximumSize(QtCore.QSize(500, 500))
-        self.camera2.setScaledContents(True)
         self.camera2.setObjectName(_fromUtf8("camera2"))
         self.gridLayout_2.addWidget(self.camera2, 2, 2, 2, 2)
         self.HandTypeBox = QtGui.QFrame(self.frame_6)
@@ -148,9 +142,6 @@ class Ui_MainWindow(object):
         self.Camera3Feed.addItem(_fromUtf8(""))
         self.gridLayout_2.addWidget(self.Camera3Feed, 0, 4, 1, 1)
         self.camera3 = QtGui.QLabel(self.frame_6)
-        self.camera3.setMinimumSize(QtCore.QSize(258, 185))
-        self.camera3.setMaximumSize(QtCore.QSize(500, 500))
-        self.camera3.setScaledContents(True)
         self.camera3.setObjectName(_fromUtf8("camera3"))
         self.gridLayout_2.addWidget(self.camera3, 2, 4, 2, 2)
         self.gridLayout.addWidget(self.frame_6, 0, 0, 1, 1)

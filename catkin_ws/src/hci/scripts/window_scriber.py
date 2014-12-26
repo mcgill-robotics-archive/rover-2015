@@ -1,9 +1,8 @@
 from RoverWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
-
+from sensor_msgs.msg import Image
 ##import publisher
-import PS3Controller_central
 
 from VARIABLES import *
 from std_msgs.msg import String
@@ -15,72 +14,118 @@ import rospy
 ##import rospy
 import pygame
 
+from std_msgs.msg import String  # ros message types
+from std_msgs.msg import Float32
+from std_msgs.msg import Float64
+from std_msgs.msg import Int16
+from std_msgs.msg import Int32
+from sensor_msgs.msg import Image
+
 class CentralUi(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         super(CentralUi,self).__init__(parent)
+        self.image1=None
+        self.image2=None
+        self.image3=None
+        self.image4=None
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
-        ## creates the timers to enable or disable the ps3 controller for the controls systems
-        self.ps3_timer_with_controls = QtCore.QTimer()
-        self.signal=QtCore.QTimer()
-        ## creates the timers to enable or disable the keyboard controllers
-        self.key_timer = QtCore.QTimer()
-        self.ps3_timer_thrusters = QtCore.QTimer()
-        self.thrust_pub_timer = QtCore.QTimer()
-        ## create the ps3 controller object
-        self.ps3 = PS3Controller_central.PS3Controller()
-
-        ##button connects
-
-        # controller timer connect
-        QtCore.QObject.connect(self.ps3_timer_with_controls, QtCore.SIGNAL("timeout()"), self.update_test)
-        QtCore.QObject.connect(self.signal, QtCore.SIGNAL("timeout()"),self.checksignal)
-    	self.input3=self.ui.Camera3Feed.currentText();
-
+        self.signal=QtCore.QTimer(self)
+        self.signal.timeout.connect(self.repaint_image)
+        self.signal.timeout.connect(self.check_signal)
         self.listener()
         self.signal.start(100)
-
     
-    def callback(self, data):
-        message=data.data
-        self.ui.Camera3Label.setText(message)
+    def callback3(self, data):
+        try:
+        	self.image3 = data
+        finally:
+        	pass
+    def callback2(self, data):
+        try:
+            self.image2=data
+        finally:
+            pass
+    def callback1(self, data):
+        try:
+            self.image1=data
+        finally:
+            pass
+    def callback4(self,data):
+        try:
+            self.image4=data
+        finally:
+            pass
+	
+    def check_signal(self):
+        if self.ui.Camera1Feed.currentIndex() != 0:
+            self.listen1.unregister()
+            self.listen1=rospy.Subscriber("/hello",Image,self.callback4)
+            self.image1=None
+        else:
+            self.listen1.unregister()
+            self.listen1=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback1)
+        if self.ui.Camera2Feed.currentIndex() != 0:
+            self.listen2.unregister()
+            self.listen2=rospy.Subscriber("/hello",Image,self.callback4)
+            self.image2=None
+        else:
+            self.listen2.unregister()
+            self.listen2=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback2)    
+        if self.ui.Camera3Feed.currentIndex() != 0:
+            self.listen3.unregister()
+            self.listen3=rospy.Subscriber("/hello",Image,self.callback4)
+            self.image3=None
+        else:
+            self.listen3.unregister()
+            self.listen3=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback3)
 
-    def checksignal(self):
-        if self.input3!=self.ui.Camera3Feed.currentText():
-            self.input3=self.ui.Camera3Feed.currentText()
-            self.listen.unregister()
-            if self.ui.Camera3Feed.currentText()=="feed 1":
-                self.listen=rospy.Subscriber('chatter1',String, self.callback)
-            if self.ui.Camera3Feed.currentText()=="feed 2":
-                self.listen=rospy.Subscriber('chatter2',String, self.callback)
-            if self.ui.Camera3Feed.currentText()=="feed n":
-                self.listen=rospy.Subscriber('chatter3',String, self.callback)
+    def repaint_image(self):
+        if self.image2 is not None:
+            try:
+                qimage2 = QtGui.QImage(self.image2.data, self.image2.width/3, self.image2.height/3,QtGui.QImage.Format_RGB888)
+                #TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
+                # wiskey-tango-foxtrot
+                image2 = QtGui.QPixmap.fromImage(qimage2)     
+            finally:
+                pass
+            self.ui.camera2.setPixmap(image2)
+        else:
+            self.ui.camera2.setText("no video feed")
+        if self.image3 is not None:
+        	try: 
+        		qimage3 = QtGui.QImage(self.image3.data, self.image3.width/3, self.image3.height/3,QtGui.QImage.Format_RGB888)
+        		#TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
+        		# wiskey-tango-foxtrot
+        		image3 = QtGui.QPixmap.fromImage(qimage3)		
+        	finally:
+        		pass
+        	self.ui.camera3.setPixmap(image3)
+        else:
+        	self.ui.camera3.setText("no video feed")
+        if self.image1 is not None:
+            try: 
+                qimage1 = QtGui.QImage(self.image1.data, self.image1.width/3, self.image1.height/3,QtGui.QImage.Format_RGB888)
+                #TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
+                # wiskey-tango-foxtro
+                image1 = QtGui.QPixmap.fromImage(qimage1)     
+            finally:
+                pass
+            self.ui.camera1.setPixmap(image1)
+        else:
+            self.ui.camera1.setText("no video feed")
+
+
+
+	
 
     def listener(self):
         rospy.init_node('listener',anonymous=False)
-        self.listen=rospy.Subscriber("chatter1",String, self.callback)
-       
-	#rospy()
+        self.listen3=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback3)
+        self.listen2=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback2)
+        self.listen1=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback1)
 
-    def set_controller_timer(self):
-        if self.ps3.controller_isPresent:
-            self.ps3_timer_with_controls.start(misc_vars.controller_updateFrequency)
-        else:
-            self.log_info("PS3 Controller not found")
-
-
-    def update_test(self):
-        self.ps3.updateController_for_control_systems()
-        self.ui.main_menu_label.setText()
-
-    def log_info(self, string_data):
-        ##self.ui.logObject.append("[INFO] "+string_data)
-        pass
-
-    def update_message(self):
-        self.ui.label_7.setText("hello");
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
