@@ -9,8 +9,10 @@ from control_systems.msg import MotionType
 
 def publish_twist_continuous():
     rospy.init_node('joy_sim', anonymous=False)
-    publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    joyPublisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
     typePublisher = rospy.Publisher('/cmd_motion',MotionType,queue_size=10)
+    #alternative joystick publisher
+    altJoyPublisher = rospy.Publisher('/cmd_alt_vel', Twist, queue_size=10)
     motionFloat = 0.
     motion = MotionType()
     motion.ACKERMANN = 1
@@ -37,7 +39,7 @@ def publish_twist_continuous():
             motion.SWERVE = 0
         elif motionFloat < 6:
             motion.ACKERMANN = 0
-            motion.POINT = 1 #eventually five different numbers will work here
+            motion.POINT = 1 
             motion.TRANSLATORY = 0 #point
             motion.SWERVE = 0
         elif motionFloat < 9:
@@ -55,15 +57,23 @@ def publish_twist_continuous():
             motionFloat = 0
 
         twist = Twist()
+        altTwist = Twist()
 
         twist.linear.x = v_body
         twist.angular.z = w_body
+
+        #for now, make the second joystick move inverse to the first
+        altTwist.linear.x = -v_body
+        altTwist.angular.z = -w_body
         
+        #publish all to ros
         rospy.loginfo(twist)
         rospy.loginfo(motion)
+        rospy.loginfo(altTwist)
 
-        publisher.publish(twist)
+        joyPublisher.publish(twist)
         typePublisher.publish(motion)
+        altJoyPublisher.publish(altTwist)
 
         r = rospy.Rate(10) # 10hz
         r.sleep()
