@@ -16,6 +16,7 @@ def publish_twist_continuous():
     motion.ACKERMANN = 1
     motion.POINT = 0
     motion.TRANSLATORY = 0
+    motion.SWERVE = 0
 
     MAX_LIN_VEL = rospy.get_param('/controls/max_lin_vel', 0.1)
     joy_lin = -math.pi
@@ -33,14 +34,23 @@ def publish_twist_continuous():
             motion.ACKERMANN = 1
             motion.POINT = 0
             motion.TRANSLATORY = 0 #ackermann
-        elif motionFloat < 4+2:
+            motion.SWERVE = 0
+        elif motionFloat < 6:
             motion.ACKERMANN = 0
             motion.POINT = 1 #eventually five different numbers will work here
             motion.TRANSLATORY = 0 #point
-        elif motionFloat < 5+4:
+            motion.SWERVE = 0
+        elif motionFloat < 9:
             motion.ACKERMANN = 0
             motion.POINT = 0
             motion.TRANSLATORY = 1
+            motion.SWERVE = 0
+        elif motionFloat < 12:
+            #swerve drive
+            motion.ACKERMANN = 0
+            motion.POINT = 0
+            motion.TRANSLATORY = 0
+            motion.SWERVE = 1
         else:
             motionFloat = 0
 
