@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import math #for trig functions
+from control_systems.msg import SetPoints #for swerve drive
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
 # pfsa: port front wheel steering angle
@@ -70,7 +71,8 @@ def steer(vBody, wBody):
 	sgnw = sign(wBody)
 	#absolute values used in the calculations
 	vBody,wBody = abs(float(vBody)),abs(float(wBody))
-	#I could make an adjustment at start to force wbody positive, then change later
+	#I could make an adjustment at start to force wbody positive, then change 
+		#later
 	
 	#if robot not moving
 	if abs(vBody) < zero:
@@ -247,7 +249,78 @@ def translationalMotion(y,x):
 	out.update({'srrv': srrv})
 	return out
 
-def swerve
+#swerve drive! - spinning while moving in a linear direction
+def swerve (settings, time, wBody, vBody, heading, rotation):
+	#settings is the previous wheel settings. this is used to find new rotation
+	#time is the time since the last swerve function
+	#wBody is the rotational speed of the rover
+	#vBody is the linear speed of the rover centre
+	#heading is the direction of the linear velocity of the rover centre, which
+		#is relative to the initial forward direction when swerve started
+	#rotation is the cumulative angle of rotation of the rover from the start
+
+	#first, calculate the previous wBody
+	vWheel = settings.speedFL*R
+	vRotationCorner = vWheel*math.sin(settings.thetaFL-pointSteeringAngle)
+	wBodyOld = vRotationCorner/pointSteeringRadius
+
+	#find the new rotation of the rover
+	newRotation = rotation + wBodyOld * time
+
+
+	if abs(vBody) < zero and abs(wBody) < zero:
+		return (stop(),newRotation)
+
+	#now that we have the wanted direction of the rover, and the rotation,
+	#we can create the knew settings
+	#first, define some vectors in the forward x direction of the rover
+	#this is of the FL wheel with just the rotation
+	vrx = B * wBody 
+	vry = D * wBody
+	#beta is angle between right direction of rover and heading
+	beta =  abs(rotation - heading) + math.pi/2
+	#the following vector va is the linear velocity, which is combined
+	#with the rotational velocity
+	vax = math.cos(beta) * vBody
+	vay = math.sin(beta) * vBody
+
+	#final velocity vectors for each wheel
+	#FL wheel
+	vFLx =  vrx + vax
+	vFLy =  vry + vay
+	vFL = math.sqrt(vFLx**2 + vFLy**2)/R
+	thetaFL = math.atan(vFLx/vFLy)
+	#FR wheel
+	vFRx =  vrx + vax
+	vFRy = -vry + vay
+	vFR = math.sqrt(vFRx**2 + vFRy**2)/R
+	thetaFR = math.atan(vFRx/vFRy)
+	#BR wheel
+	vBRx = -vrx + vax
+	vBRy = -vry + vay
+	vBR = math.sqrt(vBRx**2 + vBRy**2)/R
+	thetaBR = math.atan(vBRx/vBRy)
+	#BL wheel
+	vBLx = -vrx + vax
+	vBLx =  vry + vay
+	vBL = math.sqrt(vBLx**2 + vBLy**2)/R
+	thetaBL = math.atan(vBLx/vBLy)
+
+	#middle wheel
+	thetaML = 0
+	thetaMR = 0
+	vML = wBody*B/R
+	vMR = -vML
+
+	movement = True
+
+	#I split them up to stay within 80 columns
+	out={'movement':movement,'pfsa': thetaFL,'sfsa': thetaFR,'pmsa': thetaML}
+	out.update({'smsa': thetaMR,'prsa': thetaBL,'srsa': thetaBR,'pfrv': vFL})
+	out.update({'sfrv': vRL,'pmrv': vML,'smrv': vMR,'prrv': vBR},{'srrv': vBL})
+	return (out, newRotation)
+
+
 
 #testing code and sample usage
 #a= pointTurn(-1)
