@@ -11,9 +11,10 @@ from time import clock
 
 
 
-class JoystickReader(object):
+class DualJoystickReader(object):
 	def __init__(self):
 		self.value = [0,0] #Default settings so vehicle should not move
+		self.altValue = [0,0] #Values from the second joystick
 		self.settings = SetPoints() #Type of output
 		self.motion = MotionType()
 		self.moving = Moving()
@@ -51,16 +52,20 @@ class JoystickReader(object):
 		#type of motion
 		rospy.Subscriber('/cmd_motion',MotionType,self.update_value_motion,
 							queue_size=10)
+
+		#
+		rospy.Subscriber('/cmd_second_vel',MotionType,self.update_value_motion,
+							queue_size=10)
 		
 	#update_settings depending on reading from topic
 	def update_value_settings(self,msg):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
-		#this will eventuall feed in the feed from the other joystick
-		spin = 1
 
-		if not self.motion.SWERVE:
+
+		#if not swerving, turn off swerving bool
+		if self.serving.data and not self.motion.SWERVE:
 			self.swerving.data = False
 
 		#translational motion
@@ -71,6 +76,8 @@ class JoystickReader(object):
 			output = pointTurn(self.value[1])
 		#swerve drive :)
 		elif self.motion.SWERVE:
+			#value from other joystick is the spin
+			spin = self.altValue[1]
 			#if starting to swerve
 			if self.swerving.data == False:
 				self.swerve.data = 0
@@ -79,13 +86,13 @@ class JoystickReader(object):
 				#do point steering to start off, which will trigger 
 				#wheels to turn in the right direction
 				output = pointTurn(spin)
-				self.clock.data() = clock()
+				self.clock.data = clock()
 			else:
 				#find the time passed since the last cycle - 
 				#we still have these settings stored so we can predict
 				#the current position, etc.
 				#use this with the self.settings to find the change
-				#in theta - find tangetnial velocity at each wheel
+				#in theta - find tangential velocity at each wheel
 				#(I suppose this could later be done with encoder readings)
 				#once the change in angle is discovered, it would be added to
 				#swerve, and then this could be used with the desired direction
@@ -95,12 +102,12 @@ class JoystickReader(object):
 				heading = 0
 
 				#straight or back
-				if self.value[1] = 0:
+				if abs(self.value[1]) < zero:
 					if self.value[0] < 0:
 						heading = math.pi
 				else:
 					heading = self.value[0]/self.value[1]
-
+				#get values
 				(output,self.rotation) = swerve(self.settings,timepassed,spin,\
 					max(self.values),heading,self.rotation)
 		#ackermann steering
@@ -125,6 +132,11 @@ class JoystickReader(object):
 		#read in values from Int8
 		self.motion = msg
 
+	def update_second_joystick(self,msg):
+		#read in values from twist
+		self.altValue[0] = msg.linear.x
+		self.altValue[1] = msg.angular.z
+
 	#function publishes
 	def run(self):
 		#calculate required wheel angles, speeds
@@ -142,7 +154,7 @@ class JoystickReader(object):
 
 if __name__ == '__main__':
 	print "Initializing Node"
-	joystickreader1 = JoystickReader()
+	joystickreader1 = DualJoystickReader()
 	print "Running Node"
 	joystickreader1.run()
 	rospy.spin()
