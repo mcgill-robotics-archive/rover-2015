@@ -3,7 +3,7 @@
 from geometry_msgs.msg import Twist
 import rospy
 import math
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, String
 from control_systems.msg import MotionType
 
 
@@ -67,6 +67,11 @@ def publish_twist_continuous():
         altTwist.angular.z = -w_body
         
         #publish all to ros
+        #initiate message
+        logMessage = String()
+        logMessage.data = "\n________________________________________"
+        logMessage.data += "\n\n\nINITIATE MESSAGE\n\n\n"
+        rospy.loginfo(logMessage)
         rospy.loginfo(twist)
         rospy.loginfo(motion)
         rospy.loginfo(altTwist)
