@@ -15,8 +15,8 @@ def publish_twist_continuous(mode):
     typePublisher = rospy.Publisher('/cmd_motion',MotionType,queue_size=10)
     #alternative joystick publisher
     altJoyPublisher = rospy.Publisher('/cmd_alt_vel', Twist, queue_size=10)
-    motionFloat = 0.
     motion = MotionType()
+    #this is the permanent setting for this
     motion.ACKERMANN = 0
     motion.POINT = 0
     motion.TRANSLATORY = 0
@@ -33,22 +33,47 @@ def publish_twist_continuous(mode):
         w_body = math.cos(joy_lin)*MAX_LIN_VEL
 
         joy_lin = joy_lin + math.radians(2)
-        motionFloat += 0.05
-        if motionFloat < 3:
-            motion.ACKERMANN = 1
-            motion.POINT = 0
-            motion.TRANSLATORY = 0 #ackermann
-            motion.SWERVE = 0
-        elif motionFloat < 6:
-            motion.ACKERMANN = 0
-            motion.POINT = 1 
-            motion.TRANSLATORY = 0 #point
-            motion.SWERVE = 0
-        elif motionFloat < 9:
-            motion.ACKERMANN = 0
-            motion.POINT = 0
-            motion.TRANSLATORY = 1
-            motion.SWERVE = 0
-        elif motionFloat < 12:
-            #swerve drive
-            motion.ACKERMANN = 0
+
+        twist = Twist()
+        altTwist = Twist()
+        
+        if mode == 0:
+                
+            #keep the following constant so angular motion can be seen
+            twist.linear.x = 1
+            twist.angular.z = 0
+            altTwist.linear.x = -v_body
+            altTwist.angular.z = -w_body
+            
+        else:
+    
+            twist.linear.x = v_body
+            twist.angular.z = w_body
+            #keep the following constant so angular motion can be seen
+            altTwist.linear.x = 0
+            altTwist.angular.z = 1 
+            
+        #publish all to ros
+        #initiate message
+        logMessage = String()
+        logMessage.data = "\n________________________________________"
+        logMessage.data += "\n\n\nINITIATE MESSAGE\n\n\n"
+        rospy.loginfo(logMessage)
+        rospy.loginfo(twist)
+        rospy.loginfo(motion)
+        rospy.loginfo(altTwist)
+
+        joyPublisher.publish(twist)
+        typePublisher.publish(motion)
+        altJoyPublisher.publish(altTwist)
+
+        r = rospy.Rate(10) # 10hz
+        r.sleep()
+
+if __name__ == '__main__':
+    try:
+        #if 0 is the argument, the rover should just go straight
+        #while spinning
+        publish_twist_continuous(0)
+    except KeyboardInterrupt:
+        print "Exit"                       
