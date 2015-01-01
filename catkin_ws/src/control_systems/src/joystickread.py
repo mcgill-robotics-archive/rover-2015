@@ -54,7 +54,7 @@ class DualJoystickReader(object):
 							queue_size=10)
 
 		#
-		rospy.Subscriber('/cmd_second_vel',MotionType,self.update_value_motion,
+		rospy.Subscriber('/cmd_alt_vel',MotionType,self.update_value_motion,
 							queue_size=10)
 		
 	#update_settings depending on reading from topic
@@ -62,7 +62,6 @@ class DualJoystickReader(object):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
-
 
 		#if not swerving, turn off swerving bool
 		if self.serving.data and not self.motion.SWERVE:
@@ -107,7 +106,7 @@ class DualJoystickReader(object):
 						heading = math.pi
 				else:
 					heading = self.value[0]/self.value[1]
-				#get values
+				#get output settings, and new rotation of the rover
 				(output,self.rotation) = swerve(self.settings,timepassed,spin,\
 					max(self.values),heading,self.rotation)
 		#ackermann steering
