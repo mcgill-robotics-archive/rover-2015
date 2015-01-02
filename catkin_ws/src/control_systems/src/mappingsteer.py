@@ -267,7 +267,7 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 
 	#find the new rotation of the rover
 	newRotation = rotation + wBodyOld * time
-
+        
 
 	if abs(vBody) < zero and abs(wBody) < zero:
 		return (stop(),newRotation)
@@ -303,7 +303,7 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	thetaBR = math.atan(vBRx/vBRy)
 	#BL wheel
 	vBLx = -vrx + vax
-	vBLx =  vry + vay
+	vBLy =  vry + vay
 	vBL = math.sqrt(vBLx**2 + vBLy**2)/R
 	thetaBL = math.atan(vBLx/vBLy)
 
@@ -318,7 +318,7 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	#I split them up to stay within 80 columns
 	out={'movement':movement,'pfsa': thetaFL,'sfsa': thetaFR,'pmsa': thetaML}
 	out.update({'smsa': thetaMR,'prsa': thetaBL,'srsa': thetaBR,'pfrv': vFL})
-	out.update({'sfrv': vRL,'pmrv': vML,'smrv': vMR,'prrv': vBR},{'srrv': vBL})
+	out.update({'sfrv': vFR,'pmrv': vML,'smrv': vMR,'prrv': vBR,'srrv': vBL})
 	return (out, newRotation)
 
 

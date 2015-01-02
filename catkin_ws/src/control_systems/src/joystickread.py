@@ -54,7 +54,7 @@ class DualJoystickReader(object):
 							queue_size=10)
 
 		#
-		rospy.Subscriber('/cmd_alt_vel',MotionType,self.update_second_joystick,
+		rospy.Subscriber('/cmd_alt_vel',Twist,self.update_second_joystick,
 							queue_size=10)
 		
 	#update_settings depending on reading from topic
@@ -78,7 +78,7 @@ class DualJoystickReader(object):
 		elif self.motion.SWERVE:
 			#value from other joystick is the spin
 			spin = self.altValue[1]
-			#if starting to swerve
+                        #if starting to swerve
 			if self.swerving.data == False:
 				self.swerve.data = 0
 				self.swerving.data = True
