@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 #convert linear,angular speed to wheel settings
 import rospy #for reading and publishing to topics
-from mappingsteer import steer, pointTurn, translationalMotion 
+from mappingsteer import steer, pointTurn, translationalMotion, swerve 
 from geometry_msgs.msg import Twist #type of joystick input
 #type of wheel setting output
 from control_systems.msg import SetPoints,Moving,MotionType 
-from std_msgs.msg import Int8,Float32,Bool
+from std_msgs.msg import Int8,Float32,Bool,String
 from time import clock
 
 
-
+zero =1e-10
 
 class DualJoystickReader(object):
 	def __init__(self):
@@ -54,7 +54,7 @@ class DualJoystickReader(object):
 							queue_size=10)
 
 		#
-		rospy.Subscriber('/cmd_alt_vel',MotionType,self.update_value_motion,
+		rospy.Subscriber('/cmd_alt_vel',MotionType,self.update_second_joystick,
 							queue_size=10)
 		
 	#update_settings depending on reading from topic
@@ -63,8 +63,9 @@ class DualJoystickReader(object):
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
+                print self.value,self.motion.SWERVE 
 		#if not swerving, turn off swerving bool
-		if self.serving.data and not self.motion.SWERVE:
+                if self.swerving.data and not self.motion.SWERVE:
 			self.swerving.data = False
 
 		#translational motion
@@ -107,8 +108,9 @@ class DualJoystickReader(object):
 				else:
 					heading = self.value[0]/self.value[1]
 				#get output settings, and new rotation of the rover
-				(output,self.rotation) = swerve(self.settings,timepassed,spin,\
-					max(self.values),heading,self.rotation)
+				(output,self.rotation) = swerve(self.settings,timePassed,spin,\
+					max(self.altValue),heading,self.rotation)
+
 		#ackermann steering
 		else:
 			output = steer(self.value[0],self.value[1])
@@ -138,18 +140,23 @@ class DualJoystickReader(object):
 
 	#function publishes
 	def run(self):
-		#calculate required wheel angles, speeds
+            #calculate required wheel angles, speeds
 		r = rospy.Rate(10)
-	#continue endlessly
-		while not rospy.is_shutdown():
-			#log wheel settings
-			rospy.loginfo(self.moving)
-			rospy.loginfo(self.settings)
-			#publish it
-			self.pubwheels.publish(self.settings)
-			self.pubmovement.publish(self.moving)
-			#10 Hz rate regardless of joystick rate
-			r.sleep()
+                #continue endlessly
+                while not rospy.is_shutdown():
+                    logMessage = String()
+                    #begin message
+                    logMessage.data = "\n________________________________________"
+                    logMessage.data += "\n\n\nINITIATE MESSAGE\n\n\n"
+                    rospy.loginfo(logMessage.data)
+                    #log wheel settings
+                    rospy.loginfo(self.moving)
+                    rospy.loginfo(self.settings)
+                    #publish it
+                    self.pubwheels.publish(self.settings)
+                    self.pubmovement.publish(self.moving)
+                    #10 Hz rate regardless of joystick rate
+                    r.sleep()
 
 if __name__ == '__main__':
 	print "Initializing Node"
