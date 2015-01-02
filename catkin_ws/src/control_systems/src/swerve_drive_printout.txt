@@ -10,7 +10,11 @@ thetaFR: -0.267772765792
 thetaRL: 0.70702951746                                                                                                                        
 thetaRR: 0.265069859711                                                                                                                       
 speedFL: 0.268240188569                                                                                                                       
-speedFR: 0.662599132535                                                                                                                      speedML: -0.174385406143                                                                                                                     speedMR: 0.174385406143                                                                                                                      speedRL: 0.662110547674                                                                                                                      speedRR: 0.267031020049                                                                                                                       
+speedFR: 0.662599132535                                                                                                                      
+speedML: -0.174385406143                                                                                                                     
+speedMR: 0.174385406143                                                                                                                      
+speedRL: 0.662110547674                                                                                                                      
+speedRR: 0.267031020049                                                                                                                       
 [INFO] [WallTime: 1420163425.670908]           
 
 
@@ -21,3 +25,53 @@ speedFR: 0.662599132535                                                         
 //after testing, the algorithm revealed that it incorrectly calculates the
 //angular velocity - in reality, we require to use more than just one of
 //the wheels to get information
+//however, the equation to create the swerved robot may still be correct.
+//The above looks like:
+//
+//    \   |
+//    |   |
+//    /   |
+//
+//it should be possible to calculate the rotational velocity from two wheels
+//alone
+
+
+
+
+Second test with updated settings:
+
+This is the input:
+
+True 0.475478103876 1.55913194655 1.05345845767 1.56737873674 2.51162707056 5.48636103515 2.42424242424 -2.42424242424 9.8627073705 8.5721123306
+7 time,spin,vbody,heading,rotation 0.003622 1.0 1.0 0 -0.416797090142
+
+For above, the first numerics are as follows:                    
+(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)  
+
+
+move: True
+thetaFL: 1.55913194655
+thetaFR: 0.475478103876
+thetaRL: 1.56737873674
+thetaRR: 1.05345845767
+speedFL: 2.51162707056
+speedFR: 5.48636103515
+speedML: 2.42424242424
+speedMR: -2.42424242424
+speedRL: 9.8627073705
+speedRR: 8.57211233067
+[1.0, 0.0] 1
+
+speedRR: 0.872644665766
+
+
+//this configuration looks as follows:
+//
+//    /   _
+//    |   |
+//    /   _
+//
+//this configuration is different from the following, in that 
+//the settings are very similar to the previous settings, which is accurate
+//This seems like it could be somewhat correct, considering the rotation is
+//-0.417, so the wheels might actually point in the forward direction
