@@ -31,6 +31,9 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 #the minimum distance of the IPCR that the wheels can accomodate
 rhoMin = D*math.tan(math.pi/2-T)+B
 
+def angleMod(n):
+	return divmod(n,2*math.pi)[1]
+
 def maxMag(numbers):
 	greatest = 0
 	for x in numbers:
@@ -263,16 +266,24 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	#wBody is the rotational speed of the rover
 	#vBody is the linear speed of the rover centre
 	#heading is the direction of the linear velocity of the rover centre, which
-		#is relative to the initial forward direction when swerve started
+	#is relative to the initial forward direction when swerve started
 	#rotation is the cumulative angle of rotation of the rover from the start
+
+	#Safety:
+	heading = angleMod(heading)
         
 
 	#first, calculate the previous wBody (can be found from any wheel)
-	wBodyOld = R*(settings.speedFL*math.cos(5*math.pi/2 - settings.thetaFL)\
-		-settings.speedFR*math.cos(5*math.pi/2-settings.thetaFR))/2/D
+	#easiest from middle wheels (requires them to be spinning)
+	###########################################
+	#it's also important to note that the middle
+	#wheels should not spin when others are 
+	#getting in position
+	###########################################
+	wBodyOld = settings.speedML*R/B
 
-	#find the new rotation of the rover
-	newRotation = rotation + wBodyOld * time
+	#find the new rotation of the rover - also get the modulus of it
+	newRotation = angleMod(rotation + wBodyOld * time)
 
 	if abs(vBody) < zero and abs(wBody) < zero:
 		return (stop(),newRotation)
@@ -281,10 +292,16 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	#we can create the knew settings
 	#first, define some vectors in the forward x direction of the rover
 	#this is of the FL wheel with just the rotation
-	vrx = B * wBody 
-	vry = D * wBody
-	#beta is angle between right direction of rover and heading
-	beta =  abs(rotation - heading) + math.pi/2
+	vrx = D * wBody 
+	vry = B * wBody
+	#beta is angle between axis perpindicular to forward direction of 
+	#rover, and heading
+	psi = angleMod(newRotation+math.pi/2)
+	beta = 0
+	if psi > heading:
+		beta = psi-heading
+	else:
+		beta = heading-psi
 	#the following vector va is the linear velocity, which is combined
 	#with the rotational velocity
 	vax = math.cos(beta) * vBody
@@ -295,6 +312,13 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	vFLx =  vrx + vax
 	vFLy =  vry + vay
 	vFL = math.sqrt(vFLx**2 + vFLy**2)/R
+
+	##########################################
+	##The following would seem to also block
+	##the rover wheels from turning a full 360
+	##although this may need to be updated 
+	##later for smoother travel
+	##########################################
 	thetaFL = math.atan(vFLx/vFLy)
 	#FR wheel
 	vFRx =  vrx + vax
