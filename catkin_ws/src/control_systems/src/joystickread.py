@@ -107,7 +107,22 @@ class DualJoystickReader(object):
 						heading = math.pi
 				else:
 					heading = self.value[0]/self.value[1]
-				#get output settings, and new rotation of the rover
+				#get output settings, and new rotation of the
+                                #rover
+                                print "\n\nSettings (for below):\n\n",\
+                                        self.moving.move,self.settings.thetaFR\
+                                        ,self.settings.thetaFL,\
+                                        self.settings.thetaRR,\
+                                        self.settings.thetaRL,\
+                                        self.settings.speedFL,\
+                                        self.settings.speedFR,\
+                                        self.settings.speedML,\
+                                        self.settings.speedMR,\
+                                        self.settings.speedRL,\
+                                        self.settings.speedRR,\
+                                        "time,spin,vbody,heading,rotation",\
+                                        timePassed,spin
+
 				(output,self.rotation) = swerve(self.settings,timePassed,spin,\
 					max(self.altValue),heading,self.rotation)
 
