@@ -31,6 +31,13 @@ zero = 1e-10 # Offers protection against numbers very close to zero
 #the minimum distance of the IPCR that the wheels can accomodate
 rhoMin = D*math.tan(math.pi/2-T)+B
 
+def maxMag(numbers):
+	greatest = 0
+	for x in numbers:
+		if abs(x) > abs(greatest):
+			greatest = x
+	return greatest
+
 #function returns the sign of a variable (1,0 or -1)
 def sign(n): 
 	if n == 0:
@@ -260,14 +267,12 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 	#rotation is the cumulative angle of rotation of the rover from the start
         
 
-	#first, calculate the previous wBody
-	vWheel = settings.speedFL*R
-	vRotationCorner = vWheel*math.sin(settings.thetaFL-pointSteeringAngle)
-	wBodyOld = vRotationCorner/pointSteeringRadius
+	#first, calculate the previous wBody (can be found from any wheel)
+	wBodyOld = R*(settings.speedFL*math.cos(5*math.pi/2 - settings.thetaFL)\
+		-settings.speedFR*math.cos(5*math.pi/2-settings.thetaFR))/2/D
 
 	#find the new rotation of the rover
 	newRotation = rotation + wBodyOld * time
-        
 
 	if abs(vBody) < zero and abs(wBody) < zero:
 		return (stop(),newRotation)
