@@ -121,7 +121,8 @@ class DualJoystickReader(object):
                                         self.settings.speedRL,\
                                         self.settings.speedRR,\
                                         "time,spin,vbody,heading,rotation",\
-                                        timePassed,spin
+                                        timePassed,spin,max(self.altValue),\
+                                        heading,self.rotation
 
 				(output,self.rotation) = swerve(self.settings,timePassed,spin,\
 					max(self.altValue),heading,self.rotation)
