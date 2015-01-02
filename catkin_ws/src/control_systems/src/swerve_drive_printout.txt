@@ -1,0 +1,14 @@
+Settings (for below):
+
+True -0.256169803104 -0.644153691502 0.253495798929 0.63889820492 0.28196306549 0.668272437605 -0.168402029202 0.168402029202 0.667807102216 
+0.280858407759 time,spin,vbody,heading,rotation 0.00302 -0.0719339800339 0.0694658370459 0 -0.00220395950281       
+For above, the first numerics are as follows:                    
+(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)   
+
+thetaFL: -0.712289457016                                                                                 
+thetaFR: -0.267772765792                                                                                                                      
+thetaRL: 0.70702951746                                                                                                                        
+thetaRR: 0.265069859711                                                                                                                       
+speedFL: 0.268240188569                                                                                                                       
+speedFR: 0.662599132535                                                                                                                      speedML: -0.174385406143                                                                                                                     speedMR: 0.174385406143                                                                                                                      speedRL: 0.662110547674                                                                                                                      speedRR: 0.267031020049                                                                                                                       
+[INFO] [WallTime: 1420163425.670908]           
