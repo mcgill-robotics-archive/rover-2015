@@ -1,9 +1,9 @@
-Settings (for below):
+#Settings (for below):
 
 True -0.256169803104 -0.644153691502 0.253495798929 0.63889820492 0.28196306549 0.668272437605 -0.168402029202 0.168402029202 0.667807102216 
 0.280858407759 time,spin,vbody,heading,rotation 0.00302 -0.0719339800339 0.0694658370459 0 -0.00220395950281       
-For above, the first numerics are as follows:                    
-(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)   
+#For above, the first numerics are as follows:                    
+#(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)   
 
 thetaFL: -0.712289457016                                                                                 
 thetaFR: -0.267772765792                                                                                                                      
@@ -20,33 +20,34 @@ speedRR: 0.267031020049
 
 
 
-//One way we could test both settings is to see if they both give the same angular velocity about the centre of the rover
+#One way we could test both settings is to see if they both give the same 
+#angular velocity about the centre of the rover
 
-//after testing, the algorithm revealed that it incorrectly calculates the
-//angular velocity - in reality, we require to use more than just one of
-//the wheels to get information
-//however, the equation to create the swerved robot may still be correct.
-//The above looks like:
-//
-//    \   |
-//    |   |
-//    /   |
-//
-//it should be possible to calculate the rotational velocity from two wheels
-//alone
+#after testing, the algorithm revealed that it incorrectly calculates the
+#angular velocity - in reality, we require to use more than just one of
+#the wheels to get information
+#however, the equation to create the swerved robot may still be correct.
+#The above looks like:
+#
+#    \   |
+#    |   |
+#    /   |
+#
+#it should be possible to calculate the rotational velocity from two wheels
+#alone
 
 
 
 
-Second test with updated settings:
+#Second test with updated settings:
 
-This is the input:
+#This is the input:
 
 True 0.475478103876 1.55913194655 1.05345845767 1.56737873674 2.51162707056 5.48636103515 2.42424242424 -2.42424242424 9.8627073705 8.5721123306
 7 time,spin,vbody,heading,rotation 0.003622 1.0 1.0 0 -0.416797090142
 
-For above, the first numerics are as follows:                    
-(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)  
+#For above, the first numerics are as follows:                    
+#(FR, FL, RR, RL; speed: FL, FR, ML, MR, RL, RR)  
 
 
 move: True
@@ -62,16 +63,38 @@ speedRL: 9.8627073705
 speedRR: 8.57211233067
 [1.0, 0.0] 1
 
-speedRR: 0.872644665766
+
+#this configuration looks as follows:
+#
+#    /   _
+#    |   |
+#    /   _
+#
+#this configuration is different from the following, in that 
+#the settings are very similar to the previous settings, which is accurate
+#This seems like it could be somewhat correct, considering the rotation is
+#-0.417, so the wheels might actually towards  the forward direction
+#the middle wheels are correct
 
 
-//this configuration looks as follows:
-//
-//    /   _
-//    |   |
-//    /   _
-//
-//this configuration is different from the following, in that 
-//the settings are very similar to the previous settings, which is accurate
-//This seems like it could be somewhat correct, considering the rotation is
-//-0.417, so the wheels might actually point in the forward direction
+
+#Next test (logging rotation)
+[INFO] [WallTime: 1420229853.430190] data: -0.418359506415
+[INFO] [WallTime: 1420229853.430750] move: True
+[INFO] [WallTime: 1420229853.431067] thetaFL: 1.55566300964
+thetaFR: 0.474135056653
+thetaRL: 1.56636703015
+thetaRR: 1.05250322246
+speedFL: 2.50790316965
+speedFR: 5.49230349222
+speedML: 2.42424242424
+speedMR: -2.42424242424
+speedRL: 9.86365494679
+speedRR: 8.56830610839
+#The rotation appears to stop at this angle of rotation 
+# - the formula appears to estimate that the angular velocity
+#is zero
+
+
+#The above was fixed by calculating the old angular velocity from
+#just the middle wheels, which should work

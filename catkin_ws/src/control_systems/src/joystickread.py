@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 #convert linear,angular speed to wheel settings
 import rospy #for reading and publishing to topics
-from mappingsteer import steer, pointTurn, translationalMotion, swerve 
+from mappingsteer import steer, pointTurn, translationalMotion, swerve, maxMag
 from geometry_msgs.msg import Twist #type of joystick input
 #type of wheel setting output
 from control_systems.msg import SetPoints,Moving,MotionType 
 from std_msgs.msg import Int8,Float32,Bool,String
 from time import clock
-
 
 zero =1e-10
 
@@ -43,6 +42,11 @@ class DualJoystickReader(object):
 		#Open publisher - whih publishes to wheel
 		self.pubwheels = rospy.Publisher('/wheels',SetPoints,queue_size=10,
 										latch=True)
+
+		#publisher for tests - gives rotation
+		self.pubrotation = rospy.Publisher('/rotation',Float32,queue_size=10,
+											latch=True)
+
 		#whether or not wheels should be moving
 		self.pubmovement = rospy.Publisher('/movement',Moving, queue_size=10,
 										latch=True)
@@ -97,8 +101,6 @@ class DualJoystickReader(object):
 				#once the change in angle is discovered, it would be added to
 				#swerve, and then this could be used with the desired direction
 				#to add to the swerve
-				timePassed = clock() - self.clock.data
-				self.clock.data = clock()
 				heading = 0
 
 				#straight or back
@@ -108,24 +110,27 @@ class DualJoystickReader(object):
 				else:
 					heading = self.value[0]/self.value[1]
 				#get output settings, and new rotation of the
-                                #rover
-                                print "\n\nSettings (for below):\n\n",\
-                                        self.moving.move,self.settings.thetaFR\
-                                        ,self.settings.thetaFL,\
-                                        self.settings.thetaRR,\
-                                        self.settings.thetaRL,\
-                                        self.settings.speedFL,\
-                                        self.settings.speedFR,\
-                                        self.settings.speedML,\
-                                        self.settings.speedMR,\
-                                        self.settings.speedRL,\
-                                        self.settings.speedRR,\
-                                        "time,spin,vbody,heading,rotation",\
-                                        timePassed,spin,max(self.altValue),\
-                                        heading,self.rotation
-
+                #rover
+                #testing code:
+				#print "\n\nSettings (for below):\n\n",\
+				#	self.moving.move,self.settings.thetaFR\
+				#	,self.settings.thetaFL,\
+				#	self.settings.thetaRR,\
+				#	self.settings.thetaRL,\
+				#	self.settings.speedFL,\
+				#	self.settings.speedFR,\
+				#	self.settings.speedML,\
+				#	self.settings.speedMR,\
+				#	self.settings.speedRL,\
+				#	self.settings.speedRR,\
+				#	"time,spin,vbody,heading,rotation",\
+				#	timePassed,spin,\
+				#	maxMag(self.altValue),\
+				#	heading,self.rotation
+				timePassed = clock() - self.clock.data
+				self.clock.data = clock()
 				(output,self.rotation) = swerve(self.settings,timePassed,spin,\
-					max(self.altValue),heading,self.rotation)
+					maxMag(self.altValue),heading,self.rotation)
 
 		#ackermann steering
 		else:
@@ -163,12 +168,19 @@ class DualJoystickReader(object):
                     logMessage = String()
                     #begin message
                     logMessage.data = "\n________________________________________"
-                    logMessage.data += "\n\n\nINITIATE MESSAGE\n\n\n"
+                    logMessage.data += "\n\n\nINITIATE MESSAGE:\n\n\n"
                     rospy.loginfo(logMessage.data)
                     #log wheel settings
+                    rotOut = Float32()
+                    rotOut.data = self.rotation
+                    rospy.loginfo(rotOut)
                     rospy.loginfo(self.moving)
                     rospy.loginfo(self.settings)
+
                     #publish it
+                    #tests:
+                    self.pubrotation.publish(rotOut)
+                    #non-tests:
                     self.pubwheels.publish(self.settings)
                     self.pubmovement.publish(self.moving)
                     #10 Hz rate regardless of joystick rate

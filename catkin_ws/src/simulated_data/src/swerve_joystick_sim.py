@@ -37,13 +37,13 @@ def publish_twist_continuous(mode):
         twist = Twist()
         altTwist = Twist()
         
-        if mode == 0:
+        if not mode:
                 
             #keep the following constant so angular motion can be seen
             twist.linear.x = 1
             twist.angular.z = 0
-            altTwist.linear.x = -v_body
-            altTwist.angular.z = -w_body
+            altTwist.linear.x = 0
+            altTwist.angular.z = 1
             
         else:
     

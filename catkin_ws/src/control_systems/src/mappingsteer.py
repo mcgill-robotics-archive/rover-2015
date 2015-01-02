@@ -271,7 +271,6 @@ def swerve (settings, time, wBody, vBody, heading, rotation):
 
 	#Safety:
 	heading = angleMod(heading)
-        
 
 	#first, calculate the previous wBody (can be found from any wheel)
 	#easiest from middle wheels (requires them to be spinning)
