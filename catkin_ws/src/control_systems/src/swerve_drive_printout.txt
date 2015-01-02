@@ -12,3 +12,12 @@ thetaRR: 0.265069859711
 speedFL: 0.268240188569                                                                                                                       
 speedFR: 0.662599132535                                                                                                                      speedML: -0.174385406143                                                                                                                     speedMR: 0.174385406143                                                                                                                      speedRL: 0.662110547674                                                                                                                      speedRR: 0.267031020049                                                                                                                       
 [INFO] [WallTime: 1420163425.670908]           
+
+
+
+
+//One way we could test both settings is to see if they both give the same angular velocity about the centre of the rover
+
+//after testing, the algorithm revealed that it incorrectly calculates the
+//angular velocity - in reality, we require to use more than just one of
+//the wheels to get information
