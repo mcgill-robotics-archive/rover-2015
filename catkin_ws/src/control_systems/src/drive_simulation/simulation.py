@@ -38,7 +38,7 @@ ax.add_patch(patch)
 ax.set_xlim(-2,2)
 ax.set_ylim(-2,2)
 
-for x in range(10):
+for x in range(100):
     s = math.sin(x/10.)
     c = math.cos(x/10.)
     verts = [
@@ -48,10 +48,14 @@ for x in range(10):
         ( c+s,  s-c), # right, bottom
         (0, 0), # ignored
         ]
-
     path = Path(verts, codes)
     patch = patches.PathPatch(path, facecolor='orange', lw=2)
+    fig.delaxes(ax)
+    ax = fig.add_subplot(111)
     ax.add_patch(patch)
+    ax.set_xlim(-2,2)
+    ax.set_ylim(-2,2)
+    plt.clf
     plt.draw()
     plt.show()
 
