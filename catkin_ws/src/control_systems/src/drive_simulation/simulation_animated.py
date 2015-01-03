@@ -15,6 +15,7 @@ fig.set_size_inches(7,6.5)
 ax = plt.axes(xlim=(-2,2),ylim=(-2,2))
 #The main body of the rover
 body = plt.Rectangle((-B,-D),width=2*B,height=2*D,angle=0.0,fc='y')
+#The wheels
 FL   = plt.Rectangle((-B-W/2, D-R),width=W,height=2*R,angle=0.0,fc='b')
 FR   = plt.Rectangle(( B-W/2, D-R),width=W,height=2*R,angle=0.0,fc='b')
 RL   = plt.Rectangle((-B-W/2,-D-R),width=W,height=2*R,angle=0.0,fc='b')
@@ -44,11 +45,15 @@ def animate(i):
 		RL.set_visible(True)
 		RR.set_visible(True)
 	t = mpl.transforms.Affine2D().rotate(np.radians(i))+ax.transData
-	body.set_transform(t) 
-	FL.set_transform(t)
+	body.set_transform(t)
+	#FL.set_transform(t)
 	FR.set_transform(t)
 	RL.set_transform(t)
 	RR.set_transform(t)
+
+
+	FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))+ax.transData)
+
 	return body,FL,FR,RL,RR,
 
 anim = animation.FuncAnimation(fig,animate,
