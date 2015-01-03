@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib import animation
 import matplotlib as mpl
+import re
 
 D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
 B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
@@ -20,6 +21,17 @@ FL   = plt.Rectangle((-B-W/2, D-R),width=W,height=2*R,angle=0.0,fc='b')
 FR   = plt.Rectangle(( B-W/2, D-R),width=W,height=2*R,angle=0.0,fc='b')
 RL   = plt.Rectangle((-B-W/2,-D-R),width=W,height=2*R,angle=0.0,fc='b')
 RR   = plt.Rectangle(( B-W/2,-D-R),width=W,height=2*R,angle=0.0,fc='b')
+
+def midPoint(wheelProperties):
+	positions = [float(a[0]) for a in [re.findall("\d+.\d+", z) for z in \
+				sum([y for y in [x.split(' ') for x in \
+				str(wheelProperties).split('[')[2:]]],[])\
+				if len(z) ] if len(a)]
+	corners = [(positions[x],positions[x+1]) for x in range(0,10,2)]
+	midX = sum([x[0] for x in corners])/float(len(corners))
+	midY = sum([y[1] for y in corners])/float(len(corners))
+	return (midX,midY)
+
 
 def init():
 	ax.add_patch(body)
@@ -44,15 +56,19 @@ def animate(i):
 		FR.set_visible(True)
 		RL.set_visible(True)
 		RR.set_visible(True)
-	t = mpl.transforms.Affine2D().rotate(np.radians(i))+ax.transData
+	t = mpl.transforms.Affine2D().rotate(theta=np.radians(i))+ax.transData
+	#t2 = mpl.transforms.Affine2D().rotate(theta=np.radians(i))+ax.transData+mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))
 	body.set_transform(t)
-	#FL.set_transform(t)
+	FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=0,y=0,theta=np.radians(i))+ax.transData)#+\
+		#mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i)))
 	FR.set_transform(t)
 	RL.set_transform(t)
 	RR.set_transform(t)
 
 
-	FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))+ax.transData)
+	print midPoint(FL.properties()['verts'])
+
+	#FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))+ax.transData)
 
 	return body,FL,FR,RL,RR,
 
