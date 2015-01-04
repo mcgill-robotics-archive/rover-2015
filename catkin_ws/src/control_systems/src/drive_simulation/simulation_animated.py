@@ -24,16 +24,11 @@ RR   = plt.Rectangle(( B-W/2,-D-R),width=W,height=2*R,angle=0.0,fc='b')
 
 topright = plt.Rectangle((2,2),width=0,height=0,angle=0.0,fc='w')
 
-def midPoint(wheelProperties):
-	positions = [float(a[0]) for a in [re.findall("\d+.\d+", z) for z in \
-				sum([y for y in [x.split(' ') for x in \
-				str(wheelProperties).split('[')[2:]]],[])\
-				if len(z) ] if len(a)]
-	corners = [(positions[x],positions[x+1]) for x in range(0,10,2)]
-	midX = sum([x[0] for x in corners[:-1]])/float(len(corners)-1)
-	midY = sum([y[1] for y in corners[:-1]])/float(len(corners)-1)
-	print (midX,midY)
-	return (midX,midY)
+def midPoint(window_extent):
+	text = str(window_extent)
+	values = ''.join([c for c in text if c in '0123456789.,']).split(',')
+	numeric = [float(x) for x in values]
+	return ((numeric[0]+numeric[2])/2,(numeric[1]+numeric[3])/2)
 
 
 def init():
@@ -48,7 +43,7 @@ def init():
 	FR.set_visible(False)
 	RL.set_visible(False)
 	RR.set_visible(False)
-	topright.set_visible(False)
+	topright.set_visible(True)
 	#ax.add_patch(clearPatch)
 	#t = mpl.transforms.Affine2D().
 	return body,FL,FR,RL,RR,
@@ -63,13 +58,14 @@ def animate(i):
 		RR.set_visible(True)
 	t = mpl.transforms.Affine2D().rotate(theta=np.radians(i))+ax.transData
 	#t2 = mpl.transforms.Affine2D().rotate(theta=np.radians(i))+ax.transData+mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))
-	body.set_transform(t)
+	#body.set_transform(t)
 	#+\
 		#mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i)))
-	FL.set_transform(t)
-	FR.set_transform(t)
-	RL.set_transform(t)
-	RR.set_transform(t)
+	FL.set_transform(mpl.transforms.Affine2D().rotate(theta=np.radians(i)) + \
+		mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))+ax.transData)
+	#FR.set_transform(t)
+	#RL.set_transform(t)
+	#RR.set_transform(t)
 
 	#topCorner = midPoint(topright.properties()['verts'])
 	#FLpoint = midPoint(FL.properties()['verts'])
@@ -79,7 +75,9 @@ def animate(i):
 	#FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FL.get_x(),y=FL.get_y(),theta=np.radians(i))+ax.transData)
 	#FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FLx,y=FLy,theta=np.radians(i))+ax.transData)
 	if i%10==0:
-		print FL.properties()['window_extent']
+		mid= midPoint(FL.properties()['window_extent'])
+		topScreen= midPoint(topright.properties()['window_extent'])
+		print (4*mid[0]/topScreen[0]-2, 4*mid[0]/topScreen[0]-2), topScreen
 
 
 	#FL.set_transform(mpl.transforms.Affine2D().rotate_around(x=FL.get_x()+W/2,y=FL.get_y()+R,theta=np.radians(i))+ax.transData)
