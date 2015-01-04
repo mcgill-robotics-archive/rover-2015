@@ -25,6 +25,7 @@ class Hud(object):
             color=(1, 1, 1, 0.5),
         )
         self.fps = clock.ClockDisplay()
+        glClearColor(1.,1.,1.,1.);
 
     def draw(self):
         glMatrixMode(GL_MODELVIEW);
@@ -55,19 +56,20 @@ class Camera(object):
 
 class Entity(object):
 
-    def __init__(self, id, width, height, x, y, rot, \
-        col = (160./255., 160./255., 160./255., 1.)):
-        #default colour is white
+    def __init__(self, id, width, height, x, y, rot, rotO, col):
+        #default colour is black
         self.id = id
         self.width = width
         self.height = height
         self.x = x
         self.y = y
         self.rot = rot
+        self.rotO = rotO
         self.col = col
 
     def draw(self):
         glLoadIdentity()
+        glRotatef(self.rotO, 0, 0, 1)
         glTranslatef(self.x, self.y, 0.0)
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
@@ -88,16 +90,28 @@ class World(object):
         self.ents = {}
         self.nextEntId = 0
         #spawns 10 triangles
-        self.spawnEntity(75*2*B,75*2*D,0,0,0)
+        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.0))
+        #FL
+        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0)
+        #FR
+        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0)
+        #RL
+        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0)
+        #RR
+        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0)
         #clock.schedule_interval(self.spawnEntity, 0.25)
 
-    def spawnEntity(self, width, height, x, y, rot):
-        ent = Entity(self.nextEntId, width, height, x, y, rot)
+    def spawnEntity(self, width, height, x, y, rot, rotO,
+        col = (0., 0., 0., 1.)):
+        ent = Entity(self.nextEntId, width, height, x, y, rot, rotO, col)
         self.ents[ent.id] = ent
         self.nextEntId += 1
         return ent
 
-    def rotate(self, id, theta):
+    def ORotate(self, id, theta):
+        self.ents.values()[id].rotO += theta
+
+    def pointRotate(self, id, theta):
         self.ents.values()[id].rot += theta
 
     def draw(self):
@@ -119,9 +133,10 @@ class App(object):
     def mainLoop(self):
         while not self.win.has_exit:
             self.win.dispatch_events()
-
-            self.world.rotate(0,1)
-
+            for x in range(5):
+                self.world.ORotate(x,0.25)
+            for x in range(1,5):
+                self.world.pointRotate(x,1)
             self.camera.worldProjection()
             self.world.draw()
 
