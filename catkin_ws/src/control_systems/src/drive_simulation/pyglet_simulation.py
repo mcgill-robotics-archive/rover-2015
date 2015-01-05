@@ -5,25 +5,31 @@
 from __future__ import division
 from pyglet import clock, font, image, window
 from pyglet.gl import *
+#reads in values from joystick
+import rospy
+from control_systems.msg import SetPoints
 
 D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
 B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
 R = 16.5e-2 # wheel radius [m]
 W = 15e-2 # wheel width [m]
 
+#All the stuff flat on the screen (text, statistics)
 class Hud(object):
 
     def __init__(self, win):
         helv = font.load('Helvetica', win.width / 50.0)
+        #Create title for name of simulator
         self.text = font.Text(
             helv,
-            'McGill Robotics Rover Simulation',
+            'McGill Robotics Rover Simulator',
             x=win.width / 2,
             y=win.height -win.height//25,
             halign=font.Text.CENTER,
             valign=font.Text.CENTER,
             color=(1, 1, 1, 0.5),
         )
+        #Display fps
         self.fps = clock.ClockDisplay()
         glClearColor(1.,1.,1.,1.);
 
@@ -33,6 +39,7 @@ class Hud(object):
         self.text.draw()
         self.fps.draw()
 
+#The graphics objects
 class Camera(object):
 
     def __init__(self, win, zoom=1.0):
@@ -109,10 +116,10 @@ class World(object):
         return ent
 
     def ORotate(self, id, theta):
-        self.ents.values()[id].rotO += theta
+        self.ents.values()[id].rotO -= theta
 
     def pointRotate(self, id, theta):
-        self.ents.values()[id].rot += theta
+        self.ents.values()[id].rot -= theta
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
@@ -124,32 +131,49 @@ class World(object):
 class App(object):
 
     def __init__(self):
+        #inititate ros part
+        rospy.init_node('simulator')
+        rospy.Subscriber('/wheels',SetPoints, self.update_wheels)
+        self.FL = 0
+        self.FR = 0
+        self.RL = 0
+        self.RR = 0
+        #start opengl
         self.world = World()
         self.win = window.Window(fullscreen=True, vsync=True)
         self.camera = Camera(self.win, zoom=100.0)
         self.hud = Hud(self.win)
-        clock.set_fps_limit(60)
 
-    def mainLoop(self):
-        while not self.win.has_exit:
+    def update_wheels(self,msg):
+        #load in values
+        self.FL = msg.thetaFL
+        self.FR = msg.thetaFR
+        self.RL = msg.thetaRL
+        self.RR = msg.thetaRR
+
+    def run(self):
+        r=rospy.rate(60)
+        while not rospy.is_shutdown():
             self.win.dispatch_events()
+            #rotate entire body
             for x in range(5):
-                self.world.ORotate(x,0.25)
-            for x in range(1,5):
-                self.world.pointRotate(x,1)
+                self.world.ORotate(x,0.)
+            #turn wheels according to values
+            self.world.pointRotate(1,self.FL)
+            self.world.pointRotate(2,self.FR)
+            self.world.pointRotate(3,self.RL)
+            self.world.pointRotate(4,self.RR)
+            #Draw contents
             self.camera.worldProjection()
             self.world.draw()
-
             self.camera.hudProjection()
             self.hud.draw()
-
-            clock.tick()
+            #Move one step forward
             self.win.flip()
+            r.sleep()
+
 
 app = App()
-app.mainLoop()
-
-#batch = g.graphics.Batch()
-#g.graphics.draw(2,g.gl.GL_POINTS,
-#            ('v2i', (10, 15, 30, 35)))
+app.run()
+rospy.spin()
 
