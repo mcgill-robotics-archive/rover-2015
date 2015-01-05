@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/python
 #This program will simulate the rover using pyglet
 
 #fixes scaling
@@ -8,6 +8,7 @@ from pyglet.gl import *
 #reads in values from joystick
 import rospy
 from control_systems.msg import SetPoints
+import math
 
 D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
 B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
@@ -116,10 +117,10 @@ class World(object):
         return ent
 
     def ORotate(self, id, theta):
-        self.ents.values()[id].rotO -= theta
+        self.ents.values()[id].rotO = -180*theta/math.pi
 
     def pointRotate(self, id, theta):
-        self.ents.values()[id].rot -= theta
+        self.ents.values()[id].rot = -180*theta/math.pi
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
@@ -140,7 +141,7 @@ class App(object):
         self.RR = 0
         #start opengl
         self.world = World()
-        self.win = window.Window(fullscreen=True, vsync=True)
+        self.win = window.Window(fullscreen=False, vsync=True)
         self.camera = Camera(self.win, zoom=100.0)
         self.hud = Hud(self.win)
 
@@ -152,8 +153,8 @@ class App(object):
         self.RR = msg.thetaRR
 
     def run(self):
-        r=rospy.rate(60)
-        while not rospy.is_shutdown():
+        r=rospy.Rate(60)
+        while not rospy.is_shutdown() and not self.win.has_exit:
             self.win.dispatch_events()
             #rotate entire body
             for x in range(5):
