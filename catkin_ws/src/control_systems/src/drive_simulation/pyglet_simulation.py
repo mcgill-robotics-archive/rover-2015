@@ -8,6 +8,7 @@ from pyglet.gl import *
 #reads in values from joystick
 import rospy
 from control_systems.msg import SetPoints
+from std_msgs.msg import Int8,Float32,Bool,String
 import math
 
 D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
@@ -28,11 +29,11 @@ class Hud(object):
             y=win.height -win.height//25,
             halign=font.Text.CENTER,
             valign=font.Text.CENTER,
-            color=(1, 1, 1, 0.5),
+            color=(0., 0., 0., 1.),
         )
         #Display fps
         self.fps = clock.ClockDisplay()
-        glClearColor(1.,1.,1.,1.);
+        glClearColor(0.929,0.788,0.686,1.);
 
     def draw(self):
         glMatrixMode(GL_MODELVIEW);
@@ -98,15 +99,15 @@ class World(object):
         self.ents = {}
         self.nextEntId = 0
         #spawns 10 triangles
-        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.0))
+        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.))
         #FL
-        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0)
+        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0.5,0.,0.,1.))
         #FR
-        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0)
+        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0,(0.,0.5,0.,1.))
         #RL
-        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0)
+        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0.,0.,0.5,1.))
         #RR
-        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0)
+        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0.5,0.5,0.,1.))
         #clock.schedule_interval(self.spawnEntity, 0.25)
 
     def spawnEntity(self, width, height, x, y, rot, rotO,
@@ -135,10 +136,12 @@ class App(object):
         #inititate ros part
         rospy.init_node('simulator')
         rospy.Subscriber('/wheels',SetPoints, self.update_wheels)
+        rospy.Subscriber('/rotation',Float32, self.update_rotation)
         self.FL = 0
         self.FR = 0
         self.RL = 0
         self.RR = 0
+        self.rotation = 0
         #start opengl
         self.world = World()
         self.win = window.Window(fullscreen=False, vsync=True)
@@ -152,13 +155,17 @@ class App(object):
         self.RL = msg.thetaRL
         self.RR = msg.thetaRR
 
+    def update_rotation(self,msg):
+        #Load in rotation
+        self.rotation = msg.data
+
     def run(self):
         r=rospy.Rate(60)
         while not rospy.is_shutdown() and not self.win.has_exit:
             self.win.dispatch_events()
             #rotate entire body
             for x in range(5):
-                self.world.ORotate(x,0.)
+                self.world.ORotate(x,self.rotation)
             #turn wheels according to values
             self.world.pointRotate(1,self.FL)
             self.world.pointRotate(2,self.FR)
