@@ -1,0 +1,10 @@
+<launch>
+	<rosparam command="load" file="$(find odometry)/config/radius.yaml"/>
+	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
+	<node name="joy_sim" pkg="simulated_data" type="joystick_sim.py" respawn="false" output="screen"/> 
+
+    <node name="steering" pkg="control_systems" type="joystickread.py" respawn="false" output="screen"/> 
+	<node name="sim" pkg="control_systems" type="pyglet_simulation.py" respawn="false" output="screen"/>
+	
+	
+</launch>
