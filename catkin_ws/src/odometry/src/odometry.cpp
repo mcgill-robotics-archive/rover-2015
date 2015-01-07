@@ -5,7 +5,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 void callback(odometry::Tachometers tachoCounts) {
-	double diffMiddleLeft;
+  double diffMiddleLeft;
   double diffMiddleRight;
   double diffMiddleCenter;
   double diffTheta;
