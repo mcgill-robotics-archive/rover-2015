@@ -50,9 +50,9 @@ class CentralUi(QtGui.QMainWindow):
 
 
     def update_test(self):
-        self.ps3.updateController_for_control_systems()
+        self.ps3.updateController_for_controls_systems()
       #  self.ui.label_7.setText(vel_vars.tester)
-        self.ui.label_7.setText("Hello WOrld")
+        self.ui.label_7.setText(str(vel_vars.joystick_1_y))
 
     def log_info(self, string_data):
         ##self.ui.logObject.append("[INFO] "+string_data)
