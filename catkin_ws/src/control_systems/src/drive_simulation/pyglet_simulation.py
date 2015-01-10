@@ -11,10 +11,13 @@ from control_systems.msg import SetPoints
 from std_msgs.msg import Int8,Float32,Bool,String
 import math
 
-D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
-B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
-R = 16.5e-2 # wheel radius [m]
-W = 15e-2 # wheel width [m]
+# distance between wheels of: front and middle/middle and rear[m]
+D = rospy.get_param('control/wh_distance_fr')
+# distance between longitudinal axis and port/startboard wheels[m]
+B = rospy.get_param('control/wh_base')
+
+R = rospy.get_param('control/wh_radius') # wheel radius [m]
+W = rospy.get_param('control/wh_width') # wheel width [m]
 
 #All the stuff flat on the screen (text, statistics)
 class Hud(object):
@@ -65,7 +68,7 @@ class Camera(object):
 
 class Entity(object):
 
-    def __init__(self, id, width, height, x, y, rot, rotO, col):
+    def __init__(self, id, width, height, x, y, rot, rotO, col, dir):
         #default colour is black
         self.id = id
         self.width = width
@@ -75,6 +78,7 @@ class Entity(object):
         self.rot = rot
         self.rotO = rotO
         self.col = col
+        self.dir = dir
 
     def draw(self):
         glLoadIdentity()
@@ -85,9 +89,9 @@ class Entity(object):
         glBegin(GL_QUADS)
         glColor4f(*self.col)
         glVertex2f(-0.5, 0.5)
-        glColor4f(*self.col)
+        glColor4f(0.,0.,0.,1.)
         glVertex2f(-0.5, -0.5)
-        glColor4f(*self.col)
+        glColor4f(0.,0.,0.,1.)
         glVertex2f(0.5, -0.5)
         glColor4f(*self.col)
         glVertex2f(0.5, 0.5)
