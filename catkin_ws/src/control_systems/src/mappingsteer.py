@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import math #for trig functions
 from control_systems.msg import SetPoints #for swerve drive
+import rospy #to export parameters
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
 # pfsa: port front wheel steering angle
@@ -15,12 +16,13 @@ from control_systems.msg import SetPoints #for swerve drive
 # prrv: port rear wheel rotation velocity
 # srrv: starboard rear wheel rotation velocity
 
-D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
-B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
-R = 16.5e-2 # wheel radius [m]
-W = 15e-2 # wheel width [m]
-#This value needs to be tested for
-T = 3*math.pi/8 # max angle of front and rear wheels [rad] (technically no max)
+# distance between wheels of: front and middle/middle and rear[m]
+D = rospy.get_param('control/wh_distance_fr',0.5)
+# distance between longitudinal axis and port/startboard wheels[m]
+B = rospy.get_param('control/wh_base',0.4)
+
+R = rospy.get_param('control/wh_radius',0.165) # wheel radius [m]
+W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
 
 #angle on the wheels for point steering
 pointSteeringAngle = math.pi/2 - math.atan(B/D)
@@ -28,8 +30,8 @@ pointSteeringAngle = math.pi/2 - math.atan(B/D)
 pointSteeringRadius = math.sqrt(D**2+B**2)
 zero = 1e-10 # Offers protection against numbers very close to zero
 
-#the minimum distance of the IPCR that the wheels can accomodate
-rhoMin = D*math.tan(math.pi/2-T)+B
+#minimum rhoMin (just in front of wheel)
+rhoMin = B
 
 def angleMod(n):
 	return divmod(n,2*math.pi)[1]
@@ -230,7 +232,7 @@ def translationalMotion(y,x):
 	#rotation whenever the joystick goes past 90 from forward
 	if sgnx > 0 and theta < 0:#make theta positive
 		theta = math.pi - theta
-	elif sgnx <0 and theta > 0:#make theta negative
+	elif sgnx < 0 and theta > 0:#make theta negative
 		theta = theta - math.pi
 	movement = True
 	pfsa = theta
