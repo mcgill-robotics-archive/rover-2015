@@ -10,14 +10,23 @@ import rospy
 from control_systems.msg import SetPoints
 from std_msgs.msg import Int8,Float32,Bool,String
 import math
+import sys
 
 # distance between wheels of: front and middle/middle and rear[m]
-D = rospy.get_param('control/wh_distance_fr')
+D = rospy.get_param('control/wh_distance_fr',0.5)
 # distance between longitudinal axis and port/startboard wheels[m]
-B = rospy.get_param('control/wh_base')
+B = rospy.get_param('control/wh_base',0.4)
 
-R = rospy.get_param('control/wh_radius') # wheel radius [m]
-W = rospy.get_param('control/wh_width') # wheel width [m]
+R = rospy.get_param('control/wh_radius',0.165) # wheel radius [m]
+W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
+
+zero =1e-10
+
+def sgn (x):
+    if abs(x) < zero:
+        return 0
+    else:
+        return x/abs(x)
 
 #All the stuff flat on the screen (text, statistics)
 class Hud(object):
@@ -87,13 +96,25 @@ class Entity(object):
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
         glBegin(GL_QUADS)
-        glColor4f(*self.col)
+        if self.dir == 1:
+            glColor4f(0.,0.,0.,1.)
+        else:
+            glColor4f(*self.col)
         glVertex2f(-0.5, 0.5)
-        glColor4f(0.,0.,0.,1.)
+        if self.dir == -1:
+            glColor4f(0.,0.,0.,1.)
+        else:
+            glColor4f(*self.col)
         glVertex2f(-0.5, -0.5)
-        glColor4f(0.,0.,0.,1.)
+        if self.dir == -1:
+            glColor4f(0.,0.,0.,1.)
+        else:
+            glColor4f(*self.col)
         glVertex2f(0.5, -0.5)
-        glColor4f(*self.col)
+        if self.dir == 1:
+            glColor4f(0.,0.,0.,1.)
+        else:
+            glColor4f(*self.col)
         glVertex2f(0.5, 0.5)
         glEnd()
 
@@ -103,20 +124,20 @@ class World(object):
         self.ents = {}
         self.nextEntId = 0
         #spawns 10 triangles
-        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.))
+        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.),0.)
         #FL
-        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0.5,0.,0.,1.))
+        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0.5,0.,0.,1.),1.)
         #FR
-        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0,(0.,0.5,0.,1.))
+        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0,(0.,0.5,0.,1.),1.)
         #RL
-        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0.,0.,0.5,1.))
+        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0.,0.,0.5,1.),1.)
         #RR
-        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0.5,0.5,0.,1.))
+        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0.5,0.5,0.,1.),1.)
         #clock.schedule_interval(self.spawnEntity, 0.25)
 
     def spawnEntity(self, width, height, x, y, rot, rotO,
-        col = (0., 0., 0., 1.)):
-        ent = Entity(self.nextEntId, width, height, x, y, rot, rotO, col)
+        col, dir):
+        ent = Entity(self.nextEntId, width, height, x, y, rot, rotO, col, dir)
         self.ents[ent.id] = ent
         self.nextEntId += 1
         return ent
@@ -126,6 +147,10 @@ class World(object):
 
     def pointRotate(self, id, theta):
         self.ents.values()[id].rot = -180*theta/math.pi
+
+    def updateDirections(self, dir):
+        for x in range(1,4):
+            self.ents.values()[x].dir = dir[x]
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
@@ -141,10 +166,17 @@ class App(object):
         rospy.init_node('simulator')
         rospy.Subscriber('/wheels',SetPoints, self.update_wheels)
         rospy.Subscriber('/rotation',Float32, self.update_rotation)
-        self.FL = 0
-        self.FR = 0
-        self.RL = 0
-        self.RR = 0
+        #angles
+        self.FL  = 0
+        self.FR  = 0
+        self.RL  = 0
+        self.RR  = 0
+        #speeds
+        self.sFL = 0
+        self.sFR = 0
+        self.sRL = 0
+        self.sRR = 0
+
         self.rotation = 0
         #start opengl
         self.world = World()
@@ -158,6 +190,10 @@ class App(object):
         self.FR = msg.thetaFR
         self.RL = msg.thetaRL
         self.RR = msg.thetaRR
+        self.sFL = msg.speedFL
+        self.sFR = msg.speedFR
+        self.sRL = msg.speedRL
+        self.sRR = msg.speedRR
 
     def update_rotation(self,msg):
         #Load in rotation
@@ -175,6 +211,13 @@ class App(object):
             self.world.pointRotate(2,self.FR)
             self.world.pointRotate(3,self.RL)
             self.world.pointRotate(4,self.RR)
+            #update direction of wheel (forwards or backwards)
+            self.world.updateDirections(
+                [sgn(self.sFL),
+                sgn(self.sFR),
+                sgn(self.sRL),
+                sgn(self.sRR)]
+                )
             #Draw contents
             self.camera.worldProjection()
             self.world.draw()
@@ -183,6 +226,8 @@ class App(object):
             #Move one step forward
             self.win.flip()
             r.sleep()
+        sys.exit()
+
 
 
 app = App()
