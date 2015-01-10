@@ -6,270 +6,612 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>566</height>
+    <width>795</width>
+    <height>843</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QFrame" name="frame_6">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="4" column="3">
-        <widget class="QFrame" name="functionBox">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QPushButton" name="function1">
-            <property name="text">
-             <string>function 1</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="function2">
-            <property name="text">
-             <string>function 2</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="function3">
-            <property name="text">
-             <string>function 3</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="function4">
-            <property name="text">
-             <string>function 4</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="2">
-        <widget class="QFrame" name="frame_8">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QComboBox" name="comboBox_5"/>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_7"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="Camera2Feed">
-         <item>
-          <property name="text">
-           <string>feed 1</string>
+   <layout class="QVBoxLayout" name="verticalLayout_10">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QComboBox" name="Camera1Feed">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
           </property>
-         </item>
-         <item>
+          <item>
+           <property name="text">
+            <string>Front Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Left Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Right Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Back Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Arm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pan/Tilt</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="camera1">
           <property name="text">
-           <string>feed 2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>feed n</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="0" rowspan="2" colspan="2">
-        <widget class="QLabel" name="camera1">
-         <property name="text">
-          <string>cam 1</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="4" rowspan="2" colspan="2">
-        <widget class="QFrame" name="OtherData">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QLabel" name="OtherDataLabel">
-          <property name="geometry">
-           <rect>
-            <x>60</x>
-            <y>0</y>
-            <width>123</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>display other data</string>
+           <string>cam 1</string>
           </property>
          </widget>
-        </widget>
-       </item>
-       <item row="2" column="2" rowspan="2" colspan="2">
-        <widget class="QLabel" name="camera2">
-         <property name="text">
-          <string>cam 2</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="QFrame" name="HandTypeBox">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Hand type</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="HandTypeChoice"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Arm mode</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="ArmModeChoice"/>
-          </item>
-         </layout>
-         <zorder>HandTypeChoice</zorder>
-         <zorder>label_2</zorder>
-         <zorder>label</zorder>
-         <zorder>ArmModeChoice</zorder>
-        </widget>
-       </item>
-       <item row="4" column="0" rowspan="2" colspan="2">
-        <widget class="QFrame" name="Minimap">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QLabel" name="MinimapLabel">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>0</y>
-            <width>63</width>
-            <height>17</height>
-           </rect>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QComboBox" name="Camera2Feed">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
           </property>
+          <item>
+           <property name="text">
+            <string>Front Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Left Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Right Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Back Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Arm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pan/Tilt</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="camera2">
           <property name="text">
-           <string>mini map</string>
+           <string>cam 2</string>
           </property>
          </widget>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QComboBox" name="Camera1Feed">
-         <item>
-          <property name="text">
-           <string>feed 1</string>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QComboBox" name="Camera3Feed">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
           </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>feed 2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>feed n</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QFrame" name="frame_9">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QPushButton" name="pushButton_5">
-            <property name="text">
-             <string>PushButton</string>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Front Hazcam</string>
+           </property>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_6">
-            <property name="text">
-             <string>PushButton</string>
-            </property>
-           </widget>
+           <property name="text">
+            <string>Left Hazcam</string>
+           </property>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QComboBox" name="Camera3Feed">
-         <item>
+          <item>
+           <property name="text">
+            <string>Right Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Back Hazcam</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Arm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pan/Tilt</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="camera3">
           <property name="text">
-           <string>feed 1</string>
+           <string>cam 3</string>
           </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>feed 2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>feed n</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="4" rowspan="2" colspan="2">
-        <widget class="QLabel" name="camera3">
-         <property name="text">
-          <string>cam 3</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QFrame" name="Minimap">
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="MinimapLabel">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>0</y>
+           <width>63</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>mini map</string>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="selectorFrame">
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QFrame" name="HandTypeBox">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>124</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Hand type</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="HandTypeChoice">
+              <item>
+               <property name="text">
+                <string>Manipulator</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Sampling</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Arm mode</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="ArmModeChoice"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_8">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>111</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="comboBox_5"/>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_7"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="buttonFrame">
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QFrame" name="functionBox">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>155</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Control Layout</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="DriveMode">
+              <property name="text">
+               <string>Drive / Camera</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="ArmBaseMode">
+              <property name="text">
+               <string>Arm Base</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="EndEffectorMode">
+              <property name="text">
+               <string>End Effector</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="function4">
+              <property name="text">
+               <string>function 4</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_9">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>80</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_5">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_6">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="OtherData">
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="OtherDataLabel">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>0</y>
+           <width>123</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>display other data</string>
+         </property>
+        </widget>
+        <widget class="QDial" name="StickRotation">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>50</width>
+           <height>64</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>-1000</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+        </widget>
+        <widget class="QSlider" name="MainY">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>40</y>
+           <width>22</width>
+           <height>160</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>-1000</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QSlider" name="MainX">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>160</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>-1000</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QSlider" name="SecondaryY">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>40</y>
+           <width>22</width>
+           <height>160</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <number>-1000</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -278,7 +620,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>825</width>
+     <width>795</width>
      <height>25</height>
     </rect>
    </property>
