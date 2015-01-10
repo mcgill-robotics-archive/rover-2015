@@ -75,6 +75,14 @@ class CentralUi(QtGui.QMainWindow):
 
         if self.controller.b3:
             self.ui.Camera1Feed.setCurrentIndex(5)
+        elif self.controller.b2:
+            index = self.ui.videoQualityChoice.currentIndex()
+            print "Int: %d" %index
+            print "String: %s" %index
+            index=index+1
+            if index>2:
+                index=0
+            self.ui.videoQualityChoice.setCurrentIndex(index)
         elif self.controller.b4:
             self.ui.Camera1Feed.setCurrentIndex(4)
         elif self.controller.b7:
@@ -94,6 +102,7 @@ class CentralUi(QtGui.QMainWindow):
         elif self.controller.hat ==(1,0):
             self.ui.Camera1Feed.setCurrentIndex(2)
         self.controller.hat = (0,0)
+        self.controller.b2 = False
         self.controller.b3 = False
         self.controller.b4 = False
         self.controller.b7 = False

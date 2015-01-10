@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow_V2.ui'
+# Form implementation generated from reading ui file '../ui_files/MainWindow_V2.ui'
 #
-# Created: Sat Jan 10 14:02:06 2015
+# Created: Sat Jan 10 14:38:16 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -158,8 +158,6 @@ class Ui_MainWindow(object):
         self.videoQualityChoice.addItem(_fromUtf8(""))
         self.videoQualityChoice.addItem(_fromUtf8(""))
         self.videoQualityChoice.addItem(_fromUtf8(""))
-        self.videoQualityChoice.addItem(_fromUtf8(""))
-        self.videoQualityChoice.setItemText(3, _fromUtf8(""))
         self.verticalLayout_3.addWidget(self.videoQualityChoice)
         self.comboBox_7 = QtGui.QComboBox(self.frame_8)
         self.comboBox_7.setObjectName(_fromUtf8("comboBox_7"))
@@ -272,6 +270,18 @@ class Ui_MainWindow(object):
         self.SecondaryY.setMaximum(1000)
         self.SecondaryY.setOrientation(QtCore.Qt.Vertical)
         self.SecondaryY.setObjectName(_fromUtf8("SecondaryY"))
+        self.layoutWidget = QtGui.QWidget(self.OtherData)
+        self.layoutWidget.setGeometry(QtCore.QRect(40, 220, 149, 19))
+        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout_3.setMargin(0)
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.label_4 = QtGui.QLabel(self.layoutWidget)
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.horizontalLayout_3.addWidget(self.label_4)
+        self.sig_qual = QtGui.QLabel(self.layoutWidget)
+        self.sig_qual.setObjectName(_fromUtf8("sig_qual"))
+        self.horizontalLayout_3.addWidget(self.sig_qual)
         self.horizontalLayout_2.addWidget(self.OtherData)
         self.verticalLayout_10.addLayout(self.horizontalLayout_2)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -332,6 +342,8 @@ class Ui_MainWindow(object):
         self.pushButton_5.setText(_translate("MainWindow", "PushButton", None))
         self.pushButton_6.setText(_translate("MainWindow", "PushButton", None))
         self.OtherDataLabel.setText(_translate("MainWindow", "display other data", None))
+        self.label_4.setText(_translate("MainWindow", "Signal quality", None))
+        self.sig_qual.setText(_translate("MainWindow", "123 ms", None))
         self.menuWindow.setTitle(_translate("MainWindow", "window", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
 
