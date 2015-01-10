@@ -33,6 +33,7 @@ class Hud(object):
 
     def __init__(self, win):
         helv = font.load('Helvetica', win.width / 50.0)
+        helvSmall = font.load('Helvetica', win.width / 80.0)
         #Create title for name of simulator
         self.text = font.Text(
             helv,
@@ -43,13 +44,70 @@ class Hud(object):
             valign=font.Text.CENTER,
             color=(0., 0., 0., 1.),
         )
+        self.wheels = [
+        font.Text(
+            helvSmall,
+            y,
+            x=10,
+            y=win.height - x*11-20,
+            halign=font.Text.LEFT,
+            valign=font.Text.TOP,
+            color=z) 
+        for x,y,z in zip(
+            range(1,6),
+            ['Wheels:',
+            'FL: '+str(0.0)+' rad, '+str(0.0)+' m/s',
+            'FR: '+str(0.0)+' rad, '+str(0.0)+' m/s',
+            'RL: '+str(0.0)+' rad, '+str(0.0)+' m/s',
+            'RR: '+str(0.0)+' rad, '+str(0.0)+' m/s'
+            ],
+            [(0.,0.,0.,1.),
+            (0.5,0.,0.,1.),
+            (0.,0.5,0.,1.),
+            (0.,0.,0.5,1.),
+            (0.5,0.5,0.,1.)
+            ]
+            )
+        ]
+
+
         #Display fps
         self.fps = clock.ClockDisplay()
         glClearColor(0.929,0.788,0.686,1.);
 
+    def update(self,set,win):
+        helvSmall = font.load('Helvetica', win.width / 80.0)
+        self.wheels = [
+        font.Text(
+            helvSmall,
+            y,
+            x=10,
+            y=win.height - x*11-20,
+            halign=font.Text.LEFT,
+            valign=font.Text.TOP,
+            color=z) 
+        for x,y,z in zip(
+            range(1,6),
+            ['Wheels:',
+            'FL: '+str(set[0])+' rad, '+str(set[4])+' m/s',
+            'FR: '+str(set[1])+' rad, '+str(set[5])+' m/s',
+            'RL: '+str(set[2])+' rad, '+str(set[6])+' m/s',
+            'RR: '+str(set[3])+' rad, '+str(set[7])+' m/s'
+            ],
+            [(0.,0.,0.,1.),
+            (0.5,0.,0.,1.),
+            (0.,0.5,0.,1.),
+            (0.,0.,0.5,1.),
+            (0.5,0.5,0.,1.)
+            ]
+            )
+        ]
+
     def draw(self):
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+        for x in self.wheels:
+            x.draw()
         self.text.draw()
         self.fps.draw()
 
@@ -96,22 +154,22 @@ class Entity(object):
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
         glBegin(GL_QUADS)
-        if self.dir == 1:
+        if self.dir == -1:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(-0.5, 0.5)
-        if self.dir == -1:
+        if self.dir == 1:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(-0.5, -0.5)
-        if self.dir == -1:
+        if self.dir == 1:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(0.5, -0.5)
-        if self.dir == 1:
+        if self.dir == -1:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
@@ -181,6 +239,7 @@ class App(object):
         #start opengl
         self.world = World()
         self.win = window.Window(fullscreen=False, vsync=True)
+        self.win.width
         self.camera = Camera(self.win, zoom=100.0)
         self.hud = Hud(self.win)
 
@@ -222,6 +281,16 @@ class App(object):
             self.camera.worldProjection()
             self.world.draw()
             self.camera.hudProjection()
+            self.hud.update(
+                [self.FL,
+                self.FR,
+                self.RL,
+                self.RR,
+                self.sFL,
+                self.sFR,
+                self.sRL,
+                self.sRR],
+                self.win)
             self.hud.draw()
             #Move one step forward
             self.win.flip()
