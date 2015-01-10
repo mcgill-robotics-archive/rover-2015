@@ -22,6 +22,7 @@ from std_msgs.msg import Float64
 from std_msgs.msg import Int16
 from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import Twist
 
 class CentralUi(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -236,6 +237,56 @@ class CentralUi(QtGui.QMainWindow):
         self.listen3=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback3)
         self.listen2=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback2)
         self.listen1=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback1)
+        
+        
+        
+    #publisher for velocity
+    #TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
+    def publish_velocity(self):
+        vel_pub = rospy.Publisher("electrical_interface/motor",Twist)
+        
+        msg = Twist()
+        
+        msg.linear.x = self.controller.a1
+        msg.linear.y = self.controller.a2
+        vel_pub.publish(msg)
+    
+    #publish 2 main joystick axes for arm base movement (mode must be arm)
+    def publish_arm_base_movement(self):
+        arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist)
+        msg = Twist()
+        
+        msg.linear.x = self.controller.a1
+        msg.linear.y = self.controller.a2
+        vel_pub.publish(msg)
+        
+    #publish joystick3 for rotating hand (mode must be arm)
+    def publish_arm_rotation(self):
+        arm_rotate_pub = rospy.Publisher("electrical_interface/arm",int)
+        msg = self.controller.a3
+        arm_rotate_pub(msg)
+            
+    #publish camera zoom from axis 4
+    def publish_zoom(self):
+        zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",int)
+        
+        msg = self.controller.a4
+        zoom_pub.publish(msg)
+        
+    #publish camera pan from axis 3 (mode must be drive)
+    def publish_pan(self):
+        pan_pub = rospy.Publisher("electrical_interface/cameraPan",int)
+        
+        msg = self.controller.a3
+        pan_pub.publish(msg)
+        
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
