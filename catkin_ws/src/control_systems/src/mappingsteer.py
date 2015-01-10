@@ -31,7 +31,7 @@ pointSteeringRadius = math.sqrt(D**2+B**2)
 zero = 1e-10 # Offers protection against numbers very close to zero
 
 #minimum rhoMin (just in front of wheel)
-rhoMin = B
+rhoMin = B + W/2
 
 def angleMod(n):
 	return divmod(n,2*math.pi)[1]
