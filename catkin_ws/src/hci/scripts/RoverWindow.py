@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_files/MainWindow_V2.ui'
+# Form implementation generated from reading ui file 'MainWindow_V2.ui'
 #
-# Created: Fri Jan  9 17:17:09 2015
+# Created: Sat Jan 10 14:02:06 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(795, 843)
+        MainWindow.resize(775, 843)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.verticalLayout_10 = QtGui.QVBoxLayout(self.centralwidget)
@@ -145,9 +145,22 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(10)
         self.verticalLayout_3.setMargin(0)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.comboBox_5 = QtGui.QComboBox(self.frame_8)
-        self.comboBox_5.setObjectName(_fromUtf8("comboBox_5"))
-        self.verticalLayout_3.addWidget(self.comboBox_5)
+        self.video_quality = QtGui.QLabel(self.frame_8)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.video_quality.sizePolicy().hasHeightForWidth())
+        self.video_quality.setSizePolicy(sizePolicy)
+        self.video_quality.setObjectName(_fromUtf8("video_quality"))
+        self.verticalLayout_3.addWidget(self.video_quality)
+        self.videoQualityChoice = QtGui.QComboBox(self.frame_8)
+        self.videoQualityChoice.setObjectName(_fromUtf8("videoQualityChoice"))
+        self.videoQualityChoice.addItem(_fromUtf8(""))
+        self.videoQualityChoice.addItem(_fromUtf8(""))
+        self.videoQualityChoice.addItem(_fromUtf8(""))
+        self.videoQualityChoice.addItem(_fromUtf8(""))
+        self.videoQualityChoice.setItemText(3, _fromUtf8(""))
+        self.verticalLayout_3.addWidget(self.videoQualityChoice)
         self.comboBox_7 = QtGui.QComboBox(self.frame_8)
         self.comboBox_7.setObjectName(_fromUtf8("comboBox_7"))
         self.verticalLayout_3.addWidget(self.comboBox_7)
@@ -263,7 +276,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addLayout(self.horizontalLayout_2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 795, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 775, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuWindow = QtGui.QMenu(self.menubar)
         self.menuWindow.setObjectName(_fromUtf8("menuWindow"))
@@ -307,6 +320,10 @@ class Ui_MainWindow(object):
         self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
         self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))
         self.label_2.setText(_translate("MainWindow", "Arm mode", None))
+        self.video_quality.setText(_translate("MainWindow", "video quality", None))
+        self.videoQualityChoice.setItemText(0, _translate("MainWindow", "ultra", None))
+        self.videoQualityChoice.setItemText(1, _translate("MainWindow", "high", None))
+        self.videoQualityChoice.setItemText(2, _translate("MainWindow", "normal", None))
         self.label_3.setText(_translate("MainWindow", "Control Layout", None))
         self.DriveMode.setText(_translate("MainWindow", "Drive / Camera", None))
         self.ArmBaseMode.setText(_translate("MainWindow", "Arm Base", None))
