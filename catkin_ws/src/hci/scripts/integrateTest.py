@@ -8,10 +8,7 @@ from JoystickController import JoystickController
 from VARIABLES import *
 
 import sys
-import signal
 import rospy
-
-##import rospy
 
 from std_msgs.msg import String  # ros message types
 from std_msgs.msg import Float32
@@ -39,7 +36,7 @@ class CentralUi(QtGui.QMainWindow):
         self.thrust_pub_timer = QtCore.QTimer()
         
         self.set_controller_timer()
-        print("Starting...")
+        rospy.loginfo("Starting joystick acquisition")
 
         ##button connects
 
@@ -247,7 +244,7 @@ class CentralUi(QtGui.QMainWindow):
         
         msg.linear.x = self.controller.a1
         msg.linear.y = self.controller.a2
-        vel_pub.publish(msg)
+        arm_movement_pub.publish(msg)
         
     #publish joystick3 for rotating hand (mode must be arm)
     def publish_arm_rotation(self):
@@ -268,13 +265,6 @@ class CentralUi(QtGui.QMainWindow):
         
         msg = self.controller.a3
         pan_pub.publish(msg)
-        
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
