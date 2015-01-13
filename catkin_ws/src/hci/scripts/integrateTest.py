@@ -3,18 +3,15 @@
 from RoverWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
-from sensor_msgs.msg import Image
 ##import publisher
 from JoystickController import JoystickController
 from VARIABLES import *
-from std_msgs.msg import String
 
 import sys
 import signal
 import rospy
 
 ##import rospy
-import pygame
 
 from std_msgs.msg import String  # ros message types
 from std_msgs.msg import Float32

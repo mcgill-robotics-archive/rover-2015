@@ -10,7 +10,6 @@ from JoystickController import JoystickController
 from VARIABLES import *
 
 import sys
-import signal
 import rospy
 
 class CentralUi(QtGui.QMainWindow):
