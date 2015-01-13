@@ -8,6 +8,7 @@ from matplotlib.path import Path
 import matplotlib as mpl
 import matplotlib.patches as patches
 import math
+import matplotlib.animation as mpa
 
 plt.ion()
 
@@ -37,10 +38,11 @@ patch = patches.PathPatch(path, facecolor='orange', lw=2)
 ax.add_patch(patch)
 ax.set_xlim(-2,2)
 ax.set_ylim(-2,2)
+plt.show()
 
-for x in range(100):
-    s = math.sin(x/10.)
-    c = math.cos(x/10.)
+for x in range(20):
+    s = math.sin(x/5.)
+    c = math.cos(x/5.)
     verts = [
         ( s-c, -s-c), # left, bottom
         (-s-c, -s+c), # left, top
@@ -55,7 +57,5 @@ for x in range(100):
     ax.add_patch(patch)
     ax.set_xlim(-2,2)
     ax.set_ylim(-2,2)
-    plt.clf
     plt.draw()
-    plt.show()
 

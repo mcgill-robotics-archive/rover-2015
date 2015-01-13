@@ -78,6 +78,10 @@ class DualJoystickReader(object):
 		#point steering (around middle)
 		elif self.motion.POINT: 
 			output = pointTurn(self.value[1])
+			timePassed = clock() - self.clock.data
+			self.clock.data = clock()
+			self.rotation += self.value[1] * timePassed
+
 		#swerve drive :)
 		elif self.motion.SWERVE:
 			#value from other joystick is the spin
@@ -90,6 +94,9 @@ class DualJoystickReader(object):
 				#do point steering to start off, which will trigger 
 				#wheels to turn in the right direction
 				output = pointTurn(spin)
+
+				################################################
+				#This may need to be moved in future versions
 				self.clock.data = clock()
 			else:
 				#find the time passed since the last cycle - 
@@ -135,6 +142,10 @@ class DualJoystickReader(object):
 		#ackermann steering
 		else:
 			output = steer(self.value[0],self.value[1])
+			#Find new rotation of the rover
+			timePassed = clock() - self.clock.data
+			self.clock.data = clock()
+			self.rotation += self.value[1] * timePassed
 		
 		#Convert output of function to setpoint variable type
 		self.moving.move = output['movement']
@@ -162,7 +173,7 @@ class DualJoystickReader(object):
 	#function publishes
 	def run(self):
             #calculate required wheel angles, speeds
-		r = rospy.Rate(10)
+		r = rospy.Rate(60)
                 #continue endlessly
                 while not rospy.is_shutdown():
                     logMessage = String()

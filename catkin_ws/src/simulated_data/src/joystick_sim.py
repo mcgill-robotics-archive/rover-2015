@@ -30,8 +30,8 @@ def publish_twist_continuous():
         v_body = math.sin(joy_lin)*MAX_LIN_VEL
         w_body = math.cos(joy_lin)*MAX_LIN_VEL
 
-        joy_lin = joy_lin + math.radians(2)
-        motionFloat += 0.05
+        joy_lin += math.radians(2)/6.
+        motionFloat += 0.05/6/5.
         if motionFloat < 3:
             motion.ACKERMANN = 1
             motion.POINT = 0
@@ -42,29 +42,39 @@ def publish_twist_continuous():
             motion.POINT = 1 
             motion.TRANSLATORY = 0 #point
             motion.SWERVE = 0
-        elif motionFloat < 9:
-            motion.ACKERMANN = 0
-            motion.POINT = 0
-            motion.TRANSLATORY = 1
-            motion.SWERVE = 0
-        elif motionFloat < 12:
-            #swerve drive
-            motion.ACKERMANN = 0
-            motion.POINT = 0
-            motion.TRANSLATORY = 0
-            motion.SWERVE = 1
+        
+        #temporarily just testing first two
+        #rigourously
+        #elif motionFloat < 9:
+        #    motion.ACKERMANN = 0
+        #    motion.POINT = 0
+        #    motion.TRANSLATORY = 1
+        #    motion.SWERVE = 0
+        #elif motionFloat < 12:
+        #    #swerve drive
+        #    motion.ACKERMANN = 0
+        #    motion.POINT = 0
+        #    motion.TRANSLATORY = 0
+        #    motion.SWERVE = 1
+
         else:
             motionFloat = 0
 
         twist = Twist()
         altTwist = Twist()
+        if motion.SWERVE:
+            twist.linear.x = 1
+            twist.angular.z = 0
+            altTwist.linear.x = 0
+            altTwist.angular.z = 1
+        else:
+            twist.linear.x = v_body
+            twist.angular.z = w_body*5
+            altTwist.linear.x = 0
+            altTwist.angular.z = 0
+        
 
-        twist.linear.x = v_body
-        twist.angular.z = w_body
 
-        #for now, make the second joystick move inverse to the first
-        altTwist.linear.x = -v_body
-        altTwist.angular.z = -w_body
         
         #publish all to ros
         #initiate message
@@ -80,7 +90,7 @@ def publish_twist_continuous():
         typePublisher.publish(motion)
         altJoyPublisher.publish(altTwist)
 
-        r = rospy.Rate(10) # 10hz
+        r = rospy.Rate(60) # 60hz
         r.sleep()
 
 if __name__ == '__main__':

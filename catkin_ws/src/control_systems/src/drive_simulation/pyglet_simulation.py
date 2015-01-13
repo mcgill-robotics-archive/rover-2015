@@ -24,9 +24,9 @@ zero =1e-10
 
 def sgn (x):
     if abs(x) < zero:
-        return 0
+        return 0.
     else:
-        return x/abs(x)
+        return float(x)/abs(float(x))
 
 #All the stuff flat on the screen (text, statistics)
 class Hud(object):
@@ -102,6 +102,7 @@ class Hud(object):
             ]
             )
         ]
+    
 
     def draw(self):
         glMatrixMode(GL_MODELVIEW);
@@ -154,22 +155,22 @@ class Entity(object):
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
         glBegin(GL_QUADS)
-        if self.dir == -1:
+        if self.dir < 0.:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(-0.5, 0.5)
-        if self.dir == 1:
+        if self.dir > 0:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(-0.5, -0.5)
-        if self.dir == 1:
+        if self.dir > 0:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
         glVertex2f(0.5, -0.5)
-        if self.dir == -1:
+        if self.dir < 0:
             glColor4f(0.,0.,0.,1.)
         else:
             glColor4f(*self.col)
