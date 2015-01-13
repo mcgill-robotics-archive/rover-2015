@@ -1,0 +1,12 @@
+<launch>
+	<rosparam command="load" file="$(find odometry)/config/radius.yaml"/>
+	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
+	<rosparam command="load" file="$(find hci)/config/camera_topics.yaml"/>
+
+	<node name="hci" pkg="hci" type="integrateTest.py" respawn="false" output="log"/> 
+
+    <node name="steering" pkg="control_systems" type="joystickread.py" respawn="false" output="screen"/> 
+	<node name="sim" pkg="control_systems" type="pyglet_simulation.py" respawn="false" output="screen"/>
+	
+	
+</launch>

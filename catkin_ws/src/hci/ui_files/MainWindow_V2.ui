@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>795</width>
+    <width>775</width>
     <height>843</height>
    </rect>
   </property>
@@ -322,7 +322,36 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QComboBox" name="comboBox_5"/>
+             <widget class="QLabel" name="video_quality">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>video quality</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="videoQualityChoice">
+              <item>
+               <property name="text">
+                <string>ultra</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>high</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>normal</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
              <widget class="QComboBox" name="comboBox_7"/>
@@ -446,6 +475,13 @@
              </widget>
             </item>
            </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="pointSteer">
+           <property name="text">
+            <string>Point steer</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -609,6 +645,32 @@
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>220</y>
+           <width>149</width>
+           <height>19</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Signal quality</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="sig_qual">
+            <property name="text">
+             <string>123 ms</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -620,7 +682,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>795</width>
+     <width>775</width>
      <height>25</height>
     </rect>
    </property>
