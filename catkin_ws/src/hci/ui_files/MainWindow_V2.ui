@@ -478,6 +478,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="pointSteer">
+           <property name="text">
+            <string>Point steer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="Line" name="line_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

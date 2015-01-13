@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../ui_files/MainWindow_V2.ui'
+# Form implementation generated from reading ui file 'ui_files/MainWindow_V2.ui'
 #
-# Created: Sat Jan 10 14:38:16 2015
+# Created: Tue Jan 13 06:59:05 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -212,6 +212,9 @@ class Ui_MainWindow(object):
         self.function4.setObjectName(_fromUtf8("function4"))
         self.verticalLayout_2.addWidget(self.function4)
         self.verticalLayout_9.addWidget(self.functionBox)
+        self.pointSteer = QtGui.QCheckBox(self.buttonFrame)
+        self.pointSteer.setObjectName(_fromUtf8("pointSteer"))
+        self.verticalLayout_9.addWidget(self.pointSteer)
         self.line_3 = QtGui.QFrame(self.buttonFrame)
         self.line_3.setFrameShape(QtGui.QFrame.HLine)
         self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
@@ -339,6 +342,7 @@ class Ui_MainWindow(object):
         self.ArmBaseMode.setText(_translate("MainWindow", "Arm Base", None))
         self.EndEffectorMode.setText(_translate("MainWindow", "End Effector", None))
         self.function4.setText(_translate("MainWindow", "function 4", None))
+        self.pointSteer.setText(_translate("MainWindow", "Point steer", None))
         self.pushButton_5.setText(_translate("MainWindow", "PushButton", None))
         self.pushButton_6.setText(_translate("MainWindow", "PushButton", None))
         self.OtherDataLabel.setText(_translate("MainWindow", "display other data", None))
