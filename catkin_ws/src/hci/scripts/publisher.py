@@ -2,19 +2,21 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int16
-class Publisher():
+
+class Publisher(object):
     def __init__(self):
         #TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.vel_pub = rospy.Publisher("electrical_interface/motor",Twist)
-        self.arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist)
-        self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16)
-        self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16)
-        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16)
+        self.vel_pub = rospy.Publisher("electrical_interface/motor",Twist, queue_size=10)
+        self.arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist, queue_size=10)
+        self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16, queue_size=10)
+        self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16, queue_size=10)
+        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
+        print "publisher initialized"
 
-        pass
 
     #publisher for velocity
     def publish_velocity(self, a1, a2):
+        print "Hello World"
         """
         Publish linear and angular command velocity in twist for control systems
         """

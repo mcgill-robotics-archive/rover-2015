@@ -44,21 +44,21 @@ class CentralUi(QtGui.QMainWindow):
         self.controller_timer = QtCore.QTimer()
         self.thrust_pub_timer = QtCore.QTimer()
         
-        self.set_controller_timer()
+        self.setControllerTimer()
         rospy.loginfo("Starting joystick acquisition")
 
         ##button connects
         # controller timer connect
-        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.read_controller)
+        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.readController)
         # joystick mode buttons signal connect
         QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), self.setMode0)
         QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.setMode1)
         QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.setMode2)
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.setMode3)
         # camera feed selection signal connects
-        QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int index)"), self.setFeed1Index)
-        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int index)"), self.setFeed2Index)
-        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int index)"), self.setFeed3Index)
+        QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
+        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
+        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
 
         self.screen_redraw_timer=QtCore.QTimer(self)
         self.screen_redraw_timer.timeout.connect(self.repaint_image)
@@ -103,7 +103,7 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.Camera1Feed.setCurrentIndex(2)
 
         self.controller.clear_buttons()
-        self.publisher.vel_pub(self.controller.a1, self.controller.a2)
+        self.publisher.publish_velocity(self.controller.a1, self.controller.a2)
 
 
 
@@ -237,9 +237,9 @@ class CentralUi(QtGui.QMainWindow):
         rospy.init_node('listener',anonymous=False)
         self.getImageTopic()
         if len(self.camera_topic_list)>2:
-            self.__screen3Subscriber=rospy.Subscriber(self.camera_topic_list[2],Image, self.callback3)
-            self.__screen2Subscriber=rospy.Subscriber(self.camera_topic_list[1],Image, self.callback2)
-            self.__screen1Subscriber=rospy.Subscriber(self.camera_topic_list[0],Image, self.callback1)
+            self.__screen3Subscriber=rospy.Subscriber(self.camera_topic_list[2],Image, self.callbackScreen3)
+            self.__screen2Subscriber=rospy.Subscriber(self.camera_topic_list[1],Image, self.callbackScreen2)
+            self.__screen1Subscriber=rospy.Subscriber(self.camera_topic_list[0],Image, self.callbackScreen1)
 
 
     def getImageTopic(self):
@@ -249,6 +249,7 @@ class CentralUi(QtGui.QMainWindow):
         self.camera_topic_list.append(rospy.get_param("camera/topic_haz_back", "/hazcam_back/camera/image_raw"))
         self.camera_topic_list.append(rospy.get_param("camera/topic_arm", "/camera_arm/camera/image_raw"))
         self.camera_topic_list.append(rospy.get_param("camera/topic_pan_tilt", "/camera_pan_tilt/camera/image_raw"))
+        rospy.loginfo(self.camera_topic_list)
 
 
 
