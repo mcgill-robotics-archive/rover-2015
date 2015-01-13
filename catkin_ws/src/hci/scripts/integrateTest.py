@@ -103,7 +103,9 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.Camera1Feed.setCurrentIndex(2)
 
         self.controller.clear_buttons()
-        self.publisher.publish_velocity(self.controller.a1, self.controller.a2)
+
+        #minus sign to compensate for joystick inherent positive and negative mappings
+        self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
 
 
 

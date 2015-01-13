@@ -6,7 +6,7 @@ from std_msgs.msg import Int16
 class Publisher(object):
     def __init__(self):
         #TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.vel_pub = rospy.Publisher("electrical_interface/motor",Twist, queue_size=10)
+        self.vel_pub = rospy.Publisher("cmd_vel",Twist, queue_size=10)
         self.arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist, queue_size=10)
         self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16, queue_size=10)
         self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16, queue_size=10)
@@ -16,13 +16,12 @@ class Publisher(object):
 
     #publisher for velocity
     def publish_velocity(self, a1, a2):
-        print "Hello World"
         """
         Publish linear and angular command velocity in twist for control systems
         """
         msg = Twist()
-        msg.linear.x = a1
-        msg.angular.z = a2
+        msg.linear.x = a2
+        msg.angular.z = a1
 
         self.vel_pub.publish(msg)
 
@@ -32,8 +31,8 @@ class Publisher(object):
         Publish base arm position
         """
         msg = Twist()
-        msg.linear.x = a1
-        msg.linear.y = a2
+        msg.linear.x = a2
+        msg.linear.y = a1
         self.arm_movement_pub.publish(msg)
 
     #publish joystick3 for rotating hand (mode must be arm)
