@@ -56,8 +56,23 @@ class JoystickController(object):
             self.controller = pygame.joystick.Joystick(0)
             self.controller.init()
         else:
-            return None
+            self.controller = None
 
+    def clear_buttons(self):
+        self.b1 = False
+        self.b2 = False
+        self.b3 = False
+        self.b4 = False
+        self.b5 = False
+        self.b6 = False
+        self.b7 = False
+        self.b8 = False
+        self.b9 = False
+        self.b10 = False
+        self.b11 = False
+        self.b12 = False
+
+        self.hat = 0
 
     def update(self):
         """
