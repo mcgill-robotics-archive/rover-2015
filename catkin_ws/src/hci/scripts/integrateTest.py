@@ -55,6 +55,8 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.setMode1)
         QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.setMode2)
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.setMode3)
+        # connecto for point steer mode
+        QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.setPointSteer)
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
         QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
@@ -66,6 +68,9 @@ class CentralUi(QtGui.QMainWindow):
 
         self.ros_init()
         rospy.loginfo("HCI initialization completed")
+
+    def setPointSteer(self, boolean):
+        self.publisher.setSteerMode(boolean)
 
     def setControllerTimer(self):
         if self.controller.controller is not None:
@@ -85,6 +90,8 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.Camera1Feed.setCurrentIndex(5)
         elif self.controller.b4:
             self.ui.Camera1Feed.setCurrentIndex(4)
+        elif self.controller.b2:
+            self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
         elif self.controller.b7:
             self.setControllerMode(0)
         elif self.controller.b8:

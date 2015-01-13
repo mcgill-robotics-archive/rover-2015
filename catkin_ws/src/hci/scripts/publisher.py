@@ -2,6 +2,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int16
+from control_systems.msg import MotionType
 
 class Publisher(object):
     def __init__(self):
@@ -11,7 +12,9 @@ class Publisher(object):
         self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16, queue_size=10)
         self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16, queue_size=10)
         self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
-        print "publisher initialized"
+        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
+        self.motionTypePublisher = rospy.Publisher("cmd_motion",MotionType, queue_size=10)
+
 
 
     #publisher for velocity
@@ -49,3 +52,17 @@ class Publisher(object):
     def publish_pan(self, a3):
         msg = a3
         self.pan_pub.publish(msg)
+
+    def setSteerMode(self, boolean):
+        motionType = MotionType()
+        
+        motionType.TRANSLATORY=0
+        motionType.SWERVE=0
+        if boolean:
+            motionType.ACKERMANN=0
+            motionType.POINT=1
+        else:
+            motionType.ACKERMANN=1
+            motionType.POINT=0
+
+        self.motionTypePublisher.publish(motionType)
