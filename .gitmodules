@@ -1,4 +1,0 @@
-[submodule "catkin_ws/src/camera1394"]
-	path = catkin_ws/src/camera1394
-	url = git@github.com:ros-drivers/camera1394.git
-	branch = master
