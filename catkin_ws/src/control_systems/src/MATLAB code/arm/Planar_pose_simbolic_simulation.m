@@ -26,7 +26,7 @@ figure(1)
 plot(x_hat,y_hat,'black*', x_est,y_est,'rs')
 hold on
 O2_est= [a1*cos(tht1_est);a1*sin(tht1_est)];
-plot(O2(1,:),O2(2,:),'o')
+plot(O2_est(1,:),O2_est(2,:),'o')
 hold on
 
 for i=1:n*2+1
@@ -41,10 +41,10 @@ axis equal
 err_x = x_est(2:n*2+1)-x_hat;
 err_y = y_est(2:n*2+1)-y_hat;
 
-figure(2)
-plot(err_x,'b.')
-hold on
-plot(err_y,'r.')
+%figure(2)
+%plot(err_x,'b.')
+%hold on
+%plot(err_y,'r.')
 
 
 % will later give the work space of the planar manipulator
