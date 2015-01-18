@@ -26,18 +26,26 @@ a2 = rospy.get_param('control/ln_forearm',1.01)
 ############################################
 #if lengths are same, gives div by zero 
 ############################################
+############################################
+############################################
+############################################
+############################################
+############################################
+############################################
+
+#max is not truely the max, but forms a box for ease of comprehension
+maxExtension = math.sqrt(a1**2+a2**2)
 
 
-
-
-def getArmExtension (x, y, tht1_0, tht2_0):
+#xi and yi are always between 0 and 1 (they are the fraction)
+def getArmExtension (xi, yi, tht1_0, tht2_0):
+	x = xi*maxExtension
+	y = yi*maxExtension
 	c1_1 = (a1**2*x - y*((- a1**2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) - a2**2*x + x*y**2 + x**3)/(2*a1*(x**2 + y**2))
 	c1_2 = (y*((- a1**2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) + a1**2*x - a2**2*x + x*y**2 + x**3)/(2*a1*(x**2 + y**2))
 	 
 	s1_1 = (x*((- a1**2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) + a1**2*y - a2**2*y + x**2*y + y**3)/(2*a1*(x**2 + y**2))
 	s1_2 = (a1**2*y - x*((- a1*2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) - a2**2*y + x**2*y + y**3)/(2*a1*(x**2 + y**2))
-
-	print a1,a2,x,y,c1_1,c1_2
 
 	#currently, division by zero is possible
 	tht1_1 = math.atan(s1_1/c1_1)
@@ -58,4 +66,4 @@ def getArmExtension (x, y, tht1_0, tht2_0):
 
 	return (tht1,tht2)
 
-print getArmExtension(0,1,5,2.5)
+print getArmExtension(0.5,0.5,0,0)
