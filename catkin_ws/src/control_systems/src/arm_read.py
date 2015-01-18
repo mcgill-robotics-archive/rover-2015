@@ -22,7 +22,6 @@ a1 = rospy.get_param('control/ln_upperarm',1)
 #length of second part of arm
 a2 = rospy.get_param('control/ln_forearm',1.01)
 
-
 ############################################
 #if lengths are same, gives div by zero 
 ############################################
@@ -36,6 +35,22 @@ a2 = rospy.get_param('control/ln_forearm',1.01)
 #max is not truely the max, but forms a box for ease of comprehension
 maxExtension = math.sqrt(a1**2+a2**2)
 
+class ArmControlReader(object):
+	def __init__ (sefl):
+
+		rospy.init_node('arm_reader')
+		self.pubArm = rospy.Publisher('/arm',)
+
+		self.x = 0
+		self.y = 0
+		self.theta = 0
+		#angles:
+		#angle at base
+		self.shoulder = 0
+		#angle in middle
+		self.elbow = 0
+		#angle for wrist of it
+		self.wrist = 0
 
 #xi and yi are always between 0 and 1 (they are the fraction)
 def getArmExtension (xi, yi, tht1_0, tht2_0):
