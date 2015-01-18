@@ -52,6 +52,7 @@ find_package(catkin REQUIRED COMPONENTS
    MotionType.msg
    Moving.msg
    ArmMotion.msg
+   ArmAngles.msg
 )
 
 ## Generate services in the 'srv' folder

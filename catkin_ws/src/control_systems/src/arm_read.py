@@ -16,6 +16,7 @@
 #####################################################
 
 import math, rospy
+from control_systems.msg import ArmMotion, ArmAngles
 
 #length of first part of arm
 a1 = rospy.get_param('control/ln_upperarm',1)
