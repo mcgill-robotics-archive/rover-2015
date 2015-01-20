@@ -1,5 +1,5 @@
-float32 shoulderV
-float32 shoulderH
+float32 shoulderOrientation
+float32 shoulderElevation
 float32 elbow
-float32 wristV
-float32 wristH
+float32 wristOrientation
+float32 wristElevation
