@@ -38,20 +38,49 @@ maxExtension = math.sqrt(a1**2+a2**2)
 
 class ArmControlReader(object):
 	def __init__ (sefl):
-
+		#initiate node
 		rospy.init_node('arm_reader')
+		#publish arm settings to this topic
 		self.pubArm = rospy.Publisher('/arm',)
-
-		self.x = 0
-		self.y = 0
-		self.theta = 0
+		#settings to be read in
+		self.settings = ArmMotion()
+		#set values to off
+		self.settings.x = 0
+		self.settings.y = 0
+		self.settings.theta = 0
+		self.settings.on = False
 		#angles:
 		#angle at base
-		self.shoulder = 0
-		#angle in middle
-		self.elbow = 0
-		#angle for wrist of it
-		self.wrist = 0
+		self.angles = ArmAngles()
+		# set all angles to zero
+		self.angles.shoulderOrientation = 0
+		self.angles.shoulderElevation = 0
+		self.angles.elbow = 0
+		self.angles.wristOrientation = 0
+		self.angles.wristElevation = 0
+
+		rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
+			queue_size=10)
+
+	def update_settings(self,msg):
+
+		#import readings into object
+		self.settings.x = msg.x
+		self.settings.y = msg.y
+		self.settings.theta = msg.theta
+		self.settings.on = msg.on
+
+		#calculate new angles for robotic arm
+		#these are the angles for movement in the x-y plane
+		(self.angles.shoulderElevation,
+			self.angles.elbow) = getArmExtension(
+			self.settings.x,self.settings.y,
+			self.angles.shoulderElevation,
+			self.angles.elbow)
+
+		#this is the angle of the x-y plane relative to the forward direction
+		#of the robot
+		self.angles.shoulderOrientation = self.settings.theta
 
 #xi and yi are always between 0 and 1 (they are the fraction)
 def getArmExtension (xi, yi, tht1_0, tht2_0):
