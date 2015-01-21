@@ -172,30 +172,30 @@ class DualJoystickReader(object):
 
 	#function publishes
 	def run(self):
-            #calculate required wheel angles, speeds
+        #calculate required wheel angles, speeds
 		r = rospy.Rate(60)
         #continue endlessly
-        while not rospy.is_shutdown():
-            logMessage = String()
-            #begin message
-            logMessage.data = "\n________________________________________"
-            logMessage.data += "\n\n\nINITIATE MESSAGE:\n\n\n"
-            rospy.loginfo(logMessage.data)
-            #log wheel settings
-            rotOut = Float32()
-            rotOut.data = self.rotation
-            rospy.loginfo(rotOut)
-            rospy.loginfo(self.moving)
-            rospy.loginfo(self.settings)
+		while not rospy.is_shutdown():
+			logMessage = String()
+			#begin message
+			logMessage.data = "\n________________________________________"
+			logMessage.data += "\n\n\nINITIATE MESSAGE:\n\n\n"
+			rospy.loginfo(logMessage.data)
+			#log wheel settings
+			rotOut = Float32()
+			rotOut.data = self.rotation
+			rospy.loginfo(rotOut)
+			rospy.loginfo(self.moving)
+			rospy.loginfo(self.settings)
 
-            #publish it
-            #tests:
-            self.pubrotation.publish(rotOut)
-            #non-tests:
-            self.pubwheels.publish(self.settings)
-            self.pubmovement.publish(self.moving)
-            #10 Hz rate regardless of joystick rate
-            r.sleep()
+			#publish it
+			#tests:
+			self.pubrotation.publish(rotOut)
+			#non-tests:
+			self.pubwheels.publish(self.settings)
+			self.pubmovement.publish(self.moving)
+			#10 Hz rate regardless of joystick rate
+			r.sleep()
 
 if __name__ == '__main__':
 	print "Initializing Node"
