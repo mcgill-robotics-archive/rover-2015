@@ -130,8 +130,8 @@ class Camera(object):
 
 class Entity(object):
 
-    def __init__(self, id, width, height, x, y, rot, rotP,rotPoint, 
-        col, dir):
+    def __init__(self, id, width, height, x, y, rot, rotP,rotPoint,
+        rotP2, rotPoint2, col, dir, trans):
         #default colour is black
         self.id = id
         self.width = width
@@ -143,6 +143,7 @@ class Entity(object):
         self.rotPoint = rotPoint
         self.col = col
         self.dir = dir
+        self.trans = trans
 
     def draw(self):
         glLoadIdentity()
@@ -150,6 +151,8 @@ class Entity(object):
         #rotate around specified point
         glRotatef(self.rotP, 0, 0, 1)
         glTranslatef(self.rotPoint[0]/2,self.rotPoint[1]/2,0.)
+
+        glTranslatef(self.trans[0],self.trans[1],0.)
         #rotate things around their centres (wheels)
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
@@ -171,17 +174,22 @@ class World(object):
         self.nextEntId = 0
         #spawns parts of rover
         #body
-        self.spawnEntity(4*a1,150*a1,-100*a1,-100*a1,0,0,(0,0,0),
-            (0.,0.,0.,1.),0.)
+        self.spawnEntity(4*a1,150*a1,-100*a1,-100*a1,0,0,(0,0),
+            0,(0.,0.),(0.,0.,0.,1.),0., (0,0))
+        self.spawnEntity(4*a1,150*a1,-100*a1,-100*a1,4,0,(0,0),
+            0,(0.,0.),(0.,0.,0.,1.),0., (0,0))
 
 
     def spawnEntity(self, width, height, x, y, rot, rotP,rotPoint,
-        col, dir):
+            rotP2, rotPoint2, col, dir, trans):
         ent = Entity(self.nextEntId, width, height, x, y, rot, rotP,rotPoint,
-        col, dir)
+                rotP2, rotPoint2, col, dir, trans)
         self.ents[ent.id] = ent
         self.nextEntId += 1
         return ent
+
+    def translate(self, id, translation):
+        self.ents.values()[id].trans = translation
 
     def PRotate(self, id, theta, point):
         self.ents.values()[id].rotP = -180*theta/math.pi
@@ -239,6 +247,9 @@ class App(object):
             self.win.dispatch_events()
 
             self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
+            self.world.PRotate(1,self.arm.shoulderElevation,(0,150*a1))
+            self.world.translate(1, (20,0))
+            self.world.pointRotate(1,5)
 
             #Draw contents
             self.camera.worldProjection()
