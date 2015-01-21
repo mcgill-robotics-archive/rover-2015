@@ -7,10 +7,15 @@ from pyglet import clock, font, image, window
 from pyglet.gl import *
 #reads in values from joystick
 import rospy
-from control_systems.msg import SetPoints, ArmAngles
-from std_msgs.msg import Int8,Float32,Bool,String
+from control_systems.msg import ArmAngles
 import math
 import sys
+
+#import lengths of robotic arm
+#length of first part of arm
+a1 = rospy.get_param('control/ln_upperarm',0.5)
+#length of second part of arm
+a2 = rospy.get_param('control/ln_forearm',0.5)
 
 zero =1e-10
 
@@ -125,8 +130,8 @@ class Camera(object):
 
 class Entity(object):
 
-    def __init__(self, id, width, height, x, y, rot, rotP,rotPoint,
-        rotO, col, dir):
+    def __init__(self, id, width, height, x, y, rot, rotP,rotPoint, 
+        col, dir):
         #default colour is black
         self.id = id
         self.width = width
@@ -136,18 +141,15 @@ class Entity(object):
         self.rot = rot
         self.rotP = rotP
         self.rotPoint = rotPoint
-        self.rotO = rotO
         self.col = col
         self.dir = dir
 
     def draw(self):
         glLoadIdentity()
-        #rotate around origin (for everything stuck to rover body)
-        glRotatef(self.rotO, 0, 0, 1)
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
         glRotatef(self.rotP, 0, 0, 1)
-        glTranslatef(0,2/2,0.)
+        glTranslatef(self.rotPoint[0]/2,self.rotPoint[1]/2,0.)
         #rotate things around their centres (wheels)
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
@@ -169,14 +171,14 @@ class World(object):
         self.nextEntId = 0
         #spawns parts of rover
         #body
-        self.spawnEntity(0.5,0.5,0,0,0,0,(0,0,0),0,
-            (0.5,0.5,0.5,1.),0.)
+        self.spawnEntity(4*a1,150*a1,-100*a1,-100*a1,0,0,(0,0,0),
+            (0.,0.,0.,1.),0.)
 
 
     def spawnEntity(self, width, height, x, y, rot, rotP,rotPoint,
-        rotO, col, dir):
+        col, dir):
         ent = Entity(self.nextEntId, width, height, x, y, rot, rotP,rotPoint,
-        rotO, col, dir)
+        col, dir)
         self.ents[ent.id] = ent
         self.nextEntId += 1
         return ent
@@ -184,9 +186,6 @@ class World(object):
     def PRotate(self, id, theta, point):
         self.ents.values()[id].rotP = -180*theta/math.pi
         self.ents.values()[id].rotPoint = point
-
-    def ORotate(self, id, theta):
-        self.ents.values()[id].rotO = -180*theta/math.pi
 
     def pointRotate(self, id, theta):
         self.ents.values()[id].rot = -180*theta/math.pi
@@ -239,7 +238,7 @@ class App(object):
         while not rospy.is_shutdown() and not self.win.has_exit:
             self.win.dispatch_events()
 
-            self.world.ORotate(0,self.arm.shoulderElevation)
+            self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
 
             #Draw contents
             self.camera.worldProjection()
