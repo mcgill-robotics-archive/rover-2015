@@ -155,25 +155,13 @@ class Entity(object):
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
         glBegin(GL_QUADS)
-        if self.dir < 0.:
-            glColor4f(0.,0.,0.,1.)
-        else:
-            glColor4f(*self.col)
+        glColor4f(*self.col)
         glVertex2f(-0.5, 0.5)
-        if self.dir > 0:
-            glColor4f(0.,0.,0.,1.)
-        else:
-            glColor4f(*self.col)
+        glColor4f(*self.col)
         glVertex2f(-0.5, -0.5)
-        if self.dir > 0:
-            glColor4f(0.,0.,0.,1.)
-        else:
-            glColor4f(*self.col)
+        glColor4f(*self.col)
         glVertex2f(0.5, -0.5)
-        if self.dir < 0:
-            glColor4f(0.,0.,0.,1.)
-        else:
-            glColor4f(*self.col)
+        glColor4f(*self.col)
         glVertex2f(0.5, 0.5)
         glEnd()
 
@@ -182,7 +170,8 @@ class World(object):
     def __init__(self):
         self.ents = {}
         self.nextEntId = 0
-        #spawns 10 triangles
+        #spawns parts of rover
+        #body
         self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.),0.)
         #FL
         self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0.5,0.,0.,1.),1.)
@@ -192,7 +181,8 @@ class World(object):
         self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0.,0.,0.5,1.),1.)
         #RR
         self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0.5,0.5,0.,1.),1.)
-        #clock.schedule_interval(self.spawnEntity, 0.25)
+        #arm:
+        self.spawnEntity(75*W/2,75*2*R,0,0,0,0,(0.,0.,0.,1.),1.)
 
     def spawnEntity(self, width, height, x, y, rot, rotO,
         col, dir):
