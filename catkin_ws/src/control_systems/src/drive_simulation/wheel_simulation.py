@@ -7,7 +7,7 @@ from pyglet import clock, font, image, window
 from pyglet.gl import *
 #reads in values from joystick
 import rospy
-from control_systems.msg import SetPoints
+from control_systems.msg import SetPoints, ArmAngles
 from std_msgs.msg import Int8,Float32,Bool,String
 import math
 import sys
@@ -136,7 +136,8 @@ class Camera(object):
 
 class Entity(object):
 
-    def __init__(self, id, width, height, x, y, rot, rotO, col, dir):
+    def __init__(self, id, width, height, x, y, rot, rotP,rotPoint,
+        rotO, col, dir):
         #default colour is black
         self.id = id
         self.width = width
@@ -144,14 +145,18 @@ class Entity(object):
         self.x = x
         self.y = y
         self.rot = rot
+        self.rotP = rotP
+        self.rotPoint = rotPoint
         self.rotO = rotO
         self.col = col
         self.dir = dir
 
     def draw(self):
         glLoadIdentity()
+        #rotate around origin (for everything stuck to rover body)
         glRotatef(self.rotO, 0, 0, 1)
         glTranslatef(self.x, self.y, 0.0)
+        #rotate things around their centres (wheels)
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
         glBegin(GL_QUADS)
@@ -172,24 +177,36 @@ class World(object):
         self.nextEntId = 0
         #spawns parts of rover
         #body
-        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0.5,0.5,0.5,1.),0.)
+        self.spawnEntity(75*2*B,75*2*D,0,0,0,0,(0,0,0),0,
+            (0.5,0.5,0.5,1.),0.)
         #FL
-        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0.5,0.,0.,1.),1.)
+        self.spawnEntity(75*W,75*2*R,75*-B,75*D,0,0,(0,0,0),0,
+            (0.5,0.,0.,1.),1.)
         #FR
-        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0,(0.,0.5,0.,1.),1.)
+        self.spawnEntity(75*W,75*2*R,75*B,75*D,0,0,(0,0,0),0,
+            (0.,0.5,0.,1.),1.)
         #RL
-        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0.,0.,0.5,1.),1.)
+        self.spawnEntity(75*W,75*2*R,-75*B,-75*D,0,0,(0,0,0),0,
+            (0.,0.,0.5,1.),1.)
         #RR
-        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0.5,0.5,0.,1.),1.)
+        self.spawnEntity(75*W,75*2*R,75*B,-75*D,0,0,(0,0,0),0,
+            (0.5,0.5,0.,1.),1.)
         #arm:
-        self.spawnEntity(75*W/2,75*2*R,0,0,0,0,(0.,0.,0.,1.),1.)
+        self.spawnEntity(75*W/2,75*3*R,0,90*D,0,0,(0,0,0),
+            0,(0.,0.,0.,1.),1.)
 
-    def spawnEntity(self, width, height, x, y, rot, rotO,
-        col, dir):
-        ent = Entity(self.nextEntId, width, height, x, y, rot, rotO, col, dir)
+    def spawnEntity(self, width, height, x, y, rot, rotP,rotPoint,
+        rotO, col, dir):
+        ent = Entity(self.nextEntId, width, height, x, y, rot, rotP,rotPoint,
+        rotO, col, dir)
         self.ents[ent.id] = ent
         self.nextEntId += 1
         return ent
+
+    def PRotate(self, id, theta, point):
+        self.ents.values()[id].rotP = -180*theta/math.pi
+        self.ents.values()[id].rotPoint = point
+
 
     def ORotate(self, id, theta):
         self.ents.values()[id].rotO = -180*theta/math.pi
@@ -215,6 +232,7 @@ class App(object):
         rospy.init_node('simulator')
         rospy.Subscriber('/wheels',SetPoints, self.update_wheels)
         rospy.Subscriber('/rotation',Float32, self.update_rotation)
+        rospy.Subscriber('/arm',ArmAngles, self.update_arm)
         #angles
         self.FL  = 0
         self.FR  = 0
@@ -225,7 +243,16 @@ class App(object):
         self.sFR = 0
         self.sRL = 0
         self.sRR = 0
+        #angles of rover robtic arm
+        self.arm = ArmAngles()
+        # set all angles to zero
+        self.arm.shoulderOrientation = 0
+        self.arm.shoulderElevation = 0
+        self.arm.elbow = 0
+        self.arm.wristOrientation = 0
+        self.arm.wristElevation = 0
 
+        #body rotation of entire rover
         self.rotation = 0
         #start opengl
         self.world = World()
@@ -233,6 +260,17 @@ class App(object):
         self.win.width
         self.camera = Camera(self.win, zoom=100.0)
         self.hud = Hud(self.win)
+
+    def update_arm(self, msg):
+        #load in values from arm
+        self.arm.shoulderOrientation = msg.shoulderOrientation  
+        self.arm.shoulderOrientation = msg.shoulderOrientation
+        self.arm.shoulderElevation = msg.shoulderElevation
+        self.arm.elbow = msg.elbow
+        self.arm.wristOrientation = msg.wristOrientation
+        self.arm.wristElevation = msg.wristElevation
+
+
 
     def update_wheels(self,msg):
         #load in values
@@ -254,7 +292,7 @@ class App(object):
         while not rospy.is_shutdown() and not self.win.has_exit:
             self.win.dispatch_events()
             #rotate entire body
-            for x in range(5):
+            for x in range(6):
                 self.world.ORotate(x,self.rotation)
             #turn wheels according to values
             self.world.pointRotate(1,self.FL)
