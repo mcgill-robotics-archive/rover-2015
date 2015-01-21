@@ -29,18 +29,18 @@ class Publisher(object):
         self.vel_pub.publish(msg)
 
     #publish 2 main joystick axes for arm base movement (mode must be arm)
-    def publish_arm_base_movement(self, a1, a2):
+    def publish_arm_base_movement(self, armLength, armHeight):
         """
         Publish base arm position
         """
         msg = Twist()
-        msg.linear.x = a2
-        msg.linear.y = a1
+        msg.linear.x = armLength # y axis on joystick moves the target point forward and back
+        msg.linear.y = armHeight # rotation of the joystick moves the target point up and down
         self.arm_movement_pub.publish(msg)
 
     #publish joystick3 for rotating hand (mode must be arm)
-    def publish_arm_rotation(self, a3):
-        msg = a3
+    def publish_arm_rotation(self, angle):
+        msg = angle # x axis on joystick rotates the angle of the armbase.
         self.arm_rotate_pub(msg)
 
     #publish camera zoom from axis 4
