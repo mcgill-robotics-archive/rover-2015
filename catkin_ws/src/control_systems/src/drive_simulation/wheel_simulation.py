@@ -155,7 +155,10 @@ class Entity(object):
         glLoadIdentity()
         #rotate around origin (for everything stuck to rover body)
         glRotatef(self.rotO, 0, 0, 1)
-        glTranslatef(self.x, self.y, 0.0)
+        glTranslatef(self.x, self.y, 0.)
+        #rotate around specified point
+        glRotatef(self.rotP, 0, 0, 1)
+        glTranslatef(0,75*3*R/2,0.)
         #rotate things around their centres (wheels)
         glRotatef(self.rot, 0, 0, 1)
         glScalef(self.width, self.height, 1.0)
@@ -263,7 +266,6 @@ class App(object):
 
     def update_arm(self, msg):
         #load in values from arm
-        self.arm.shoulderOrientation = msg.shoulderOrientation  
         self.arm.shoulderOrientation = msg.shoulderOrientation
         self.arm.shoulderElevation = msg.shoulderElevation
         self.arm.elbow = msg.elbow
@@ -291,6 +293,9 @@ class App(object):
         r=rospy.Rate(60)
         while not rospy.is_shutdown() and not self.win.has_exit:
             self.win.dispatch_events()
+
+            self.world.PRotate(5,self.arm.shoulderOrientation,(0,75*3*R))
+
             #rotate entire body
             for x in range(6):
                 self.world.ORotate(x,self.rotation)
