@@ -1,4 +1,0 @@
-<launch>
-	<node name="arm_simulator", pkg="simulated_data",type="arm_sim.py" />
-	<node name="arm_reader", pkg="simulated_data",type="arm_sim.py" />
-</launch>
