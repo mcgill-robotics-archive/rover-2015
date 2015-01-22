@@ -1,0 +1,5 @@
+#!/bin/sh
+x-terminal-emulator -e /opt/ros/indigo/bin/rosrun simulated_data arm_sim.py &
+x-terminal-emulator -e /opt/ros/indigo/bin/rosrun simulated_data joystick_sim.py &
+x-terminal-emulator -e /opt/ros/indigo/bin/rosrun control_systems arm_read.py &
+x-terminal-emulator -e /opt/ros/indigo/bin/rosrun control_systems joystickread.py &
