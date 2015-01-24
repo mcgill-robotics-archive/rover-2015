@@ -141,6 +141,8 @@ class Entity(object):
         self.rot = rot
         self.rotP = rotP
         self.rotPoint = rotPoint
+        self.rotP2 = rotP2
+        self.rotPoint2 = rotPoint
         self.col = col
         self.dir = dir
         self.trans = trans
@@ -149,6 +151,9 @@ class Entity(object):
         glLoadIdentity()
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
+        glRotatef(self.RotP2, 0, 0, 1)
+        glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
+            self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
         glRotatef(self.rotP, 0, 0, 1)
         glTranslatef(self.rotPoint[0]/2,self.rotPoint[1]/2,0.)
 
@@ -194,6 +199,10 @@ class World(object):
     def PRotate(self, id, theta, point):
         self.ents.values()[id].rotP = -180*theta/math.pi
         self.ents.values()[id].rotPoint = point
+
+    def PRotate2(self, id, theta, point):
+        self.ents.values()[id].rotP2 = -180*theta/math.pi
+        self.ents.values()[id].rotPoint2 = point
 
     def pointRotate(self, id, theta):
         self.ents.values()[id].rot = -180*theta/math.pi
@@ -248,7 +257,8 @@ class App(object):
 
             self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
             self.world.PRotate(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.translate(1, (20,0))
+            self.world.PRotate2(1,self.arm.shoulderElevation,(0,150*a1))
+            self.world.translate(1, (10,0))
             self.world.pointRotate(1,5)
 
             #Draw contents
