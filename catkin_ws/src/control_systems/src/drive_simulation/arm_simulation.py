@@ -151,7 +151,7 @@ class Entity(object):
         glLoadIdentity()
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
-        glRotatef(self.RotP2, 0, 0, 1)
+        glRotatef(self.rotP2, 0, 0, 1)
         glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
             self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
         glRotatef(self.rotP, 0, 0, 1)
