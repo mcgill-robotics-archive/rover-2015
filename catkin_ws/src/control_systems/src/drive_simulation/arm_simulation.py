@@ -151,9 +151,9 @@ class Entity(object):
         glLoadIdentity()
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
-        glRotatef(self.RotP2, 0, 0, 1)
-        glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
-            self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
+        #glRotatef(self.rotP2, 0, 0, 1)
+        #glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
+        #    self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
         glRotatef(self.rotP, 0, 0, 1)
         glTranslatef(self.rotPoint[0]/2,self.rotPoint[1]/2,0.)
 
@@ -206,10 +206,6 @@ class World(object):
 
     def pointRotate(self, id, theta):
         self.ents.values()[id].rot = -180*theta/math.pi
-
-    def updateDirections(self, dir):
-        for x in range(1,4):
-            self.ents.values()[x].dir = dir[x]
 
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
