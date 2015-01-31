@@ -151,6 +151,8 @@ class Entity(object):
         glLoadIdentity()
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
+        glRotatef(self.rotP2,0,0,1)
+        glTranslatef(self.rotPoint2[0],self.rotPoint2[1],0.)
         #glRotatef(self.rotP2, 0, 0, 1)
         #glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
         #    self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
@@ -249,12 +251,14 @@ class App(object):
     def run(self):
         r=rospy.Rate(60)
         while not rospy.is_shutdown() and not self.win.has_exit:
+
             self.win.dispatch_events()
+
 
             self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
             self.world.PRotate(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.PRotate2(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.translate(1, (10,0))
+            self.world.PRotate2(1,self.arm.shoulderOrientation,(0,0))
+            self.world.translate(1,(70*a1,55*a1))
             self.world.pointRotate(1,5)
 
             #Draw contents
