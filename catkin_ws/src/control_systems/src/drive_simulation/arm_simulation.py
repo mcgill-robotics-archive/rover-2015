@@ -257,9 +257,10 @@ class App(object):
 
             self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
             self.world.PRotate(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.PRotate2(1,self.arm.shoulderOrientation,(0,0))
-            self.world.translate(1,(70*a1,55*a1))
-            self.world.pointRotate(1,5)
+            self.world.pointRotate(1,self.arm.elbow)
+            psi = 5*math.pi/2-self.arm.elbow
+            self.world.translate(1,(150*a1*math.cos(psi)/2,(1/2+math.sin(psi)/2)*150*a1))
+            #self.world.translate(1,(70*a1,55*a1))
 
             #Draw contents
             self.camera.worldProjection()
