@@ -28,9 +28,6 @@ class CentralUi(QtGui.QMainWindow):
 		self.controller = JoystickController()
 		self.publisher = Publisher()
 		self.modeId = 0 
-		self.originArmLength = 30 #actual values to be determined
-		self.originArmHeight = 15
-		self.originArmAngle = 0
 
 		# feed 1 holders
 		self.__image1=None
@@ -120,30 +117,15 @@ class CentralUi(QtGui.QMainWindow):
 		if self.modeId == 0:
 			self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
 		elif self.modeId == 1:
-			length = -self.controller.a2 + self.originArmLength
-			height = self.controller.a3 + self.originArmHeight
-			angle = self.controller.a1 + self.originArmAngle
-			self.publisher.publish_arm_base_movement(length,height)
-			self.publisher.publish_arm_rotation(angle)
-			#storing current arm values in case the base arm values need to be updated later
-			self.currentArmLength = length
-			self.currentArmHeight = height
-			self.currentArmAngle = angle
+			length = -self.controller.a2
+			height = self.controller.a3
+			angle = self.controller.a1
+			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
-			x = 1 #dummy code to trick the compiler. Otherwise get indentation error!
+			x=1;
 			#end effector mode
 			#use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
-		elif self.modeId == 3:
-			#locks the arm into the current position
-			self.updateArmValues()
-			self.publisher.publish_arm_base_movement(self.originArmLength,self.originArmHeight)
-			self.publisher.publish_arm_rotation(self.originArmAngle)
 
-	def updateArmValues(self):
-		self.originArmAngle = self.currentArmAngle
-		self.originArmLength = self.currentArmLength
-		self.originArmHeight = self.currentArmHeight
-	
 	def setMode0(self):
 		self.setControllerMode(0)
 
