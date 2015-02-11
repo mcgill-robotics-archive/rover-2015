@@ -151,9 +151,11 @@ class Entity(object):
         glLoadIdentity()
         glTranslatef(self.x, self.y, 0.)
         #rotate around specified point
-        glRotatef(self.RotP2, 0, 0, 1)
-        glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
-            self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
+        glRotatef(self.rotP2,0,0,1)
+        glTranslatef(self.rotPoint2[0],self.rotPoint2[1],0.)
+        #glRotatef(self.rotP2, 0, 0, 1)
+        #glTranslatef(self.rotPoint2[0]/2-self.rotPoint[0]/2,
+        #    self.rotPoint2[1]/2-self.rotPoint[1]/2,0.)
         glRotatef(self.rotP, 0, 0, 1)
         glTranslatef(self.rotPoint[0]/2,self.rotPoint[1]/2,0.)
 
@@ -207,10 +209,6 @@ class World(object):
     def pointRotate(self, id, theta):
         self.ents.values()[id].rot = -180*theta/math.pi
 
-    def updateDirections(self, dir):
-        for x in range(1,4):
-            self.ents.values()[x].dir = dir[x]
-
     def draw(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_MODELVIEW);
@@ -253,13 +251,16 @@ class App(object):
     def run(self):
         r=rospy.Rate(60)
         while not rospy.is_shutdown() and not self.win.has_exit:
+
             self.win.dispatch_events()
+
 
             self.world.PRotate(0,self.arm.shoulderElevation,(0,150*a1))
             self.world.PRotate(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.PRotate2(1,self.arm.shoulderElevation,(0,150*a1))
-            self.world.translate(1, (10,0))
-            self.world.pointRotate(1,5)
+            self.world.pointRotate(1,self.arm.elbow)
+            psi = 5*math.pi/2-self.arm.elbow
+            self.world.translate(1,(150*a1*math.cos(psi)/2,(1/2+math.sin(psi)/2)*150*a1))
+            #self.world.translate(1,(70*a1,55*a1))
 
             #Draw contents
             self.camera.worldProjection()
