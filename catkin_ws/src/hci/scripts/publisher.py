@@ -7,13 +7,12 @@ from control_systems.msg import MotionType
 class Publisher(object):
     def __init__(self):
         #TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.vel_pub = rospy.Publisher("cmd_vel",Twist, queue_size=10)
-        self.arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist, queue_size=10)
-        self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16, queue_size=10)
-        self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16, queue_size=10)
-        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
-        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
-        self.motionTypePublisher = rospy.Publisher("cmd_motion",MotionType, queue_size=10)
+        self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic","cmd_vel"),Twist, queue_size=10)
+        self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","electrical_interface/arm"),Twist, queue_size=10)
+        self.arm_rotate_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","electrical_interface/arm"),Int16, queue_size=10)
+        self.zoom_pub = rospy.Publisher(rospy.get_param("electrical_interface/cameraZoom_topic","electrical_interface/cameraZoom"),Int16, queue_size=10)
+        self.pan_pub = rospy.Publisher(rospy.get_param("electrical_interface/cameraPan_topic","electrical_interface/cameraPan"),Int16, queue_size=10)
+        self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic","cmd_motion"),MotionType, queue_size=10)
 
 
 
