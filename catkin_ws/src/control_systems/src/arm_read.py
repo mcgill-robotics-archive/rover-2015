@@ -88,13 +88,6 @@ class ArmControlReader(object):
         r = rospy.Rate(60)
         #continue until quit
         while not rospy.is_shutdown():
-            #begin message
-            logMessage = String()
-            logMessage.data = "\n________________________________________"
-            logMessage.data += "\n\n\nINITIATE MESSAGE:\n\n\n"
-            rospy.loginfo(logMessage.data)
-            #log info
-            rospy.loginfo(self.angles)
             #publish to topic
             self.pubArm.publish(self.angles)
             #next iteration
