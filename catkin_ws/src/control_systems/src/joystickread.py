@@ -177,10 +177,6 @@ class DualJoystickReader(object):
         #continue endlessly
 		while not rospy.is_shutdown():
 			logMessage = String()
-			#begin message
-			logMessage.data = "\n________________________________________"
-			logMessage.data += "\n\n\nINITIATE MESSAGE:\n\n\n"
-			rospy.loginfo(logMessage.data)
 			#log wheel settings
 			rotOut = Float32()
 			rotOut.data = self.rotation
