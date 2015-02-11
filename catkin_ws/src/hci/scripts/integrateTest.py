@@ -189,7 +189,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen1Subscriber.unsubscribe()
+		self.__screen1Subscriber.unregister()
 		self.__screen1Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -199,7 +199,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen2Subscriber.unsubscribe()
+		self.__screen2Subscriber.unregister()
 		self.__screen2Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -209,7 +209,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen3Subscriber.unsubscribe()
+		self.__screen3Subscriber.unregister()
 		self.__screen3Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 

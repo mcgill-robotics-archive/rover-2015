@@ -1,4 +1,4 @@
-camera/topic_haz_front  : "/hazcam_front/camera/image_raw"
+camera/topic_haz_front  : "/camera_front_right/camera/image_raw"
 camera/topic_haz_left   : "/hazcam_left/camera/image_raw"
 camera/topic_haz_right  : "/hazcam_right/camera/image_raw"
 camera/topic_haz_back   : "/hazcam_back/camera/image_raw"
