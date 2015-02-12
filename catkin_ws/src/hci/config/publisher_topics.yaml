@@ -1,0 +1,5 @@
+cmd_vel_topic	: "cmd_vel"
+electrical_interface/arm_topic : "electrical_interface/arm"
+electrical_interface/cameraZoom_topic : "electrical_interface/cameraZoom"
+electrical_interface/cameraPan_topic  : "electrical_interface/cameraPan"
+cmd_motion_topic : "cmd_motion"
