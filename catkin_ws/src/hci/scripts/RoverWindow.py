@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files/MainWindow_V2.ui'
 #
-# Created: Tue Jan 13 06:59:05 2015
+# Created: Thu Feb 12 13:54:26 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,14 +89,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addWidget(self.line_7)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.Minimap = QtGui.QFrame(self.centralwidget)
-        self.Minimap.setFrameShape(QtGui.QFrame.NoFrame)
-        self.Minimap.setFrameShadow(QtGui.QFrame.Raised)
-        self.Minimap.setObjectName(_fromUtf8("Minimap"))
-        self.MinimapLabel = QtGui.QLabel(self.Minimap)
-        self.MinimapLabel.setGeometry(QtCore.QRect(90, 0, 63, 17))
-        self.MinimapLabel.setObjectName(_fromUtf8("MinimapLabel"))
-        self.horizontalLayout_2.addWidget(self.Minimap)
+        self.MinimapVBox = QtGui.QVBoxLayout()
+        self.MinimapVBox.setObjectName(_fromUtf8("MinimapVBox"))
+        self.horizontalLayout_2.addLayout(self.MinimapVBox)
         self.line_5 = QtGui.QFrame(self.centralwidget)
         self.line_5.setFrameShape(QtGui.QFrame.VLine)
         self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
@@ -328,7 +323,6 @@ class Ui_MainWindow(object):
         self.Camera3Feed.setItemText(4, _translate("MainWindow", "Arm", None))
         self.Camera3Feed.setItemText(5, _translate("MainWindow", "Pan/Tilt", None))
         self.camera3.setText(_translate("MainWindow", "cam 3", None))
-        self.MinimapLabel.setText(_translate("MainWindow", "mini map", None))
         self.label.setText(_translate("MainWindow", "Hand type", None))
         self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
         self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))

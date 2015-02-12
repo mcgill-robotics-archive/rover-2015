@@ -182,27 +182,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QFrame" name="Minimap">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QLabel" name="MinimapLabel">
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>0</y>
-           <width>63</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>mini map</string>
-         </property>
-        </widget>
-       </widget>
+       <layout class="QVBoxLayout" name="MinimapVBox"/>
       </item>
       <item>
        <widget class="Line" name="line_5">
