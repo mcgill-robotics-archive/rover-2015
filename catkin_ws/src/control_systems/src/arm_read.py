@@ -101,8 +101,6 @@ def getArmExtension (xi, yi, tht1_0, tht2_0):
     #in metres (so greater than the max extension is never entered
     x = xi*maxExtension
     y = yi*maxExtension
-    print x
-    print y
     if x == 0 and y == 0:
         return tht1_0, tht2_0
 
