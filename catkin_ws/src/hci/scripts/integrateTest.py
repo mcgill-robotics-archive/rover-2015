@@ -115,13 +115,17 @@ class CentralUi(QtGui.QMainWindow):
 
 	def publishControlls(self):
 		if self.modeId == 0:
+			#drive
 			self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
+			self.publisher.publish_camera(self.controller.a3,self.controller.a4)
 		elif self.modeId == 1:
+			#arm base
 			length = -self.controller.a2
-			height = self.controller.a3
-			angle = self.controller.a1
+			height = self.controller.a1
+			angle = self.controller.a3
 			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
+			#end effector
 			x=1;
 			#end effector mode
 			#use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
