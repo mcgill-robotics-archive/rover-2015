@@ -31,3 +31,9 @@ auv-card {
   width: 400px;
   margin: 20px auto;
 }
+#navheader {
+  background-color: #ff0;
+}
+content {
+  padding: 20px;
+}

@@ -15,8 +15,8 @@ html(lang='en')
 
     //- Scripts
     link(rel='stylesheet', href='style/style.css', shim-shadowdom)
-    script(src='platform/platform.js')
     link(rel='import', href='components/elements/index_elements.html')
+    script(scr='webcomponentsjs/webcomponents.js')
     script(src='/socket.io/socket.io.js')
     script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
     script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
@@ -24,49 +24,51 @@ html(lang='en')
     
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
     script.
-        function init() {
+        //- function init() {
 
             
-            var viewer = new ROS2D.Viewer({
-                divID : 'libmap',
-                width : 400,
-                height : 300
-            });
+        //-     var viewer = new ROS2D.Viewer({
+        //-         divID : 'libmap',
+        //-         width : 400,
+        //-         height : 300
+        //-     });
 
-            var ros;
-            var socket = io(); 
-            socket.on('sendros', function(data){
-                ros = data;
-                var gridClient = new ROS2D.OccupancyGridClient({
-                  ros : data,
-                  rootObject : viewer.scene
-                });
-                console.log('ros is ' + data);
+        //-     var ros;
+        //-     var socket = io(); 
+        //-     socket.on('sendros', function(data){
+        //-         ros = data;
+        //-         var gridClient = new ROS2D.OccupancyGridClient({
+        //-           ros : data,
+        //-           rootObject : viewer.scene
+        //-         });
+        //-         console.log('ros is ' + data);
 
-                gridClient.on('change', function(){
-                  viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-                });
-             });
-                // Setup the map client.
+        //-         gridClient.on('change', function(){
+        //-           viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+        //-         });
+        //-      });
+        //-         // Setup the map client.
                 
-                // Scale the canvas to fit to the map
-        // Connect to ROS.
-        //var ros2 = new ROSLIB.Ros({
-          //url : 'ws://localhost:9090'
-        //});
-        // Create the main viewer.
-        } 
+        //-         // Scale the canvas to fit to the map
+        //- // Connect to ROS.
+        //- //var ros2 = new ROSLIB.Ros({
+        //-   //url : 'ws://localhost:9090'
+        //- //});
+        //- // Create the main viewer.
+        //- } 
 
-  body(onload="init()")
-    auv-card
-        h3.heading Hello World!
-    polymer-ui-card
-        h3.heading Hello World!
-    auv-card
-        h3.heading Hello Polymer!
-    polymer-ui-card
-        img(src='img/favicon.gif')
-    div(id = mjpeg)
+  body(unresolved )
+    core-scaffold
+        core-header-panel(nagivation flex)
+            core-toolbar(#navheader)
+                span menu
+            core-menu
+                core-item(label="ONE")
+                core-item(label="TWO")
+        span(tool) Robotics Monitoring
+        .content 
+            p.
+                asdasdasd
     //script.
       //var socket = io();
-    #libmap.centered
+  

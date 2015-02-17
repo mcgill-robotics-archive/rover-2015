@@ -4,7 +4,7 @@
 var $ = require('jquery');
  console.log("app.js");
 var ROSLIB = require('roslib');
-var MJPEGCANVAS = require('mjpegcanvas.js');
+//var MJPEGCANVAS = require('./include');
 console.log(ROSLIB);
 var express = require('express');
 var stylus = require('stylus');
@@ -43,15 +43,15 @@ listener.subscribe(function(message) {
   // If desired, we can unsubscribe from the topic as well.
   
 });
-$.getScript('http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js', function(){
-  var viewer = new MJPEGCANVAS.Viewer({
-    divID : 'mjpeg',
-    host : 'localhost',
-    width : 640,
-    height : 480,
-    topic : '/camera_front_right/camera/image_raw'
-  });
-});
+// $.getScript('http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js', function(){
+//   var viewer = new MJPEGCANVAS.Viewer({
+//     divID : 'mjpeg',
+//     host : 'localhost',
+//     width : 640,
+//     height : 480,
+//     topic : '/camera_front_right/camera/image_raw'
+//   });
+// });
 
 
  // First, we create a Topic object with details of the topic's name and message type.
