@@ -52,7 +52,7 @@ listener.subscribe(function(message) {
 //     topic : '/camera_front_right/camera/image_raw'
 //   });
 // });
-
+  var posedata = [];
 
  // First, we create a Topic object with details of the topic's name and message type.
   var cmdVel = new ROSLIB.Topic({
@@ -63,19 +63,21 @@ listener.subscribe(function(message) {
 
   var poseListener = new ROSLIB.Topic({
     ros : ros,
-    name : '/pose_listener',
+    name : '/pose',
     messageType : 'geometry_msgs/Pose'
   });
   
   cmdVel.subscribe(function(message) {
   console.log('Received message on ' + cmdVel.name + ': ' + message);
   // If desired, we can unsubscribe from the topic as well.
+
   
   });
 
   poseListener.subscribe(function(message) {
   console.log('Received message on ' + poseListener.name + ': ' + message.orientation.x);
   // If desired, we can unsubscribe from the topic as well.
+  posedata = [message.orientation.x,message.orientation.y,message.orientation.z,message.orientation.w];
   
   });
 
@@ -119,7 +121,7 @@ var usersConnected = 0;
  */
 var app = express();
 var httpServer = http.Server(app);
-var io = socketio(httpServer);
+var io = require('socket.io').listen(httpServer);
 
 /*
  *Compile step
@@ -173,12 +175,18 @@ var userIO = function(socket) {
 };
 io.on('connection', userIO);
 
-io.listen(3000);
-io.on('sendros', function(socket){
-  setInterval(function(){
-    socket.send('sendros', ros);
-  },50);
-});
+
+function sendPose(){
+  io.sockets.emit('sendPose', posedata);
+}
+setInterval(sendPose, 2000);
+function sendTime() {
+    io.sockets.emit('time', { time: new Date().toJSON() });
+}
+
+// Send current time every 10 secs
+setInterval(sendTime, 10000);
+
 
 /*
  * Timeout
