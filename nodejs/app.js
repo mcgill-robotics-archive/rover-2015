@@ -179,13 +179,13 @@ io.on('connection', userIO);
 function sendPose(){
   io.sockets.emit('sendPose', posedata);
 }
-setInterval(sendPose, 2000);
+setInterval(sendPose, 100);
 function sendTime() {
     io.sockets.emit('time', { time: new Date().toJSON() });
 }
 
 // Send current time every 10 secs
-setInterval(sendTime, 10000);
+setInterval(sendTime, 1000);
 
 
 /*

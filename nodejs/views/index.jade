@@ -15,65 +15,63 @@ html(lang='en')
 
     //- Scripts
     link(rel='stylesheet', href='style/style.css', shim-shadowdom)
+
     link(rel='import', href='components/elements/index_elements.html')
     script(scr='webcomponentsjs/webcomponents.js')
     script(src='/socket.io/socket.io.js')
+    script(src='//code.jquery.com/jquery-1.7.2.min.js')
     script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
     script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
     script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
-    
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
     script.
-        var socket = io();
-
+        function loadpose(){
+            var socket = io();
+            var posearray = []
             socket.on('sendPose', function(msg){
-              console.log(msg);
-              document.getElementById("sendPose").innerHTML = msg;
+                console.log(msg);
+                posearray[0]=msg[0];
+                posearray[1]=msg[1];
+                posearray[2]=msg[2];
+                posearray[3]=msg[2];
+                document.getElementById("sendPose1").innerHTML = posearray[0];
+                document.getElementById("sendPose2").innerHTML = posearray[1];
+                document.getElementById("sendPose3").innerHTML = posearray[2];
+                document.getElementById("sendPose4").innerHTML = posearray[3];
             });
-        //- function init() {
+        }
+    script.
+        function loadtime(){
+            var socket = io();
+            socket.on('time', function(data) {
+                console.log(data);
+                $('#time').html(data.time);
+            });
+        }
+    script.
+        function start(){
+            loadpose();
+            loadtime();
+        }
 
-            
-        //-     var viewer = new ROS2D.Viewer({
-        //-         divID : 'libmap',
-        //-         width : 400,
-        //-         height : 300
-        //-     });
+    
+    body(onload="start()")
+        core-scaffold
+            core-header-panel(nagivation flex)
+                core-toolbar(#navheader)
+                    span 
+                core-menu
+                    core-item(label="ONE")
+                    core-item(label="TWO")
+            span(tool) Robotics Monitoring
+            .content Pose values
 
-        //-     var ros;
-        //-     var socket = io(); 
-        //-     socket.on('sendros', function(data){
-        //-         ros = data;
-        //-         var gridClient = new ROS2D.OccupancyGridClient({
-        //-           ros : data,
-        //-           rootObject : viewer.scene
-        //-         });
-        //-         console.log('ros is ' + data);
+                    #sendPose1
+                    #sendPose2
+                    #sendPose3
+                    #sendPose4 
+                    #time
 
-        //-         gridClient.on('change', function(){
-        //-           viewer.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
-        //-         });
-        //-      });
-        //-         // Setup the map client.
-                
-        //-         // Scale the canvas to fit to the map
-        //- // Connect to ROS.
-        //- //var ros2 = new ROSLIB.Ros({
-        //-   //url : 'ws://localhost:9090'
-        //- //});
-        //- // Create the main viewer.
-        //- } 
 
-  body(unresolved )
-    core-scaffold
-        core-header-panel(nagivation flex)
-            core-toolbar(#navheader)
-                span 
-            core-menu
-                core-item(label="ONE")
-                core-item(label="TWO")
-        span(tool) Robotics Monitoring
-        .content 
-                .time
-    //script.
-      //var socket = io();
   
+        
