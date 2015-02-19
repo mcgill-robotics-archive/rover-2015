@@ -57,7 +57,7 @@ namespace Values {
     int VREG_EN;
     int LOOPGAIN;
     // 0x0B
-    int SPEED;
+    int SPED;
     // 0x2A
     int RLOCK;
     int VMOV;

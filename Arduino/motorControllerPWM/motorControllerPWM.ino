@@ -19,6 +19,15 @@ const int LCK = 6; //27 - Input Only, Low When Speed Is Locked
 const int FLT = 12; //26 - Input Only, Fault Indication
 const int SCS = 7; //1 - Slave Select, Active High
 
+char mode;
+int DataIn=0;
+String ModeString[7] = {
+  "RW0 = ", "RW1 = ", "ADD0 = ", "ADD1 = ", "ENPOL = ", "DIRPOL = ", "SPEED = 3"};
+boolean ModeSelect = false;
+byte RW0 =0;
+byte RW1 = 0;
+byte ADD0 = 0;
+byte ADD1 = 0;
 
 //Register Addresses
 const byte AR00 = B00000000;
@@ -41,13 +50,28 @@ const byte RED = B00000000;
 
 void setup(){
     //set PINS
+    Serial.begin(9600);
+    Serial.setTimeout(50);
+    while (!Serial){}
 }
 
 
 void send(byte address, byte mode, int value){
-    
+    //spi shit
 }
 
 void loop(){
-    
+    if(ModeSelect == false){
+    if(Serial.available() > 0){
+      char inByte = Serial.read();
+      mode = inByte;
+      ModeSelect = true;
+      Serial.println("Mode Selected");
+      Serial.println(ModeString[mode-'0']);
+    }
+  }
+
+  if(ModeSelect == true){
+    parse(mode);
+  }
 }

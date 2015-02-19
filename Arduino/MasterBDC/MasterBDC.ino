@@ -39,7 +39,7 @@ void parse(char mode){
     case '2':
       if(Serial.available() > 0){
         DataIn = Serial.parseInt();
-        for (int i=0 ; i < 7; i++){
+        for (int i=0 ; i < 8; i++){
           bitWrite(ADD0,i,bitRead(DataIn,i));
         }
         Serial.print(ModeString[2]);
@@ -47,19 +47,18 @@ void parse(char mode){
         ModeSelect=false;
       }
       
-    case '3':
+       case '3':
       if(Serial.available() > 0){
         DataIn = Serial.parseInt();
-        for (int i=0 ; i < 7; i++){
+        for (int i=0 ; i < 8; i++){
           bitWrite(ADD1,i,bitRead(DataIn,i));
         }
         Serial.print(ModeString[3]);
         Serial.println(String(ADD1, BIN));
         ModeSelect=false;
       }
-  }
 }
-
+}
 void loop(){
 
   if(ModeSelect == false){
@@ -74,7 +73,10 @@ void loop(){
 
   if(ModeSelect == true){
     parse(mode);
+    
   }
+
+
 }
 
 

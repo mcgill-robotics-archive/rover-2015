@@ -49,7 +49,7 @@ int buildReg0A(){
 }
 
 int buildReg0B(){
-  return Values::SPEED;
+  return Values::SPED;
 }
 
 int buildReg2A(){

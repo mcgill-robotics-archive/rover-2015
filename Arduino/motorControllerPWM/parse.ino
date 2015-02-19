@@ -1,20 +1,3 @@
-char mode;
-int DataIn=0;
-String ModeString[7] = {
-  "RW0 = ", "RW1 = ", "ADD0 = ", "ADD1 = ", "ENPOL = ", "DIRPOL = ", "SPEED = 3"};
-boolean ModeSelect = false;
-byte RW0 =0;
-byte RW1 = 0;
-byte ADD0 = 0;
-byte ADD1 = 0;
-
-void setup(){
-  Serial.begin(9600);
-  Serial.setTimeout(50);
-  while (!Serial){
-  }
-}
-
 void parse(char mode){
   switch(mode){
 
@@ -59,28 +42,3 @@ void parse(char mode){
       }
   }
 }
-
-void loop(){
-
-  if(ModeSelect == false){
-    if(Serial.available() > 0){
-      char inByte = Serial.read();
-      mode = inByte;
-      ModeSelect = true;
-      Serial.println("Mode Selected");
-      Serial.println(ModeString[mode-'0']);
-    }
-  }
-
-  if(ModeSelect == true){
-    parse(mode);
-  }
-}
-
-
-
-
-
-
-
-
