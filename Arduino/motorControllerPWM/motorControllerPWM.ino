@@ -21,14 +21,59 @@ const int SCS = 7; //1 - Slave Select, Active High
 
 Registers mode;
 int DataIn=0;
-String ModeString[10] = {"AG_SETPT=",
-    "ENPOL=",
-    "DIRPOL=",  "RW0 = ", "RW1 = ", "ADD0 = ", "ADD1 = ", "ENPOL = ", "DIRPOL = ", "SPEED = 3"};
+
+String ModeString[50] = {
+    "AG_SETPT",
+    "ENPOL",
+    "DIRPOL",
+    "BRKPOL",
+    "SYNRECT",
+    "PWMF",
+    "SPDMODE",
+    "FGSEL",
+    "BRKMOD",
+    "RETRY",
+    "ADVANCE",
+    "SPDREVS",
+    "MINSPD",
+    "BASIC",
+    "SPEDTH",
+    "MOD120",
+    "LRTIME",
+    "HALLRST",
+    "DELAY",
+    "AUTOADV",
+    "AUTOGAIN",
+    "ENSINE",
+    "TDRIVE",
+    "DTIME",
+    "IDRIVE",
+    "INTCLK",
+    "SPDGAIN",
+    "HALLPOL",
+    "BYPFILT",
+    "FILK1",
+    "FILK2",
+    "BYPCOMP",
+    "COMK1",
+    "AA_SETPT",
+    "COMK2",
+    "OCPDEG",
+    "OCPTH",
+    "OVTH",
+    "VREG_EN",
+    "LOOPGAIN",
+    "SPED",
+    "RLOCK",
+    "VMOV",
+    "CPFAIL",
+    "UVLO",
+    "OTS",
+    "CPOC",
+    "OCP"
+};
+
 boolean ModeSelect = false;
-byte RW0 =0;
-byte RW1 = 0;
-byte ADD0 = 0;
-byte ADD1 = 0;
 
 //Register Addresses
 const byte AR00 = B00000000;
@@ -62,18 +107,15 @@ void send(byte address, byte mode, int value){
 }
 
 void loop(){
-  int mode;
+  Registers mode;
     if(ModeSelect == false){
     if(Serial.available() > 0){
       int inByte = Serial.parseInt();
       ModeSelect = true;
-      Serial.print("Mode Selected ");
-      mode = inByte;
-      Serial.println(inByte);
+      mode = static_cast<Registers>(inByte);
       Serial.println(ModeString[inByte]);
     }
   }
-
   if(ModeSelect == true){
     parse(mode);
   }
