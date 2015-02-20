@@ -7,11 +7,11 @@
 enum Registers
 {
        // 0x00
-    AG_SETPT = 0,
-    ENPOL = 1,
-    DIRPOL = 2,
-    BRKPOL = 3,
-    SYNRECT = 4,
+    AG_SETPT,
+    ENPOL,
+    DIRPOL,
+    BRKPOL,
+    SYNRECT,
     PWMF,
     SPDMODE,
     FGSEL,

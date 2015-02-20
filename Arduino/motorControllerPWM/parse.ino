@@ -14,7 +14,6 @@ void parse(Registers mode){
     case AG_SETPT:
     while(!Serial.available()){delay(10);}
     if(Serial.available() > 0){
-      Serial.println("AG_SETPT");
       update(&Values::AG_SETPT);
       int bin = buildReg00();
       Serial.println(String(bin,BIN));
@@ -24,7 +23,6 @@ void parse(Registers mode){
     case ENPOL:
     while(!Serial.available()){delay(10);}
       if(Serial.available() > 0){
-        Serial.println("ENPOL");
         update(&Values::ENPOL);
         int bin = buildReg00();
         Serial.println(String(bin,BIN));
@@ -34,7 +32,6 @@ void parse(Registers mode){
      case DIRPOL:
      while(!Serial.available()){delay(10);}
      if(Serial.available() > 0){
-        Serial.println("DIRPOL");
         update(&Values::DIRPOL);
         int bin = buildReg00();
         Serial.println(String(bin,BIN));
