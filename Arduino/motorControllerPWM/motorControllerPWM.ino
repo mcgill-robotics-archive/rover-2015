@@ -19,10 +19,11 @@ const int LCK = 6; //27 - Input Only, Low When Speed Is Locked
 const int FLT = 12; //26 - Input Only, Fault Indication
 const int SCS = 7; //1 - Slave Select, Active High
 
-char mode;
+Registers mode;
 int DataIn=0;
-String ModeString[7] = {
-  "RW0 = ", "RW1 = ", "ADD0 = ", "ADD1 = ", "ENPOL = ", "DIRPOL = ", "SPEED = 3"};
+String ModeString[10] = {"AG_SETPT=",
+    "ENPOL=",
+    "DIRPOL=",  "RW0 = ", "RW1 = ", "ADD0 = ", "ADD1 = ", "ENPOL = ", "DIRPOL = ", "SPEED = 3"};
 boolean ModeSelect = false;
 byte RW0 =0;
 byte RW1 = 0;
@@ -61,13 +62,15 @@ void send(byte address, byte mode, int value){
 }
 
 void loop(){
+  int mode;
     if(ModeSelect == false){
     if(Serial.available() > 0){
-      char inByte = Serial.read();
-      mode = inByte;
+      int inByte = Serial.parseInt();
       ModeSelect = true;
-      Serial.println("Mode Selected");
-      Serial.println(ModeString[mode-'0']);
+      Serial.print("Mode Selected ");
+      mode = inByte;
+      Serial.println(inByte);
+      Serial.println(ModeString[inByte]);
     }
   }
 
