@@ -1,8 +1,7 @@
 #include <SPI.h>
 int SCS = 7;
+int RST = 10;
 int ModeSelect = 0;
-boolean WrConfirm = false;
-byte ADD1 = 0b00000000;
 int ENB = 4;
 int DATA1 = 19861;
 int DataRec = 0;
@@ -10,15 +9,21 @@ byte TD1;
 byte TD2;
 byte DR1;
 byte DR2;
+boolean WrConfirm = false;
+byte ADD1 = 0b00000000;
 
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(50); // Set serial.parseInt() timeout to 50ms
-  while (!Serial){;
-  }
+  while (!Serial){
+    ;
+  } //Suspend program progression till serial communication is established
   pinMode(SCS,OUTPUT); // Slave select
-  int ENB = 4;
+  pinMode(RST,OUTPUT);
+  pinMode(ENB,OUTPUT);
   digitalWrite(ENB, HIGH);
+  digitalWrite(SCS, LOW);
+  digitalWrite(RST, LOW);
   SPI.begin(); // Start the SPI library
   SPI.setClockDivider(SPI_CLOCK_DIV8); //Set SPI freq at 8 Mhz
   SPI.setBitOrder(MSBFIRST); //Sent in order of read write command, address, and data MSB to LSB
@@ -30,6 +35,7 @@ void loop() {
   if (Serial.available()>0){
     ModeSelect = Serial.parseInt();
     switch(ModeSelect){
+
     case 1:
       if (WriteRegister(ADD1, DATA1)==1){
         Serial.println("Write Confirmed");
@@ -38,13 +44,36 @@ void loop() {
         Serial.println("Write Failed");
       }
       break;
+
     case 101:
       DataRec = ReadRegister(ADD1);
-      //Serial.println(String(DataRec, BIN));
+      break;
+
+    case 10:
+      Serial.println("RESETTING");
+      digitalWrite(ENB, LOW);
+      digitalWrite(RST, HIGH);
+      delay(100);
+      digitalWrite(RST, LOW);
+      digitalWrite(ENB, HIGH);
+      break;
+
+
+
+    case 11:
+      digitalWrite(ENB, LOW);
+      break;
+
+
+
+    case 12:
+      digitalWrite(ENB, HIGH);
       break;
     }
-    delay(100);
   }
+
+  delay(100);
+
 }
 
 boolean WriteRegister(byte ADD, int DATA){
@@ -63,31 +92,31 @@ boolean WriteRegister(byte ADD, int DATA){
   SPI.transfer(TD2);
   SPI.transfer(TD1);
   digitalWrite(SCS, LOW);
-  //Serial.println("Confirming Write");
   WrConfirm = (DATA == ReadRegister(ADD));
   return WrConfirm;
 }
 
-int ReadRegister(byte RADD){
-  bitWrite(RADD,7,1);
+int ReadRegister(byte ADD){
+  bitWrite(ADD,7,1);
   Serial.println("Reading");
   digitalWrite(SCS, HIGH);
-  SPI.transfer(RADD);
+  SPI.transfer(ADD);
   DR2 = SPI.transfer(0x00);
   DR1 = SPI.transfer(0x00);
   digitalWrite(SCS, LOW);
-  //Serial.println(String(DR2, BIN));
-  //Serial.println(String(DR1, BIN));
   for (int i=0; i<8; i++){
     bitWrite(DataRec, i , bitRead(DR1, i));
     bitWrite(DataRec, i+8, bitRead(DR2, i));
   }
-  bitWrite(RADD,7,0);
+  bitWrite(ADD,7,0);
   Serial.print("Register = ");
-  Serial.print(String(RADD, BIN));
+  Serial.print(String(ADD, BIN));
   Serial.print(" Holds Data = ");
   Serial.println(String(DataRec, BIN));
   return DataRec;
 }
+
+
+
 
 
