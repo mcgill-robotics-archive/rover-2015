@@ -2,18 +2,16 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int16
-from control_systems.msg import MotionType
+from control_systems.msg import MotionType, PanTiltZoom, ArmMotion
 
 class Publisher(object):
     def __init__(self):
         #TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.vel_pub = rospy.Publisher("cmd_vel",Twist, queue_size=10)
-        self.arm_movement_pub = rospy.Publisher("electrical_interface/arm",Twist, queue_size=10)
-        self.arm_rotate_pub = rospy.Publisher("electrical_interface/arm",Int16, queue_size=10)
-        self.zoom_pub = rospy.Publisher("electrical_interface/cameraZoom",Int16, queue_size=10)
-        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
-        self.pan_pub = rospy.Publisher("electrical_interface/cameraPan",Int16, queue_size=10)
-        self.motionTypePublisher = rospy.Publisher("cmd_motion",MotionType, queue_size=10)
+        self.cam_pub = rospy.Publisher(rospy.get_param("electrical_interface/cameraPos_topic","electrical_interface/camera"),PanTiltZoom, queue_size=10)
+        self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic","cmd_vel"),Twist, queue_size=10)
+        self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","/cmd_arm"),ArmMotion, queue_size=10)
+        self.arm_rotate_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","electrical_interface/arm"),Int16, queue_size=10)
+        self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic","cmd_motion"),MotionType, queue_size=10)
 
 
 
@@ -33,22 +31,21 @@ class Publisher(object):
         """
         Publish base arm position
         """
-        msg = Twist()
-        msg.linear.x = armLength # y axis on joystick moves the target point forward and back
-        msg.linear.z = armHeight # rotation of the joystick moves the target point up and down
-        msg.angular.y = angle
+        msg = ArmMotion()
+        msg.x = armLength # y axis on joystick moves the target point forward and back
+        msg.y = armHeight # rotation of the joystick moves the target point up and down
+        msg.theta = angle
+        msg.on = True
         self.arm_movement_pub.publish(msg)
     
 
     #publish camera zoom from axis 4
-    def publish_zoom(self, a4):
-        msg = a4
-        self.zoom_pub.publish(msg)
+    def publish_camera(self, a3, a4):
+        msg = PanTiltZoom()
+        msg.pan=a3
+        msg.tilt=a4
+        self.cam_pub.publish(msg)
 
-    #publish camera pan from axis 3 (mode must be drive)
-    def publish_pan(self, a3):
-        msg = a3
-        self.pan_pub.publish(msg)
 
     def setSteerMode(self, boolean):
         motionType = MotionType()

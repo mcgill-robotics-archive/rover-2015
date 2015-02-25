@@ -6,7 +6,7 @@ from PyQt4 import QtCore, QtGui
 ##import publisher
 from JoystickController import JoystickController
 from VARIABLES import *
-from publisher import Publisher
+#from publisher import Publisher
 import pyqtgraph as pg
 
 import sys
@@ -28,7 +28,7 @@ class CentralUi(QtGui.QMainWindow):
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 		self.controller = JoystickController()
-		self.publisher = Publisher()
+#		self.publisher = Publisher()
 		self.modeId = 0 
 
 		# feed 1 holders

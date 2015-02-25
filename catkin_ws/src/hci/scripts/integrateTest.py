@@ -115,13 +115,17 @@ class CentralUi(QtGui.QMainWindow):
 
 	def publishControlls(self):
 		if self.modeId == 0:
+			#drive
 			self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
+			self.publisher.publish_camera(self.controller.a3,self.controller.a4)
 		elif self.modeId == 1:
+			#arm base
 			length = -self.controller.a2
-			height = self.controller.a3
-			angle = self.controller.a1
+			height = self.controller.a1
+			angle = self.controller.a3
 			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
+			#end effector
 			x=1;
 			#end effector mode
 			#use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
@@ -189,7 +193,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen1Subscriber.unsubscribe()
+		self.__screen1Subscriber.unregister()
 		self.__screen1Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -199,7 +203,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen2Subscriber.unsubscribe()
+		self.__screen2Subscriber.unregister()
 		self.__screen2Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -209,7 +213,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen3Subscriber.unsubscribe()
+		self.__screen3Subscriber.unregister()
 		self.__screen3Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 

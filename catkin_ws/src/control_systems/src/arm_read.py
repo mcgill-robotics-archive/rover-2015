@@ -64,7 +64,6 @@ class ArmControlReader(object):
             queue_size=10)
 
     def update_settings(self,msg):
-
         #import readings into object
         self.settings.x = msg.x
         self.settings.y = msg.y
@@ -102,6 +101,9 @@ def getArmExtension (xi, yi, tht1_0, tht2_0):
     #in metres (so greater than the max extension is never entered
     x = xi*maxExtension
     y = yi*maxExtension
+    if x == 0 and y == 0:
+        return tht1_0, tht2_0
+
     c1_1 = (a1**2*x - y*((- a1**2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) - a2**2*x + x*y**2 + x**3)/(2*a1*(x**2 + y**2))
     c1_2 = (y*((- a1**2 + 2*a1*a2 - a2**2 + x**2 + y**2)*(a1**2 + 2*a1*a2 + a2**2 - x**2 - y**2))**(1/2) + a1**2*x - a2**2*x + x*y**2 + x**3)/(2*a1*(x**2 + y**2))
 
