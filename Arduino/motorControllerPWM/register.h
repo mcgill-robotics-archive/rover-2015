@@ -66,7 +66,9 @@ enum Registers
     UVLO,
     OTS,
     CPOC,
-    OCP
+    OCP,
+    SPECIAL = 100,
+    SET_SPEED = 200
 }registers;
 
 

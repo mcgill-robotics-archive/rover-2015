@@ -5,7 +5,7 @@
 #include "register.h"
 
 int buildReg00(){
-    return Values::AG_SETPT << 12 | Values::ENPOL << 11 | Values::DIRPOL << 10 | Values::BRKPOL << 9 | Values::PWMF << 6 | Values::SPDMODE << 4 | Values::FGSEL << 2 | Values::BRKMOD << 1 | Values::RETRY;
+    return Values::AG_SETPT << 12 | Values::ENPOL << 11 | Values::DIRPOL << 10 | Values::BRKPOL << 9 | Values::SYNRECT << 8 | Values::PWMF << 6 | Values::SPDMODE << 4 | Values::FGSEL << 2 | Values::BRKMOD << 1 | Values::RETRY;
 }
 
 int buildReg01 (){

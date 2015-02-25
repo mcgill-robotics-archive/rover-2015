@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/Users/David/repositories/urc/Arduino/motorControllerPWM/Window.ui'
+# Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Fri Feb 20 13:04:14 2015
+# Created: Wed Feb 25 17:54:02 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(796, 812)
+        MainWindow.resize(796, 840)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout_4 = QtGui.QGridLayout(self.centralwidget)
@@ -160,6 +160,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_23.addWidget(self.MINSPD)
         self.horizontalLayout_4.addLayout(self.verticalLayout_23)
         self.gridLayout_3.addLayout(self.horizontalLayout_4, 1, 0, 1, 1)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem, 2, 2, 1, 1)
+        self.speedSlider = QtGui.QSlider(self.centralwidget)
+        self.speedSlider.setMaximum(100)
+        self.speedSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.speedSlider.setObjectName(_fromUtf8("speedSlider"))
+        self.gridLayout_3.addWidget(self.speedSlider, 1, 2, 1, 1)
         self.verticalLayout_33 = QtGui.QVBoxLayout()
         self.verticalLayout_33.setObjectName(_fromUtf8("verticalLayout_33"))
         self.label_33 = QtGui.QLabel(self.centralwidget)
@@ -170,6 +177,8 @@ class Ui_MainWindow(object):
         self.ADVANCE.setObjectName(_fromUtf8("ADVANCE"))
         self.verticalLayout_33.addWidget(self.ADVANCE)
         self.gridLayout_3.addLayout(self.verticalLayout_33, 0, 0, 1, 1)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem1, 0, 2, 1, 1)
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.verticalLayout_34 = QtGui.QVBoxLayout()
@@ -203,12 +212,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_24.addWidget(self.MOD120)
         self.horizontalLayout_3.addLayout(self.verticalLayout_24)
         self.gridLayout_3.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem, 0, 1, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem1, 2, 1, 1, 1)
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem2, 1, 1, 1, 1)
+        self.speedValue = QtGui.QSpinBox(self.centralwidget)
+        self.speedValue.setMinimumSize(QtCore.QSize(100, 0))
+        self.speedValue.setObjectName(_fromUtf8("speedValue"))
+        self.gridLayout_3.addWidget(self.speedValue, 1, 3, 1, 1)
         self.verticalLayout_49.addLayout(self.gridLayout_3)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -544,11 +551,28 @@ class Ui_MainWindow(object):
         self.OCP.setObjectName(_fromUtf8("OCP"))
         self.verticalLayout_41.addWidget(self.OCP)
         self.gridLayout_2.addLayout(self.verticalLayout_41, 2, 6, 1, 1)
+        self.verticalLayout_51 = QtGui.QVBoxLayout()
+        self.verticalLayout_51.setObjectName(_fromUtf8("verticalLayout_51"))
+        self.ENABLE = QtGui.QPushButton(self.centralwidget)
+        self.ENABLE.setObjectName(_fromUtf8("ENABLE"))
+        self.verticalLayout_51.addWidget(self.ENABLE)
+        self.DISABLE = QtGui.QPushButton(self.centralwidget)
+        self.DISABLE.setObjectName(_fromUtf8("DISABLE"))
+        self.verticalLayout_51.addWidget(self.DISABLE)
+        self.gridLayout_2.addLayout(self.verticalLayout_51, 0, 6, 1, 1)
+        self.RESET = QtGui.QPushButton(self.centralwidget)
+        self.RESET.setObjectName(_fromUtf8("RESET"))
+        self.gridLayout_2.addWidget(self.RESET, 1, 6, 1, 1)
+        self.fault = QtGui.QPushButton(self.centralwidget)
+        self.fault.setObjectName(_fromUtf8("fault"))
+        self.gridLayout_2.addWidget(self.fault, 1, 5, 1, 1)
         self.verticalLayout_49.addLayout(self.gridLayout_2)
         self.gridLayout_4.addLayout(self.verticalLayout_49, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
+        QtCore.QObject.connect(self.speedSlider, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.speedValue.setValue)
+        QtCore.QObject.connect(self.speedValue, QtCore.SIGNAL(_fromUtf8("valueChanged(int)")), self.speedSlider.setValue)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.AG_SETPT, self.ENPOL)
         MainWindow.setTabOrder(self.ENPOL, self.DIRPOL)
@@ -648,4 +672,8 @@ class Ui_MainWindow(object):
         self.label_40.setText(_translate("MainWindow", "OTS", None))
         self.label_42.setText(_translate("MainWindow", "CPOC", None))
         self.label_41.setText(_translate("MainWindow", "OCP", None))
+        self.ENABLE.setText(_translate("MainWindow", "Enable", None))
+        self.DISABLE.setText(_translate("MainWindow", "Disable", None))
+        self.RESET.setText(_translate("MainWindow", "Reset", None))
+        self.fault.setText(_translate("MainWindow", "Read Fault", None))
 
