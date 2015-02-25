@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_files/MainWindow_V2.ui'
+# Form implementation generated from reading ui file 'MainWindow_V2.ui'
 #
-# Created: Tue Jan 13 06:59:05 2015
+# Created: Wed Feb 25 17:36:22 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -94,8 +94,17 @@ class Ui_MainWindow(object):
         self.Minimap.setFrameShadow(QtGui.QFrame.Raised)
         self.Minimap.setObjectName(_fromUtf8("Minimap"))
         self.MinimapLabel = QtGui.QLabel(self.Minimap)
-        self.MinimapLabel.setGeometry(QtCore.QRect(90, 0, 63, 17))
+        self.MinimapLabel.setGeometry(QtCore.QRect(82, 0, 71, 20))
         self.MinimapLabel.setObjectName(_fromUtf8("MinimapLabel"))
+        self.graphicsView = GraphicsLayoutWidget(self.Minimap)
+        self.graphicsView.setGeometry(QtCore.QRect(10, 81, 221, 281))
+        self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
+        self.pushButton = QtGui.QPushButton(self.Minimap)
+        self.pushButton.setGeometry(QtCore.QRect(10, 30, 121, 27))
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.pushButton_2 = QtGui.QPushButton(self.Minimap)
+        self.pushButton_2.setGeometry(QtCore.QRect(140, 30, 81, 27))
+        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout_2.addWidget(self.Minimap)
         self.line_5 = QtGui.QFrame(self.centralwidget)
         self.line_5.setFrameShape(QtGui.QFrame.VLine)
@@ -328,7 +337,9 @@ class Ui_MainWindow(object):
         self.Camera3Feed.setItemText(4, _translate("MainWindow", "Arm", None))
         self.Camera3Feed.setItemText(5, _translate("MainWindow", "Pan/Tilt", None))
         self.camera3.setText(_translate("MainWindow", "cam 3", None))
-        self.MinimapLabel.setText(_translate("MainWindow", "mini map", None))
+        self.MinimapLabel.setText(_translate("MainWindow", "MIniMap", None))
+        self.pushButton.setText(_translate("MainWindow", "Add Waypoint", None))
+        self.pushButton_2.setText(_translate("MainWindow", "Clear", None))
         self.label.setText(_translate("MainWindow", "Hand type", None))
         self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
         self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))
@@ -351,3 +362,4 @@ class Ui_MainWindow(object):
         self.menuWindow.setTitle(_translate("MainWindow", "window", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
 
+from pyqtgraph import GraphicsLayoutWidget

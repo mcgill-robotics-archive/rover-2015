@@ -192,14 +192,50 @@
         <widget class="QLabel" name="MinimapLabel">
          <property name="geometry">
           <rect>
-           <x>90</x>
+           <x>82</x>
            <y>0</y>
-           <width>63</width>
-           <height>17</height>
+           <width>71</width>
+           <height>20</height>
           </rect>
          </property>
          <property name="text">
-          <string>mini map</string>
+          <string>MIniMap</string>
+         </property>
+        </widget>
+        <widget class="GraphicsLayoutWidget" name="graphicsView">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>81</y>
+           <width>221</width>
+           <height>281</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>121</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add Waypoint</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>30</y>
+           <width>81</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Clear</string>
          </property>
         </widget>
        </widget>
@@ -706,6 +742,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GraphicsLayoutWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
