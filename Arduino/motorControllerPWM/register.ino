@@ -68,19 +68,19 @@ void parseReg2A(int read){
     Values::UVLO = (read >> 3) & 1;
     Values::OTS = (read >> 2) & 1;
     Values::CPOC = (read >> 1) & 1;
-    Values::OCP = (read & 1;
+    Values::OCP = (read & 1);
 }
 
 void parseReg00(int read){
-    Values::AG_SETPT = read >> 12;
-    Values::ENPOL = (read & 2048) >> 11
-    Values::DIRPOL = (read & 1024) >> 10
-    Values::BRKPOL = (read & 512) >> 9
-    Values::SYNRECT  =(read & 256) >> 8
-    Values::PWMF = (read & 192)>> 6
-    Values::SPDMODE = (read & 48)>> 4
-    Values::FGSEL = (read & 12)>> 2
-    Values::BRKMOD = (read & 2) >> 1;
+    Values::AG_SETPT = (read >> 12) & 15;
+    Values::ENPOL = (read >> 11) & 1;
+    Values::DIRPOL = (read >> 10) & 1;
+    Values::BRKPOL = (read >> 9) & 1;
+    Values::SYNRECT  =(read >> 8) & 1;
+    Values::PWMF = (read >> 6) & 3;
+    Values::SPDMODE = (read >> 4) & 3;
+    Values::FGSEL = (read >> 2) & 3;
+    Values::BRKMOD = (read >> 1) & 1;
     Values::RETRY = read & 1;
 
 }
@@ -109,7 +109,7 @@ void parseReg04(int read){
     Values::ENSINE = (read >> 8) & 1;
     Values::TDRIVE = (read >> 6) & 3;
     Values::DTIME = (read >> 3) & 7;
-    Values::IDRIVE = (read & )7;
+    Values::IDRIVE = (read & 7);
 }
 
 void parseReg05(int read){

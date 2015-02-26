@@ -76,7 +76,7 @@ class MainWindow(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.DISABLE, QtCore.SIGNAL("clicked()"), self.disable)
         QtCore.QObject.connect(self.ui.speedSlider, QtCore.SIGNAL("sliderReleased()"), self.setSpeed)
         QtCore.QObject.connect(self.ui.speedValue, QtCore.SIGNAL("editingFinished()"), self.setSpeed)
-        QtCore.QObject.connect(self.ui.readAll, QtCore.SIGNAL("clicked()", self.readRegs))
+        QtCore.QObject.connect(self.ui.readAll, QtCore.SIGNAL("clicked()"), self.readRegs)
       
 
     def setSpeed(self):
@@ -85,7 +85,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append(self.ser.readline())
         time.sleep(0.010)
         self.ser.write(str(self.ui.speedSlider.value()))
-        
+        self.clearSerial()
+
+
+    def clearSerial(self):
+        while self.ser.inWaiting():
+            self.ui.logbox.append(self.ser.readline())
 
     def setRegister(self, registerId, value):
         self.ui.logbox.append("reg ID %d" %registerId)
@@ -98,6 +103,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append("waiting")
         self.ui.logbox.append(self.ser.readline())
         self.ui.logbox.append(self.ser.readline())
+        self.clearSerial()
 
     def reset(self):
         self.ui.logbox.append("waiting")
@@ -108,6 +114,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append("waiting")
         self.ui.logbox.append(self.ser.readline())
         self.ui.logbox.append(self.ser.readline())
+        self.clearSerial()
 
     def fault(self):
         self.ui.logbox.append("waiting")
@@ -117,7 +124,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ser.write(str(13))
         self.ui.logbox.append("waiting")
         self.ui.logbox.append(self.ser.readline())
-        
+        self.clearSerial()
+
     def disable(self):
         self.ui.logbox.append("waiting")
         self.ser.write(str(100))
@@ -127,6 +135,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append("waiting")
         self.ui.logbox.append(self.ser.readline())
         self.ui.logbox.append(self.ser.readline())
+        self.clearSerial()
 
     def enable(self):
         self.ui.logbox.append("waiting")
@@ -137,6 +146,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append("waiting")
         self.ui.logbox.append(self.ser.readline())
         self.ui.logbox.append(self.ser.readline())
+        self.clearSerial()
 
     def readRegs(self):
         self.ui.logbox.append("waiting")
@@ -144,6 +154,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.logbox.append(self.ser.readline())
         time.sleep(0.010)
         self.ser.write(str(14))
+        self.ui.logbox.append(self.ser.readline())
+        self.ui.logbox.append(self.ser.readline())
         self.ui.logbox.append("waiting")
 
         self.ui.AG_SETPT.setValue(int(self.ser.readline()))
@@ -195,7 +207,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.CPOC.setValue(int(self.ser.readline()))
         self.ui.OCP.setValue(int(self.ser.readline()))
 
+        self.ui.logbox.append(self.ser.readline())
+
         self.ui.logbox.append("Done")
+        self.clearSerial()
 
 if __name__=="__main__":
     app = QtGui.QApplication(sys.argv)

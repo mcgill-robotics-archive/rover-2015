@@ -199,6 +199,7 @@ int ReadFault(){
 }
 
 void readAll(){
+    Serial.println("In readall");
     parseReg00(ReadRegister(AR00));
     parseReg01(ReadRegister(AR01));
     parseReg02(ReadRegister(AR02));
@@ -310,8 +311,13 @@ void loop(){
                       
                     case 13:
                         ReadFault();
+                        break;
+                        
                     case 14:
+                        Serial.println("ReadAll");
                         readAll();
+                        Serial.println("Read all completed");
+                        break;
                 }
             }
             ModeSelect=false;
