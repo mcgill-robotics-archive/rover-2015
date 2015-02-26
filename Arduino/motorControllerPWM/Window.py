@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Wed Feb 25 17:54:02 2015
+# Created: Wed Feb 25 19:00:56 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -214,6 +214,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
         self.speedValue = QtGui.QSpinBox(self.centralwidget)
         self.speedValue.setMinimumSize(QtCore.QSize(100, 0))
+        self.speedValue.setMaximum(100)
         self.speedValue.setObjectName(_fromUtf8("speedValue"))
         self.gridLayout_3.addWidget(self.speedValue, 1, 3, 1, 1)
         self.verticalLayout_49.addLayout(self.gridLayout_3)
