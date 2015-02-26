@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>796</width>
-    <height>843</height>
+    <height>852</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -239,20 +239,7 @@
           </item>
          </layout>
         </item>
-        <item row="2" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="2">
+        <item row="1" column="1">
          <widget class="QSlider" name="speedSlider">
           <property name="maximum">
            <number>100</number>
@@ -280,7 +267,7 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="1">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -351,7 +338,7 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="3">
+        <item row="1" column="2">
          <widget class="QSpinBox" name="speedValue">
           <property name="minimumSize">
            <size>
@@ -363,6 +350,38 @@
            <number>100</number>
           </property>
          </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QPushButton" name="Brake">
+            <property name="text">
+             <string>Brake</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="UnBrake">
+            <property name="text">
+             <string>Un-Brake</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="DirHIGH">
+            <property name="text">
+             <string>Dir HIGH</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="DirLOW">
+            <property name="text">
+             <string>Dir LOW</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>

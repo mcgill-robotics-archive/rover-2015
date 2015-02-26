@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Wed Feb 25 20:17:02 2015
+# Created: Thu Feb 26 13:38:24 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(796, 843)
+        MainWindow.resize(796, 852)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout_4 = QtGui.QGridLayout(self.centralwidget)
@@ -160,13 +160,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_23.addWidget(self.MINSPD)
         self.horizontalLayout_4.addLayout(self.verticalLayout_23)
         self.gridLayout_3.addLayout(self.horizontalLayout_4, 1, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem, 2, 2, 1, 1)
         self.speedSlider = QtGui.QSlider(self.centralwidget)
         self.speedSlider.setMaximum(100)
         self.speedSlider.setOrientation(QtCore.Qt.Horizontal)
         self.speedSlider.setObjectName(_fromUtf8("speedSlider"))
-        self.gridLayout_3.addWidget(self.speedSlider, 1, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.speedSlider, 1, 1, 1, 1)
         self.verticalLayout_33 = QtGui.QVBoxLayout()
         self.verticalLayout_33.setObjectName(_fromUtf8("verticalLayout_33"))
         self.label_33 = QtGui.QLabel(self.centralwidget)
@@ -177,8 +175,8 @@ class Ui_MainWindow(object):
         self.ADVANCE.setObjectName(_fromUtf8("ADVANCE"))
         self.verticalLayout_33.addWidget(self.ADVANCE)
         self.gridLayout_3.addLayout(self.verticalLayout_33, 0, 0, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem1, 0, 2, 1, 1)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem, 0, 1, 1, 1)
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.verticalLayout_34 = QtGui.QVBoxLayout()
@@ -216,7 +214,22 @@ class Ui_MainWindow(object):
         self.speedValue.setMinimumSize(QtCore.QSize(100, 0))
         self.speedValue.setMaximum(100)
         self.speedValue.setObjectName(_fromUtf8("speedValue"))
-        self.gridLayout_3.addWidget(self.speedValue, 1, 3, 1, 1)
+        self.gridLayout_3.addWidget(self.speedValue, 1, 2, 1, 1)
+        self.horizontalLayout_6 = QtGui.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
+        self.Brake = QtGui.QPushButton(self.centralwidget)
+        self.Brake.setObjectName(_fromUtf8("Brake"))
+        self.horizontalLayout_6.addWidget(self.Brake)
+        self.UnBrake = QtGui.QPushButton(self.centralwidget)
+        self.UnBrake.setObjectName(_fromUtf8("UnBrake"))
+        self.horizontalLayout_6.addWidget(self.UnBrake)
+        self.DirHIGH = QtGui.QPushButton(self.centralwidget)
+        self.DirHIGH.setObjectName(_fromUtf8("DirHIGH"))
+        self.horizontalLayout_6.addWidget(self.DirHIGH)
+        self.DirLOW = QtGui.QPushButton(self.centralwidget)
+        self.DirLOW.setObjectName(_fromUtf8("DirLOW"))
+        self.horizontalLayout_6.addWidget(self.DirLOW)
+        self.gridLayout_3.addLayout(self.horizontalLayout_6, 2, 1, 1, 1)
         self.verticalLayout_49.addLayout(self.gridLayout_3)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -644,6 +657,10 @@ class Ui_MainWindow(object):
         self.label_34.setText(_translate("MainWindow", "BASIC", None))
         self.label_25.setText(_translate("MainWindow", "SPEDTH", None))
         self.label_24.setText(_translate("MainWindow", "MOD120", None))
+        self.Brake.setText(_translate("MainWindow", "Brake", None))
+        self.UnBrake.setText(_translate("MainWindow", "Un-Brake", None))
+        self.DirHIGH.setText(_translate("MainWindow", "Dir HIGH", None))
+        self.DirLOW.setText(_translate("MainWindow", "Dir LOW", None))
         self.label_47.setText(_translate("MainWindow", "LRTIME", None))
         self.label_5.setText(_translate("MainWindow", "HALLRST", None))
         self.label_11.setText(_translate("MainWindow", "DELAY", None))

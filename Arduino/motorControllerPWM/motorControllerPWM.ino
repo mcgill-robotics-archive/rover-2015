@@ -318,6 +318,34 @@ void loop(){
                         readAll();
                         Serial.println("Read all completed");
                         break;
+                        
+                    case 15:
+                        //BRAKE
+                        Serial.println("Brake");
+                        digitalWrite(BRK, HIGH);
+                        Serial.println("Done");
+                        break;
+                    
+                    case 16:
+                        //UN-BRAKE
+                        Serial.println("Un-Brake");
+                        digitalWrite(BRK, LOW);
+                        Serial.println("Done");
+                        break;
+                    case 17:
+                        //DirHigh
+                        Serial.println("Dir HIGH");
+                        digitalWrite(DIR, HIGH);
+                        Serial.println("Done");
+                        break;
+                    
+                    case 18:
+                        //Dir Low
+                        Serial.println("Dir LOW");
+                        digitalWrite(DIR, LOW);
+                        Serial.println("Done");
+                        break;
+                    
                 }
             }
             ModeSelect=false;
