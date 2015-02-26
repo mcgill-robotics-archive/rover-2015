@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>796</width>
-    <height>840</height>
+    <height>843</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -988,6 +988,13 @@
          <widget class="QPushButton" name="fault">
           <property name="text">
            <string>Read Fault</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="readAll">
+          <property name="text">
+           <string>Read All Reg</string>
           </property>
          </widget>
         </item>

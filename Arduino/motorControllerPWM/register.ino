@@ -49,7 +49,7 @@ int buildReg0A(){
 }
 
 int buildReg0B(){
-  return Values::SPED;
+    return Values::SPED;
 }
 
 int buildReg2A(){
@@ -57,3 +57,90 @@ int buildReg2A(){
 }
 
 
+void parseReg0B(int read){
+    Values::SPED = read;
+}
+
+void parseReg2A(int read){
+    Values::RLOCK = (read >> 6) & 1;
+    Values::VMOV = (read >> 5) & 1;
+    Values::CPFAIL = (read >> 4) & 1;
+    Values::UVLO = (read >> 3) & 1;
+    Values::OTS = (read >> 2) & 1;
+    Values::CPOC = (read >> 1) & 1;
+    Values::OCP = (read & 1;
+}
+
+void parseReg00(int read){
+    Values::AG_SETPT = read >> 12;
+    Values::ENPOL = (read & 2048) >> 11
+    Values::DIRPOL = (read & 1024) >> 10
+    Values::BRKPOL = (read & 512) >> 9
+    Values::SYNRECT  =(read & 256) >> 8
+    Values::PWMF = (read & 192)>> 6
+    Values::SPDMODE = (read & 48)>> 4
+    Values::FGSEL = (read & 12)>> 2
+    Values::BRKMOD = (read & 2) >> 1;
+    Values::RETRY = read & 1;
+
+}
+
+void parseReg01 (int read){
+     Values::ADVANCE = read;
+}
+
+void parseReg02(int read){
+     Values::SPDREVS  = (read >> 8 ) & 255;
+     Values::MINSPD = (read ) & 255;
+}
+
+void parseReg03(int read){
+    Values::BASIC = (read >> 15) & 1;
+    Values::SPEDTH = (read >> 12) & 7;
+    Values::MOD120= read & 4095;
+}
+
+void parseReg04(int read){
+    Values::LRTIME = (read >> 14) & 3;
+    Values::HALLRST = (read >> 12) & 3;
+    Values::DELAY = (read >> 11) & 1;
+    Values::AUTOADV = (read >> 10) & 1;
+    Values::AUTOGAIN = (read >> 9) & 1;
+    Values::ENSINE = (read >> 8) & 1;
+    Values::TDRIVE = (read >> 6) & 3;
+    Values::DTIME = (read >> 3) & 7;
+    Values::IDRIVE = (read & )7;
+}
+
+void parseReg05(int read){
+    Values::INTCLK = (read >> 12) & 7;
+    Values::SPDGAIN= (read ) & 1023;
+}
+
+void parseReg06(int read){
+    Values::HALLPOL= (read >> 15) & 1;
+    Values::BYPFILT = (read >> 12) & 1;
+    Values::FILK1= (read ) & 1023;
+}
+
+void parseReg07(int read){
+    Values::FILK2 = (read ) ;
+}
+
+void parseReg08(int read){
+    Values::BYPCOMP  = (read >> 12) & 1;
+    Values::COMK1 = (read ) & 1023;
+}
+
+void parseReg09(int read){
+    Values::AA_SETPT  = (read >> 12) & 15;
+    Values::COMK2 = (read ) & 1023;
+}
+
+void parseReg0A(int read){
+    Values::OCPDEG  = (read >> 14) & 3;
+    Values::OCPTH  = (read >> 12) & 3;
+    Values::OVTH  = (read >> 11) & 1;
+    Values::VREG_EN  = (read >> 10) & 1;
+    Values::LOOPGAIN = (read ) & 255;
+}

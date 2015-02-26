@@ -89,18 +89,18 @@ String ModeString[50] = {
 
 
 //Register Addresses
-const byte AR00 = B00000000;
-const byte AR01 = B00000001;
-const byte AR02 = B00000010;
-const byte AR03 = B00000011;
-const byte AR04 = B00000100;
-const byte AR05 = B00000101;
-const byte AR06 = B00000110;
-const byte AR07 = B00000111;
-const byte AR08 = B00001000;
-const byte AR09 = B00001001;
-const byte AR0A = B00001010;
-const byte AR0B = B00001011;
+byte AR00 = B00000000;
+byte AR01 = B00000001;
+byte AR02 = B00000010;
+byte AR03 = B00000011;
+byte AR04 = B00000100;
+byte AR05 = B00000101;
+byte AR06 = B00000110;
+byte AR07 = B00000111;
+byte AR08 = B00001000;
+byte AR09 = B00001001;
+byte AR0A = B00001010;
+byte AR0B = B00001011;
 byte AR2A = B00101010;
 
 //Read/Write Commands
@@ -198,6 +198,71 @@ int ReadFault(){
   return DataRec;
 }
 
+void readAll(){
+    parseReg00(ReadRegister(AR00));
+    parseReg01(ReadRegister(AR01));
+    parseReg02(ReadRegister(AR02));
+    parseReg03(ReadRegister(AR03));
+    parseReg04(ReadRegister(AR04));
+    parseReg05(ReadRegister(AR05));
+    parseReg06(ReadRegister(AR06));
+    parseReg07(ReadRegister(AR07));
+    parseReg08(ReadRegister(AR08));
+    parseReg09(ReadRegister(AR09));
+    parseReg0A(ReadRegister(AR0A));
+    parseReg0B(ReadRegister(AR0B));
+    parseReg2A(ReadRegister(AR2A));
+
+    Serial.println( String ( Values::AG_SETPT ) );
+    Serial.println( String ( Values::ENPOL ) );
+    Serial.println( String ( Values::DIRPOL ) );
+    Serial.println( String ( Values::BRKPOL ) );
+    Serial.println( String ( Values::SYNRECT ) );
+    Serial.println( String ( Values::PWMF ) );
+    Serial.println( String ( Values::SPDMODE ) );
+    Serial.println( String ( Values::FGSEL ) );
+    Serial.println( String ( Values::BRKMOD ) );
+    Serial.println( String ( Values::RETRY ) );
+    Serial.println( String ( Values::ADVANCE ) );
+    Serial.println( String ( Values::SPDREVS ) );
+    Serial.println( String ( Values::MINSPD ) );
+    Serial.println( String ( Values::BASIC ) );
+    Serial.println( String ( Values::SPEDTH ) );
+    Serial.println( String ( Values::MOD120 ) );
+    Serial.println( String ( Values::LRTIME ) );
+    Serial.println( String ( Values::HALLRST ) );
+    Serial.println( String ( Values::DELAY ) );
+    Serial.println( String ( Values::AUTOADV ) );
+    Serial.println( String ( Values::AUTOGAIN ) );
+    Serial.println( String ( Values::ENSINE ) );
+    Serial.println( String ( Values::TDRIVE ) );
+    Serial.println( String ( Values::DTIME ) );
+    Serial.println( String ( Values::IDRIVE ) );
+    Serial.println( String ( Values::INTCLK ) );
+    Serial.println( String ( Values::SPDGAIN ) );
+    Serial.println( String ( Values::HALLPOL ) );
+    Serial.println( String ( Values::BYPFILT ) );
+    Serial.println( String ( Values::FILK1 ) );
+    Serial.println( String ( Values::FILK2 ) );
+    Serial.println( String ( Values::BYPCOMP ) );
+    Serial.println( String ( Values::COMK1 ) );
+    Serial.println( String ( Values::AA_SETPT ) );
+    Serial.println( String ( Values::COMK2 ) );
+    Serial.println( String ( Values::OCPDEG ) );
+    Serial.println( String ( Values::OCPTH ) );
+    Serial.println( String ( Values::OVTH ) );
+    Serial.println( String ( Values::VREG_EN ) );
+    Serial.println( String ( Values::LOOPGAIN ) );
+    Serial.println( String ( Values::SPED ) );
+    Serial.println( String ( Values::RLOCK ) );
+    Serial.println( String ( Values::VMOV ) );
+    Serial.println( String ( Values::CPFAIL ) );
+    Serial.println( String ( Values::UVLO ) );
+    Serial.println( String ( Values::OTS ) );
+    Serial.println( String ( Values::CPOC ) );
+    Serial.println( String ( Values::OCP ) );
+}
+
 void loop(){
   int inByte;
   Registers mode;
@@ -244,7 +309,10 @@ void loop(){
                       break;
                       
                     case 13:
-                      ReadFault();                    }
+                        ReadFault();
+                    case 14:
+                        readAll();
+                }
             }
             ModeSelect=false;
             break; //end register update

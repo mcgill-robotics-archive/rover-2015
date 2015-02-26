@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Wed Feb 25 19:00:56 2015
+# Created: Wed Feb 25 20:17:02 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(796, 840)
+        MainWindow.resize(796, 843)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout_4 = QtGui.QGridLayout(self.centralwidget)
@@ -567,6 +567,9 @@ class Ui_MainWindow(object):
         self.fault = QtGui.QPushButton(self.centralwidget)
         self.fault.setObjectName(_fromUtf8("fault"))
         self.gridLayout_2.addWidget(self.fault, 1, 5, 1, 1)
+        self.readAll = QtGui.QPushButton(self.centralwidget)
+        self.readAll.setObjectName(_fromUtf8("readAll"))
+        self.gridLayout_2.addWidget(self.readAll, 0, 5, 1, 1)
         self.verticalLayout_49.addLayout(self.gridLayout_2)
         self.gridLayout_4.addLayout(self.verticalLayout_49, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -677,4 +680,5 @@ class Ui_MainWindow(object):
         self.DISABLE.setText(_translate("MainWindow", "Disable", None))
         self.RESET.setText(_translate("MainWindow", "Reset", None))
         self.fault.setText(_translate("MainWindow", "Read Fault", None))
+        self.readAll.setText(_translate("MainWindow", "Read All Reg", None))
 
