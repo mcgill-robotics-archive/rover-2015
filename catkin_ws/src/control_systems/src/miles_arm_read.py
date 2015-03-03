@@ -16,7 +16,10 @@ def distance(x,y,z=0):
 
 #arctangent function that adjusts based on
 #what quadrant it should be in
-def ArcTan(y, x):
+
+#function will not return an angle 
+#greater in magnitude than pi
+def ArcTan(x, y):
 	if x == 0:
 		if y > 0:
 			return pi/2
@@ -26,12 +29,37 @@ def ArcTan(y, x):
 		if y > 0: #correct quadrant (1)
 			return initial
 		#incorrect (3)
-		return initial + pi
+		return initial - pi
 	else:
-		if y < 0: #correct quadrant (4) (adjusted for +ve angle)
-			return initial + 2*pi
+		if y < 0: #correct quadrant (4)
+			return initial
 		#incorrect (2) 
 		return initial + pi
+
+
+#Some basic vector geometry functions:
+def dot(u,v):
+	total = 0
+	for x,y in zip(u,v):
+		total+=x*y
+	return total
+
+def project(u,v):
+	mag = 0
+	for x in v:
+		mag += x**2
+	scalar = dot(u,v)/mag
+	result = []
+	for x in v:
+		result.append(x*scalar)
+	return result
+
+def reflect(u,v):
+	projection = project(u,v)
+	result = []
+	for x,y in zip(u,projection):
+		result.append(2*y - x)
+	return result
 
 #function will give two sets of angles for the robotic arm (both valid)
 #, when told which point in the xy plane needs to be reached
@@ -61,8 +89,8 @@ def possibleAngles (x, y):
 	angles[0][1] = 180/pi * -ArcTan(-2*a1**2+preCalculated1,-preCalculated2/sgn(y))
 
 	#remaining angles are a reflection in the direction vector to the point
-	angles[1][0] = angles[0][0]
+	angles[1][0] = 2*ArcTan(x,y)-angles[0][0]
 	angles[1][1] = -angles[0][1]
 	return angles
 
-print possibleAngles(0,2)
+print possibleAngles(sqrt(2),sqrt(2)-0.1)
