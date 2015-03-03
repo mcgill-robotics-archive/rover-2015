@@ -179,10 +179,9 @@ def steer(vBody, wBody):
 #also note this does not respect the max angle of the wheel
 #######################
 def pointTurn(wBody):
-	if abs(wBody) < zero:
-		#if no velocity, stop motion and keep angles
-		return stop()
 	wBody = float(wBody)
+	#movement may occur to position wheels even if 
+	#robot is not moving around
 	movement = True
 	#wheels have specific angle - all of them should form a circle together
 	pfsa = pointSteeringAngle #forms circle
@@ -192,15 +191,25 @@ def pointTurn(wBody):
 	prsa = -pfsa
 	srsa = pfsa
 
-	r = pointSteeringRadius
-	v = wBody*r #linear velocity of each wheel
+	if abs(wBody) < zero:
+		#if no velocity, return angles and nothing else
+		pfrv = 0
+		sfrv = 0
+		pmrv = 0
+		smrv = 0
+		prrv = 0
+		srrv = 0
+	else:
+		#configure speeds
+		r = pointSteeringRadius
+		v = wBody*r #linear velocity of each wheel
 
-	pfrv = v/R #match angular velocity to rotation of wheel
-	sfrv = -pfrv #should all move in circle
-	pmrv = wBody*B/R #same angular velocity
-	smrv = -pmrv
-	prrv = pfrv
-	srrv = -pfrv	
+		pfrv = v/R #match angular velocity to rotation of wheel
+		sfrv = -pfrv #should all move in circle
+		pmrv = wBody*B/R #same angular velocity
+		smrv = -pmrv
+		prrv = pfrv
+		srrv = -pfrv	
 	#I split them up to stay within 80 columns 
 	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
 	#add more values
