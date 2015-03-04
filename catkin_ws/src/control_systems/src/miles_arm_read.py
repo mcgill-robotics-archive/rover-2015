@@ -25,8 +25,8 @@ def ArcTan(x, y):
 			return pi/2
 		return 3*pi/2
 	initial = atan(y/x)
-	if initial > 0:
-		if y > 0: #correct quadrant (1)
+	if initial >= 0:
+		if y >= 0: #correct quadrant (1)
 			return initial
 		#incorrect (3)
 		return initial - pi
@@ -89,8 +89,11 @@ def possibleAngles (x, y):
 	angles[0][1] = 180/pi * -ArcTan(-2*a1**2+preCalculated1,-preCalculated2/sgn(y))
 
 	#remaining angles are a reflection in the direction vector to the point
-	angles[1][0] = 2*ArcTan(x,y)-angles[0][0]
+	angles[1][0] = 180/pi * ArcTan(
+		x*(preCalculated1)+(y*preCalculated2)/sgn(y),
+		y*(preCalculated1)-(x*preCalculated2)/sgn(y))
+
 	angles[1][1] = -angles[0][1]
 	return angles
 
-print possibleAngles(sqrt(2),sqrt(2)-0.1)
+print possibleAngles(0,1)
