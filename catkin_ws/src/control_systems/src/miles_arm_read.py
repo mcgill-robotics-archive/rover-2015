@@ -6,15 +6,15 @@ from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = 1#rospy.get_param('control/ln_upperarm',1)
+a1 = rospy.get_param('control/ln_upperarm',1)
 #a2 is the length of the forearm (attached to hand)
-a2 = 1#rospy.get_param('control/ln_forearm',1)
+a2 = rospy.get_param('control/ln_forearm',1)
 
 #bounds on forearm and upperarm angles
 forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-pi)
 forearmUpperBound = rospy.get_param('control/bound_upper_forearm',pi)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',pi)
+upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi/2)
+upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',3*pi/4)
 orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-pi/2)
 orientationUpperBound = rospy.get_param('control/bound_upper_orientation',pi/2)
 
@@ -80,6 +80,7 @@ class ArmControlReader(object):
 		while not rospy.is_shutdown():
 			#publish to topic
 			self.pubArm.publish(self.angles)
+			rospy.loginfo(self.angles)
 			#next iteration
 			r.sleep()
 
