@@ -6,78 +6,82 @@ from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm',1)
+a1 = 1#rospy.get_param('control/ln_upperarm',1)
 #a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm',1)
+a2 = 1#rospy.get_param('control/ln_forearm',1)
 
-forearmLowerBound = pi/6
-forearmUpperBound = 5*pi/4
-upperarmLowerBound = -pi/2
-upperarmUpperBound = pi/2
+#bounds on forearm and upperarm angles
+forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-pi)
+forearmUpperBound = rospy.get_param('control/bound_upper_forearm',pi)
+upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi)
+upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',pi)
+orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-pi/2)
+orientationUpperBound = rospy.get_param('control/bound_upper_orientation',pi/2)
+
+#max is not truely the max, but forms a box for ease of comprehension
+maxExtension = sqrt(a1**2+a2**2)
 
 
 class ArmControlReader(object):
-    def __init__ (self):
-        #initiate node
-        rospy.init_node('arm_reader')
-        #publish arm settings to this topic
-        self.pubArm = rospy.Publisher('/arm',ArmAngles,queue_size=10,latch=10)
-        #settings to be read in
-        self.settings = ArmMotion()
-        #set values to off
-        self.settings.x = 0
-        self.settings.y = 0
-        self.settings.theta = 0
-        self.settings.on = False
-        #angles:
-        #angle at base
-        self.angles = ArmAngles()
-        # set all angles to zero
-        self.angles.shoulderOrientation = 0
-        self.angles.shoulderElevation = 0
-        self.angles.elbow = 0
-        self.angles.wristOrientation = 0
-        self.angles.wristElevation = 0
+	def __init__ (self):
+		#initiate node
+		rospy.init_node('arm_reader')
+		#publish arm settings to this topic
+		self.pubArm = rospy.Publisher('/arm',ArmAngles,queue_size=10,latch=10)
+		#settings to be read in
+		self.settings = ArmMotion()
+		#set values to off
+		self.settings.x = 0
+		self.settings.y = 0
+		self.settings.theta = 0
+		self.settings.on = False
+		#angles:
+		#angle at base
+		self.angles = ArmAngles()
+		# set all angles to zero
+		self.angles.shoulderOrientation = 0
+		self.angles.shoulderElevation = 0
+		self.angles.elbow = 0
+		self.angles.wristOrientation = 0
+		self.angles.wristElevation = 0
 
-        rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
-            queue_size=10)
+		rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
+			queue_size=10)
 
-    def update_settings(self,msg):
-        #import readings into object
-        self.settings.x = msg.x
-        self.settings.y = msg.y
-        #ADJUST BOUNDS HERE!!!
-        self.settings.on = msg.on
+	def update_settings(self,msg):
+		#import readings into object
+		self.settings.x = msg.x
+		self.settings.y = msg.y
+		if msg.theta >= orientationLowerBound and\
+			msg.theta <= orientationUpperBound:
 
-        #calculate new angles for robotic arm
-        #these are the angles for movement in the x-y plane
-        newSetting = nextAngle(
-            (self.angles.shoulderElevation,self.angles.elbow),
-            self.settings.x,self.settings.y)
+			self.settings.theta = msg.theta
+		self.settings.on = msg.on
 
-        #if new angle is good, update
-        if newSetting[1]:
-        	(self.angles.shoulderElevation,
-        		self.angles.elbow) = newSetting[0]
+		#calculate new angles for robotic arm
+		#these are the angles for movement in the x-y plane
+		newSetting = nextAngle(
+			(self.angles.shoulderElevation,self.angles.elbow),
+			self.settings.x,self.settings.y)
 
-        #this is the angle of the x-y plane relative to the forward direction
-        #of the robot
-        newOrientation = msg.theta
-        if newOrientation <= pi/2 and newOrientation >= -pi/2:
-        	self.angles.shoulderOrientation = self.settings.theta
+		##if new angle is good, update
+		if newSetting[1]:
+			self.angles.shoulderElevation = newSetting[0][0]
+			self.angles.elbow = newSetting[0][1]
+        
+		#this is the angle of the x-y plane relative to the forward direction
+		#of the robot
+		self.angles.shoulderOrientation = self.settings.theta
 
     #function will publish at 60Hz
-    def run(self):
-        r = rospy.Rate(60)
-        #continue until quit
-        while not rospy.is_shutdown():
-            #publish to topic
-            self.pubArm.publish(self.angles)
-            #next iteration
-            r.sleep()
-
-
-
+	def run(self):
+		r = rospy.Rate(60)
+		#continue until quit
+		while not rospy.is_shutdown():
+			#publish to topic
+			self.pubArm.publish(self.angles)
+			#next iteration
+			r.sleep()
 
 def sgn(x):
 	if x == 0:
@@ -151,14 +155,14 @@ def possibleAngles (x, y):
 	preCalculated1 = a1**2-a2**2+x**2+y**2
 	preCalculated2 = sqrt(-a1**4-(-a2**2+x**2+y**2)**2+2*a1**2*(a2**2+x**2+y**2))
 	#real nasty equations to get angles
-	angles[0][0] = 180/pi * ArcTan(
+	angles[0][0] = ArcTan(
 		x*preCalculated1 - y*preCalculated2/sgn(y),
 		y*preCalculated1 + x*preCalculated2/sgn(y))
 
-	angles[0][1] = 180/pi * -ArcTan(-2*a1**2+preCalculated1,-preCalculated2/sgn(y))
+	angles[0][1] = -ArcTan(-2*a1**2+preCalculated1,-preCalculated2/sgn(y))
 
 	#other set of angles are a reflection in the direction vector to the point
-	angles[1][0] = 180/pi * ArcTan(
+	angles[1][0] = ArcTan(
 		x*(preCalculated1)+(y*preCalculated2)/sgn(y),
 		y*(preCalculated1)-(x*preCalculated2)/sgn(y))
 	#simple calculation for opposing angle on forearm :)
@@ -168,7 +172,7 @@ def possibleAngles (x, y):
 #get next reasonable angles for the arm
 #will return angles, and boolean to say
 #whether arm should stop or not
-def nextAngle(initialAngles, x, y, psi):
+def nextAngle(initialAngles, x, y):
 	#quick check for safety
 	if a1+a2 < distance(x,y):
 		#point is unreachable;
@@ -182,17 +186,20 @@ def nextAngle(initialAngles, x, y, psi):
 	set1good,set2good = False,False
 
 	#test if angles are in fact out of bounds
-	for x in range(0,2):
-		if angleset1[x][0] >= upperarmLowerBound and\
-			angleset1[x][0] <= upperarmUpperBound and\
-			angleset1[x][1] >= forearmLowerBound and\
-			angleset1[x][1] <= forearmUpperBound:
+	if angleset1[0] >= upperarmLowerBound and\
+		angleset1[0] <= upperarmUpperBound and\
+		angleset1[1] >= forearmLowerBound and\
+		angleset1[1] <= forearmUpperBound:
 
-			#if all angles in set are fine, declare the set okay
-			if x = 0:
-				set1good = True
-			else:
-				set2good = True
+		#if all angles in set are fine, declare the set okay
+		set1good = True
+
+	if angleset2[0] >= upperarmLowerBound and\
+		angleset2[0] <= upperarmUpperBound and\
+		angleset2[1] >= forearmLowerBound and\
+		angleset2[1] <= forearmUpperBound:
+
+		set2good = True
 
 	#if both sets are out of bounds,
 	if not set1good and not set2good:
@@ -205,17 +212,20 @@ def nextAngle(initialAngles, x, y, psi):
 		return [angleset2,True]
 
 	#if both are good, then find best angleset for current position
-
 	#get total angle deviation for each angle set
-	deviation1 = abs(initialAngles[0][0]-angleset1[0])
-	deviation1 += abs(initialAngles[0][1]-angleset1[1])
-	deviation2 = abs(initialAngles[0][0]-angleset2[0])
-	deviation2 += abs(initialAngles[1][1]-angleset2[1])
+	deviation1 = abs(initialAngles[0]-angleset1[0])
+	deviation1 += abs(initialAngles[1]-angleset1[1])
+	deviation2 = abs(initialAngles[0]-angleset2[0])
+	deviation2 += abs(initialAngles[1]-angleset2[1])
 
 	#if first set is closer to current position, return it
 	if deviation1 <= deviation2:
 		return [angleset1,True]
 	return [angleset2,True]
 
-#example code
-print nextAngle([[0,0],[0,0]],0,2)
+if __name__ == '__main__':
+    print "Initializing Node"
+    reader1 = ArmControlReader()
+    print "Running Node"
+    reader1.run()
+    rospy.spin()

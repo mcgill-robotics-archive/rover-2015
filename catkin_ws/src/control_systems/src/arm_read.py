@@ -92,9 +92,6 @@ class ArmControlReader(object):
             #next iteration
             r.sleep()
 
-
-
-
 #xi and yi are always between 0 and 1 (they are the fraction)
 def getArmExtension (xi, yi, tht1_0, tht2_0):
     #since xi and yi are fractions, x and y will give the actual extension
