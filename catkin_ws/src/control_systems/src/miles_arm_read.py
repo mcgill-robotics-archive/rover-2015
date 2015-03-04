@@ -5,6 +5,11 @@ a1 = 1
 #a2 is the length of the forearm (attached to hand)
 a2 = 1
 
+forearmLowerBound = pi/6
+forearmUpperBound = 5*pi/4
+upperarmLowerBound = -pi/2
+upperarmUpperBound = pi/2
+
 def sgn(x):
 	if x == 0:
 		return 1
@@ -91,20 +96,50 @@ def possibleAngles (x, y):
 	angles[1][1] = -angles[0][1]
 	return angles
 
-def nextAngle(initialAngles, x, y):
+#get next reasonable angles for the arm
+#will return angles, and boolean to say
+#whether arm should stop or not
+def nextAngle(initialAngles, x, y, psi):
+	#get possible angles to move to
 	(angleset1,angleset2) = possibleAngles(x,y)
+	#both sets are not good until tested
+	set1good,set2good = False,False
+
+	#test if angles are in fact out of bounds
+	for x in range(0,2):
+		if angleset1[x][0] >= upperarmLowerBound and\
+			angleset1[x][0] <= upperarmUpperBound and\
+			angleset1[x][1] >= forearmLowerBound and\
+			angleset1[x][1] <= forearmUpperBound:
+
+			#if all angles in set are fine, declare the set okay
+			if x = 0:
+				set1good = True
+			else:
+				set2good = True
+
+	#if both sets are out of bounds,
+	if not set1good and not set2good:
+		#return false for movement
+		return [[0,0],False]
+	#if only one is good, return that one
+	elif set1good and not set2good:
+		return [angleset1,True]
+	elif set2good and not set1good:
+		return [angleset2,True]
+
+	#if both are good, then find best angleset for current position
+
 	#get total angle deviation for each angle set
 	deviation1 = abs(initialAngles[0][0]-angleset1[0])
 	deviation1 += abs(initialAngles[0][1]-angleset1[1])
 	deviation2 = abs(initialAngles[0][0]-angleset2[0])
 	deviation2 += abs(initialAngles[1][1]-angleset2[1])
 
-	#need a check for bounds - and readjustment to put into maximum bounds
-
-
-	#if both are within bounds
+	#if first set is closer to current position, return it
 	if deviation1 <= deviation2:
-		return angleset1
-	return angleset2
+		return [angleset1,True]
+	return [angleset2,True]
 
+#example code
 print nextAngle([[0,0],[0,0]],0,2)
