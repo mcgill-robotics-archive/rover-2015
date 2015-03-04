@@ -91,4 +91,20 @@ def possibleAngles (x, y):
 	angles[1][1] = -angles[0][1]
 	return angles
 
-print possibleAngles(2,0)
+def nextAngle(initialAngles, x, y):
+	(angleset1,angleset2) = possibleAngles(x,y)
+	#get total angle deviation for each angle set
+	deviation1 = abs(initialAngles[0][0]-angleset1[0])
+	deviation1 += abs(initialAngles[0][1]-angleset1[1])
+	deviation2 = abs(initialAngles[0][0]-angleset2[0])
+	deviation2 += abs(initialAngles[1][1]-angleset2[1])
+
+	#need a check for bounds - and readjustment to put into maximum bounds
+
+
+	#if both are within bounds
+	if deviation1 <= deviation2:
+		return angleset1
+	return angleset2
+
+print nextAngle([[0,0],[0,0]],0,2)
