@@ -68,17 +68,12 @@ def possibleAngles (x, y):
 	angles = [[0.,0.],[0.,0.]]
 	if distance(x,y) > a1+a2:
 		return angles
-	#else, compute normally
+	#else, compute normally...
+
+
 	#the following are the equations for each angle, computed by mathematica
-	"""
-	{{ArcTan(x*(a1^2 - a2^2 + x^2 + y^2) - (y*sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2)))/Sign(y), 
-	y*(a1^2 - a2^2 + x^2 + y^2) + (x*sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2)))/Sign(y)), 
-	-ArcTan(-a1^2 - a2^2 + x^2 + y^2, -(sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2))/Sign(y)))}, 
-	{ArcTan(x*(a1^2 - a2^2 + x^2 + y^2) + (y*sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2)))/Sign(y), 
-	y*(a1^2 - a2^2 + x^2 + y^2) - (x*sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2)))/Sign(y)), 
-	-ArcTan(-a1^2 - a2^2 + x^2 + y^2, sqrt(-a1^4 - (-a2^2 + x^2 + y^2)^2 + 2*a1^2*(a2^2 + x^2 + y^2))/Sign(y))}}
-	"""
-	#reducing reduntant calculation
+
+	#variables to reduce reduntant calculation
 	preCalculated1 = a1**2-a2**2+x**2+y**2
 	preCalculated2 = sqrt(-a1**4-(-a2**2+x**2+y**2)**2+2*a1**2*(a2**2+x**2+y**2))
 	#real nasty equations to get angles
@@ -88,12 +83,12 @@ def possibleAngles (x, y):
 
 	angles[0][1] = 180/pi * -ArcTan(-2*a1**2+preCalculated1,-preCalculated2/sgn(y))
 
-	#remaining angles are a reflection in the direction vector to the point
+	#other set of angles are a reflection in the direction vector to the point
 	angles[1][0] = 180/pi * ArcTan(
 		x*(preCalculated1)+(y*preCalculated2)/sgn(y),
 		y*(preCalculated1)-(x*preCalculated2)/sgn(y))
-
+	#simple calculation for opposing angle on forearm :)
 	angles[1][1] = -angles[0][1]
 	return angles
 
-print possibleAngles(0,1)
+print possibleAngles(2,0)
