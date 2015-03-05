@@ -1,20 +1,20 @@
 #!/usr/bin/python
 
-from math import sqrt, atan, pi
+from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm',1)
+a1 = rospy.get_param('control/ln_upperarm',0.5)
 #a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm',1)
+a2 = rospy.get_param('control/ln_forearm',0.5)
 
 #bounds on forearm and upperarm angles
 forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-pi)
 forearmUpperBound = rospy.get_param('control/bound_upper_forearm',pi)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi/2)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',3*pi/4)
+upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi/6)
+upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',pi/2+pi/6)
 orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-pi/2)
 orientationUpperBound = rospy.get_param('control/bound_upper_orientation',pi/2)
 
@@ -50,8 +50,34 @@ class ArmControlReader(object):
 
 	def update_settings(self,msg):
 		#import readings into object
-		self.settings.x = msg.x
-		self.settings.y = msg.y
+		#self.settings.x = msg.x
+		#self.settings.y = msg.y
+
+		#bounds for x and y are not necessarily a rectangle,
+		#so are hardcoded as functions of eachother
+		#test if in bounds
+		if msg.y >= 0 and msg.x >= 0 and distance(msg.x,msg.y)<=a1+a2:
+			self.settings.x = msg.x
+			self.settings.y = msg.y
+		elif msg.y < 0 and msg.x >= 0 and msg.x <= a1+a2:
+			self.settings.x = msg.x
+			self.settings.y = 0
+		elif msg.x < 0 and msg.y >= 0 and msg.y <= a1+a2:
+			self.settings.x = 0
+			self.settings.y = msg.y
+		#both below bounds
+		elif msg.x < 0 and msg.y < 0:
+			(self.settings.x,self.settings.y)=(0,0)
+		#out of bounds lengthwise
+		elif distance(msg.x,msg.y) > a1+a2:
+			#adjust for correct angle, but max boundary
+			angle = ArcTan(msg.x,msg.y)
+			#new settings are at boundary
+			self.settings.x = (a1+a2)*cos(angle)
+			self.settings.y = (a1+a2)*sin(angle)
+
+
+
 		if msg.theta >= orientationLowerBound and\
 			msg.theta <= orientationUpperBound:
 

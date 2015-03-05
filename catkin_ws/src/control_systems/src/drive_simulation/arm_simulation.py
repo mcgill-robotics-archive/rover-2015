@@ -271,7 +271,6 @@ class App(object):
 
             self.win.dispatch_events()
 
-
             self.world.PRotate(0,math.pi/2-self.arm.shoulderElevation,(0,150*a1))
             self.world.PRotate(1,math.pi/2-self.arm.shoulderElevation,(0,150*a1))
             self.world.pointRotate(1,self.arm.elbow)
