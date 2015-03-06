@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from math import sin, cos, tan, pi
+from math import sin, cos, tan, pi, sqrt
 import rospy
 from control_systems.msg import SetPoints,Moving,MotionType 
 from odometry.msg import RoverSpeed
@@ -12,6 +12,9 @@ D = rospy.get_param('control/wh_distance_fr',0.5)
 B = rospy.get_param('control/wh_base',0.4)
 R = rospy.get_param('control/wh_radius',0.165) # wheel radius [m]
 W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
+
+#distance from centre of rover to corner wheel
+cornerRadius = sqrt(D**2 + B**2)
 
 
 
@@ -55,14 +58,50 @@ class MovementReader(object):
 
 
 def findRoverSpeeds (settings):
-	totalVelocity = 0
-	totalVelocity += cos(settings.thetaFL)*settings.speedFL
-	totalVelocity += cos(settings.thetaFR)*settings.speedFR
-	totalVelocity += cos(settings.thetaRL)*settings.speedRL
-	totalVelocity += cos(settings.thetaRR)*settings.speedRR
-	averageVelocity = totalVelocity/4
+	cumulativeLinVelocity = 0
+	#linear velocity is predicted from average linear velocity of all
+	#four corner wheels
+	cumulativeLinVelocity += cos(settings.thetaFL)*settings.speedFL
+	cumulativeLinVelocity += cos(settings.thetaFR)*settings.speedFR
+	cumulativeLinVelocity += cos(settings.thetaRL)*settings.speedRL
+	cumulativeLinVelocity += cos(settings.thetaRR)*settings.speedRR
+	cumulativeLinVelocity += settings.speedML
+	cumulativeLinVelocity += settings.speedMR
+	#also factor in size of the wheel
+	averageLinVelocity = R*cumulativeLinVelocity/6
 
-	return (averageVelocity, 0)
+	#Next predict average position of rotational axis (on cross-section line)
+
+	#go through corner wheels, and draw line from each; find intersection point
+	#evaluate each and add to total evaluated (if one wheel perpindicular, 
+	#does not count)
+	evaluated = 0
+	cumulativeAngVelocity = 0
+	#test if angle is reasonable
+	if abs(settings.thetaFL) > 1e-5:
+		#get intersection point (treat cross-section like number line)
+		evaluated += 1
+		#distance to the wheel's rotational axis is D/sin(settings.thetaFL)
+		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaFL))/D
+	if abs(settings.thetaFR) > 1e-5:
+		evaluated += 1
+		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaFR))/D
+	if abs(settings.thetaRL) > 1e-5:
+		evaluated += 1
+		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaRL))/D
+	if abs(settings.thetaRR) > 1e-5:
+		evaluated += 1
+		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaRR))/D
+	#if any angle was slightly non-perpindicular
+	if evaluated > 0:
+		averageAngVelocity = R*cumulativeAngVelocity/evaluated
+	else:
+		averageAngVelocity = 0
+	
+	#also test for difference of two middle wheel speeds - use to get another
+
+
+	return (averageLinVelocity, averageAngVelocity)
 
 if __name__ == '__main__':
 	print "Initializing Node"
