@@ -11,12 +11,12 @@ a1 = rospy.get_param('control/ln_upperarm',0.6)
 a2 = rospy.get_param('control/ln_forearm',0.6)
 
 #bounds on forearm and upperarm angles
-forearmLowerBound = rospy.get_param('control/bound_lower_forearm',pi/18)
-forearmUpperBound = rospy.get_param('control/bound_upper_forearm',8*pi/18)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-30*pi/36)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',31*pi/36)
-orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-pi/2)
-orientationUpperBound = rospy.get_param('control/bound_upper_orientation',pi/2)
+forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forearmUpperBound = rospy.get_param('control/bound_upper_forearm',31*pi/36)
+upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',pi/18)
+upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+orientationUpperBound = rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
 #max is not truely the max, but forms a box for ease of comprehension
 maxExtension = sqrt(a1**2+a2**2)
@@ -90,9 +90,6 @@ class ArmControlReader(object):
 			(self.angles.shoulderElevation,self.angles.elbow),
 			self.settings.x,self.settings.y)
 
-		newSetting[0][0] = modAngle(newSetting[0][0])
-		newSetting[0][1] = modAngle(newSetting[0][1])
-
 
 		##if new angle is good, update
 		if newSetting[1]:
@@ -116,12 +113,11 @@ class ArmControlReader(object):
 
 #makes angle between -pi and pi
 def modAngle(x):
+	#if already good
 	if x >= -pi and x <= pi:
 		return x
-	elif x < -pi:
-		#turn x up until good
-	#turn x down until good
-	return x
+	#if not, modulate x value
+	return x - 2*pi * round(x/2./pi)
 
 
 def sgn(x):
@@ -223,6 +219,12 @@ def nextAngle(initialAngles, x, y):
 
 	#get possible angles to move to
 	(angleset1,angleset2) = possibleAngles(x,y)
+
+	angleset1[0] = modAngle(angleset1[0])
+	angleset1[1] = modAngle(angleset1[1])
+	angleset2[0] = modAngle(angleset2[0])
+	angleset2[1] = modAngle(angleset2[1])
+
 	#both sets are not good until tested
 	set1good,set2good = False,False
 
