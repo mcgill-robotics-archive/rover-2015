@@ -82,16 +82,16 @@ def findRoverSpeeds (settings):
 		#get intersection point (treat cross-section like number line)
 		evaluated += 1
 		#distance to the wheel's rotational axis is D/sin(settings.thetaFL)
-		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaFL))/D
+		cumulativeAngVelocity += settings.speedFL*sin(settings.thetaFL)/D
 	if abs(settings.thetaFR) > 1e-5:
 		evaluated += 1
-		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaFR))/D
+		cumulativeAngVelocity += settings.speedFL*sin(settings.thetaFR)/D
 	if abs(settings.thetaRL) > 1e-5:
 		evaluated += 1
-		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaRL))/D
+		cumulativeAngVelocity -= settings.speedFL*sin(settings.thetaRL)/D
 	if abs(settings.thetaRR) > 1e-5:
 		evaluated += 1
-		cumulativeAngVelocity += settings.speedFL*abs(sin(settings.thetaRR))/D
+		cumulativeAngVelocity -= settings.speedFL*sin(settings.thetaRR)/D
 	#if any angle was slightly non-perpindicular
 	if evaluated > 0:
 		averageAngVelocity = R*cumulativeAngVelocity/evaluated
