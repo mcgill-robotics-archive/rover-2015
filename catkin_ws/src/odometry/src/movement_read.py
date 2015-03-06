@@ -8,12 +8,12 @@ from odometry.msg import RoverSpeed
 
 # distance between wheels of: front and middle/middle and rear[m]
 D = rospy.get_param('control/wh_distance_fr',0.5)
-# distance between longitudinal axis and port/startboard wheels[m]
+# distance between longitudinal axis and port/starboard wheels[m]
 B = rospy.get_param('control/wh_base',0.4)
 R = rospy.get_param('control/wh_radius',0.165) # wheel radius [m]
 W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
 
-#distance from centre of rover to corner wheel
+#distance from center of rover to corner wheel
 cornerRadius = sqrt(D**2 + B**2)
 
 
@@ -73,7 +73,7 @@ def findRoverSpeeds (settings):
 	#Next predict average position of rotational axis (on cross-section line)
 
 	#go through corner wheels, and draw line from each; find intersection point
-	#evaluate each and add to total evaluated (if one wheel perpindicular, 
+	#evaluate each and add to total evaluated (if one wheel perpendicular, 
 	#does not count)
 	evaluated = 0
 	cumulativeAngVelocity = 0
@@ -92,7 +92,7 @@ def findRoverSpeeds (settings):
 	if abs(settings.thetaRR) > 1e-5:
 		evaluated += 1
 		cumulativeAngVelocity -= settings.speedFL*sin(settings.thetaRR)/D
-	#if any angle was slightly non-perpindicular
+	#if any angle was slightly non-perpendicular
 	if evaluated > 0:
 		averageAngVelocity = R*cumulativeAngVelocity/evaluated
 	else:
