@@ -76,6 +76,14 @@ class ArmControlReader(object):
 			self.settings.x = (a1+a2)*cos(angle)
 			self.settings.y = (a1+a2)*sin(angle)
 
+		##########################################################
+		#
+		#Eventually this part will have to predict the bounds based
+		#on the angle bounds of the arm joints
+		#
+		#
+		##########################################################
+
 
 
 		if msg.theta >= orientationLowerBound and\
