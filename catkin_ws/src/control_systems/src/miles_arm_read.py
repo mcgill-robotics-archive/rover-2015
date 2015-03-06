@@ -6,15 +6,15 @@ from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm',0.5)
+a1 = rospy.get_param('control/ln_upperarm',0.6)
 #a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm',0.5)
+a2 = rospy.get_param('control/ln_forearm',0.6)
 
 #bounds on forearm and upperarm angles
-forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-pi)
-forearmUpperBound = rospy.get_param('control/bound_upper_forearm',pi)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-pi/6)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',pi/2+pi/6)
+forearmLowerBound = rospy.get_param('control/bound_lower_forearm',pi/18)
+forearmUpperBound = rospy.get_param('control/bound_upper_forearm',8*pi/18)
+upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',-30*pi/36)
+upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',31*pi/36)
 orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-pi/2)
 orientationUpperBound = rospy.get_param('control/bound_upper_orientation',pi/2)
 
@@ -90,6 +90,10 @@ class ArmControlReader(object):
 			(self.angles.shoulderElevation,self.angles.elbow),
 			self.settings.x,self.settings.y)
 
+		newSetting[0][0] = modAngle(newSetting[0][0])
+		newSetting[0][1] = modAngle(newSetting[0][1])
+
+
 		##if new angle is good, update
 		if newSetting[1]:
 			self.angles.shoulderElevation = newSetting[0][0]
@@ -109,6 +113,16 @@ class ArmControlReader(object):
 			rospy.loginfo(self.angles)
 			#next iteration
 			r.sleep()
+
+#makes angle between -pi and pi
+def modAngle(x):
+	if x >= -pi and x <= pi:
+		return x
+	elif x < -pi:
+		#turn x up until good
+	#turn x down until good
+	return x
+
 
 def sgn(x):
 	if x == 0:
