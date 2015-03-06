@@ -17,7 +17,7 @@ W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
 
 class MovementReader(object):
 	def __init__(self):
-
+		rospy.init_node('movement_reader') #Name of this node
 		#wheel settings
 		self.settings = SetPoints()
 		#speeds of the rover
@@ -42,7 +42,7 @@ class MovementReader(object):
 		self.settings.speedRR = msg.speedRR
 
 		(self.speeds.linear,
-			self.speeds.angular) = findRoverSpeeds(settings)
+			self.speeds.angular) = findRoverSpeeds(self.settings)
 
 	def run(self):
 		#calculate required wheel angles, speeds
@@ -63,3 +63,10 @@ def findRoverSpeeds (settings):
 	averageVelocity = totalVelocity/4
 
 	return (averageVelocity, 0)
+
+if __name__ == '__main__':
+	print "Initializing Node"
+	speedReader = MovementReader()
+	print "Running Node"
+	speedReader.run()
+	rospy.spin()

@@ -52,6 +52,7 @@ find_package(Boost REQUIRED COMPONENTS date_time)
  add_message_files(
    FILES
    Tachometers.msg
+   RoverSpeed.msg
 #   Message2.msg
  )
 
