@@ -142,6 +142,8 @@ def distance(x,y,z=0):
 
 #function will not return an angle 
 #greater in magnitude than pi
+
+#models ArcTan(y/x)
 def ArcTan(x, y):
 	if x == 0:
 		if y > 0:
@@ -183,6 +185,11 @@ def reflect(u,v):
 	for x,y in zip(u,projection):
 		result.append(2*y - x)
 	return result
+
+#feed in cartesian coordinates and this function will convert it to
+#our polar/cartesian mix
+def convertCartesian(x, y, z):
+	return (distance(x,z),y,ArcTan(x,z))
 
 #function will give two sets of angles for the robotic arm (both valid)
 #, when told which point in the xy plane needs to be reached
