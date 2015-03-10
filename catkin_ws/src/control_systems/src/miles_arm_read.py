@@ -6,17 +6,17 @@ from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm',0.6)
+a1 = rospy.get_param('control/ln_upperarm',1)
 #a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm',0.6)
+a2 = rospy.get_param('control/ln_forearm',1)
 
 #bounds on forearm and upperarm angles
-forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forearmUpperBound = rospy.get_param('control/bound_upper_forearm',31*pi/36)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',pi/18)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-orientationUpperBound = rospy.get_param('control/bound_upper_orientation',7*pi/8)
+forearmLowerBound =     -pi #rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forearmUpperBound =      pi #rospy.get_param('control/bound_upper_forearm',31*pi/36)
+upperarmLowerBound =    -pi #rospy.get_param('control/bound_lower_upperarm',pi/18)
+upperarmUpperBound =     pi #rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+orientationLowerBound = -pi #rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+orientationUpperBound =  pi #rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
 #max is not truely the max, but forms a box for ease of comprehension
 maxExtension = sqrt(a1**2+a2**2)
@@ -35,6 +35,7 @@ class ArmControlReader(object):
 		self.settings.y = 0
 		self.settings.theta = 0
 		self.settings.on = False
+		self.settings.cartesian = False
 		#angles:
 		#angle at base
 		self.angles = ArmAngles()
@@ -52,6 +53,12 @@ class ArmControlReader(object):
 		#import readings into object
 		#self.settings.x = msg.x
 		#self.settings.y = msg.y
+		self.settings.cartesian = msg.cartesian
+		if self.settings.cartesian:
+			###########################################################################################
+			#needs protection against div/0
+			msg.x,msg.y,msg.theta = convertCartesian(msg.x,msg.y,msg.theta)
+
 
 		#bounds for x and y are not necessarily a rectangle,
 		#so are hardcoded as functions of eachother
@@ -142,6 +149,8 @@ def distance(x,y,z=0):
 
 #function will not return an angle 
 #greater in magnitude than pi
+
+#models ArcTan(y/x)
 def ArcTan(x, y):
 	if x == 0:
 		if y > 0:
@@ -183,6 +192,11 @@ def reflect(u,v):
 	for x,y in zip(u,projection):
 		result.append(2*y - x)
 	return result
+
+#feed in cartesian coordinates and this function will convert it to
+#our polar/cartesian mix
+def convertCartesian(x, y, z):
+	return (distance(x,z),y,ArcTan(x,z))
 
 #function will give two sets of angles for the robotic arm (both valid)
 #, when told which point in the xy plane needs to be reached
