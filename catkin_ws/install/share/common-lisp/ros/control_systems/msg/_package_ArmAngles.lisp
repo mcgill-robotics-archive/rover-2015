@@ -1,0 +1,12 @@
+(cl:in-package control_systems-msg)
+(cl:export '(SHOULDERORIENTATION-VAL
+          SHOULDERORIENTATION
+          SHOULDERELEVATION-VAL
+          SHOULDERELEVATION
+          ELBOW-VAL
+          ELBOW
+          WRISTORIENTATION-VAL
+          WRISTORIENTATION
+          WRISTELEVATION-VAL
+          WRISTELEVATION
+))

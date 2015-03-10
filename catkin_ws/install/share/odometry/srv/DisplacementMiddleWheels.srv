@@ -1,0 +1,4 @@
+float32 diffTachoLeft
+float32 diffTachoRight
+---
+geometry_msgs/Pose diffPosition
