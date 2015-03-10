@@ -6,17 +6,17 @@ from control_systems.msg import ArmMotion, ArmAngles
 from std_msgs.msg import String
 
 #a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm',0.6)
+a1 = rospy.get_param('control/ln_upperarm',1)
 #a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm',0.6)
+a2 = rospy.get_param('control/ln_forearm',1)
 
 #bounds on forearm and upperarm angles
-forearmLowerBound = rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forearmUpperBound = rospy.get_param('control/bound_upper_forearm',31*pi/36)
-upperarmLowerBound = rospy.get_param('control/bound_lower_upperarm',pi/18)
-upperarmUpperBound = rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-orientationLowerBound = rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-orientationUpperBound = rospy.get_param('control/bound_upper_orientation',7*pi/8)
+forearmLowerBound =     -pi #rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forearmUpperBound =      pi #rospy.get_param('control/bound_upper_forearm',31*pi/36)
+upperarmLowerBound =    -pi #rospy.get_param('control/bound_lower_upperarm',pi/18)
+upperarmUpperBound =     pi #rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+orientationLowerBound = -pi #rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+orientationUpperBound =  pi #rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
 #max is not truely the max, but forms a box for ease of comprehension
 maxExtension = sqrt(a1**2+a2**2)
@@ -57,7 +57,7 @@ class ArmControlReader(object):
 		if self.settings.cartesian:
 			###########################################################################################
 			#needs protection against div/0
-			msx.x,msg.y,msg.theta = convertCartesian(msg.x,msg.y,msg.theta)
+			msg.x,msg.y,msg.theta = convertCartesian(msg.x,msg.y,msg.theta)
 
 
 		#bounds for x and y are not necessarily a rectangle,

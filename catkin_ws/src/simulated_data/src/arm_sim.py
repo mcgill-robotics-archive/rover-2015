@@ -2,7 +2,7 @@
 #This program simulates control of a robotic arm, and publishes to 
 #the topic "cmd_arm"
 
-import rospy, math
+import rospy, math, time
 from control_systems.msg import ArmMotion
 
 def publish_arm_motion_continuous(simulation):
@@ -47,10 +47,26 @@ def publish_arm_motion_continuous(simulation):
 			r = rospy.Rate(60)
 			r.sleep()
 	elif simulation == 1:
-		armSettings.cartesian = False
+		armSettings.cartesian = True
+		#constant x,y settings
+		armSettings.x = 0.6
+		armSettings.y = 0.5
+		while not rospy.is_shutdown():
+			#move the arm along a line in front of the robot,
+			#cycling over time
+			armSettings.theta = math.sin(time.clock())
+
+			rospy.loginfo(armSettings)
+
+			armPublisher.publish(armSettings)
+			#60 Hz processing cycle
+			r = rospy.Rate(60)
+			r.sleep()
+
 
 if __name__ == '__main__':
 	try:
+		#decide which simulation to run
 		publish_arm_motion_continuous(1)
 	except KeyboardInterrupt:
 		print "Exit"
