@@ -35,6 +35,7 @@ class ArmControlReader(object):
 		self.settings.y = 0
 		self.settings.theta = 0
 		self.settings.on = False
+		self.settings.cartesian = False
 		#angles:
 		#angle at base
 		self.angles = ArmAngles()
@@ -52,6 +53,12 @@ class ArmControlReader(object):
 		#import readings into object
 		#self.settings.x = msg.x
 		#self.settings.y = msg.y
+		self.settings.cartesian = msg.cartesian
+		if self.settings.cartesian:
+			###########################################################################################
+			#needs protection against div/0
+			msx.x,msg.y,msg.theta = convertCartesian(msg.x,msg.y,msg.theta)
+
 
 		#bounds for x and y are not necessarily a rectangle,
 		#so are hardcoded as functions of eachother
