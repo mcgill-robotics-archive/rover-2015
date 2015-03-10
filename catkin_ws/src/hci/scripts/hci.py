@@ -30,6 +30,7 @@ class CentralUi(QtGui.QMainWindow):
 		self.controller = JoystickController()
 #		self.publisher = Publisher()
 		self.modeId = 0 
+		self.grip = 0
 
 		# feed 1 holders
 		self.__image1=None
@@ -170,7 +171,21 @@ class CentralUi(QtGui.QMainWindow):
 			angle = self.controller.a1
 			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
-			x=1;
+			x = -self.controller.a2
+			y = self.controller.a3
+			rotate = self.controller.a1
+			if self.grip == 0 :
+				if self.controller.b3 :
+					self.grip = 1
+				elif self.controller.b4 :
+					self.grip = -1
+			else :
+				if self.controller.b3 or self.controller.b4 :
+					self.grip = 0
+			grip = self.grip
+
+			self.publisher.publish_endEffector(x,y,rotate,grip)
+
 			#end effector mode
 			#use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
 
