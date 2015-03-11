@@ -6,7 +6,7 @@ from PyQt4 import QtCore, QtGui
 ##import publisher
 from JoystickController import JoystickController
 from VARIABLES import *
-#from publisher import Publisher
+from publisher import Publisher
 import pyqtgraph as pg
 
 import sys
@@ -19,7 +19,7 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist, Pose
-#from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose
 
 class CentralUi(QtGui.QMainWindow):
 	def __init__(self, parent=None):
@@ -28,7 +28,7 @@ class CentralUi(QtGui.QMainWindow):
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 		self.controller = JoystickController()
-#		self.publisher = Publisher()
+		self.publisher = Publisher()
 		self.modeId = 0 
 		self.grip = 0
 
@@ -167,8 +167,8 @@ class CentralUi(QtGui.QMainWindow):
 			self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
 		elif self.modeId == 1:
 			length = -self.controller.a2
-			height = self.controller.a3
-			angle = self.controller.a1
+			height = self.controller.a1
+			angle = self.controller.a3
 			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
 			x = -self.controller.a2
