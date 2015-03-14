@@ -1,0 +1,4 @@
+[submodule "rosserial"]
+    path=catkin_ws/src/rosserial
+    url=https://github.com/ros-drivers/rosserial.git
+
