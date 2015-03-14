@@ -5,21 +5,18 @@ from control_systems.msg import SetPoints
 from std_msgs.msg import Int16
 from odometry.msg import RoverSpeed
 
-1 = 10
-
-
 
 class GenerateReport():
     def __init__(self):
         filename = "report.xlsx"
         self.document = xlsxwriter.Workbook("report.xlsx")        
         self.graphSheet = self.document.add_worksheet('graphs')
-        self.dataSheet = self.document.add_worksheet('data')
-        self.dataSheetTimed = self.document.add_worksheet('timedData')
+        self.dataSheets = [self.document.add_worksheet('data'),
+            self.document.add_worksheet('timedData')]
         self.speeds = RoverSpeed()
       
-        self.rowIndex = 0
-        self.timeIndex = 0
+        self.index = [0,0]
+        self.graphs = 0
 
         battery1topic = rospy.get_param("battery1topic", "integers")
         rospy.init_node("excelBuilder", anonymous=False)
@@ -33,40 +30,39 @@ class GenerateReport():
         self.speeds = msg
 
     def recordSpeeds(self):
-        self.dataSheetTimed.write(self.timeIndex, 1, time.time())
-        self.dataSheetTimed.write(self.timeIndex, 2, self.speeds.linear)
-
-        self.timeIndex += 1
+        self.dataSheetTimed.write(self.index[1], 1, time.time())
+        self.dataSheetTimed.write(self.index[1], 2, self.speeds.linear)
+        self.dataSheetTimed.write(self.index[1], 3, self.speeds.angular)
+        self.index[1] += 1
 
     def recordBattery(self, batteryLevel):
-        self.dataSheet.write(self.rowIndex, 1, batteryLevel.data)
-        self.dataSheet.write(self.rowIndex, 2, 
+        self.dataSheet.write(self.index[0], 1, batteryLevel.data)
+        self.dataSheet.write(self.index[0], 2, 
             batteryLevel.data-1)
-        self.rowIndex += 1
+        self.index[0] += 1
 
 
-    def createGraph(self): 
-        batterySerie1 = ['data', 0, 1, self.rowIndex-1, 
-            1]  
-        batterySerie2 = ['data', 0, 2, self.rowIndex-1, 
-            2]  
-        gr1 = self.document.add_chart({'type': 'line'})
-        gr1.add_series({
-            'name':     'Battery 1',
-            'values':   batterySerie1
+    def createGraph(self, sheet, x, y, labelx, labely, title): 
+        serie1 = ['data', 0, x, self.index[sheet]-1,x] 
+        serie2 = ['data', 0, y, self.index[sheet]-1,y]  
+        gr = self.document.add_chart({'type': 'line'})
+        gr.add_series({
+            'name':     labelx,
+            'values':   serie1
             })
-        gr1.add_series({
-            'name':     'Battery 2',
-            'values':   batterySerie2
+        gr.add_series({
+            'name':     labely,
+            'values':   serie2
             })
         
-        # Add a chart title and some axis labels.
-        gr1.set_title ({'name': 'Battery Voltage'})
-        gr1.set_x_axis({'name': 'Time (s)'})
-        gr1.set_y_axis({'name': 'Volts'})
+        # Add a chfart title and some axis labels.
+        gr.set_title ({'name': title})
+        gr.set_x_axis({'name': labelx})
+        gr.set_y_axis({'name': labely})
 
         # Insert the chart into the dataSheet (with an offset).
-        self.graphSheet.insert_chart('A1', gr1)
+        self.graphSheet.insert_chart('graph'+str(self.graphs), gr)
+        self.graphs += 1
 
     def run(self):
         #calculate required wheel angles, speeds
@@ -81,7 +77,9 @@ class GenerateReport():
         self.close()
 
     def close(self):
-        self.createGraph()
+        #need to create graph for each relation we want to display
+        self.createGraph(1,1,2,"Time (s)", "Linear Speed (m/s)","Linear")
+        self.createGraph(1,1,3,"Time (s)", "Angular Speed (rad/s)","Angular")
         self.document.close()
         print "exit"
 
