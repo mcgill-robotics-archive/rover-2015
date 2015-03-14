@@ -17,6 +17,7 @@ class GenerateReport():
       
         self.index = [0,0]
         self.graphs = 0
+        self.startTime = time.time()
 
         battery1topic = rospy.get_param("battery1topic", "integers")
         rospy.init_node("excelBuilder", anonymous=False)
@@ -30,7 +31,7 @@ class GenerateReport():
         self.speeds = msg
 
     def recordSpeeds(self):
-        self.dataSheets[1].write(self.index[1], 1, time.time())
+        self.dataSheets[1].write(self.index[1], 1, time.time()-self.startTime)
         self.dataSheets[1].write(self.index[1], 2, self.speeds.linear)
         self.dataSheets[1].write(self.index[1], 3, self.speeds.angular)
         self.index[1] += 1
@@ -43,8 +44,8 @@ class GenerateReport():
 
 
     def createGraph(self, sheet, x, y, labelx, labely, title): 
-        serie1 = ['data', 0, x, self.index[sheet]-1,x] 
-        serie2 = ['data', 0, y, self.index[sheet]-1,y]  
+        serie1 = ['timedData', 0, x, self.index[sheet]-1,x] 
+        serie2 = ['timedData', 0, y, self.index[sheet]-1,y]  
         gr = self.document.add_chart({'type': 'line'})
         gr.add_series({
             'name':     labelx,

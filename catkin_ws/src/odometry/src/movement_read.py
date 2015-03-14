@@ -35,7 +35,7 @@ class MovementReader(object):
 			latch=10)
 
 	def push_speeds(self):
-
+            self.pubSpeeds.publish(self.speeds)
 
 	def update_wheels(self, msg):
 		#update all settings from wheels
