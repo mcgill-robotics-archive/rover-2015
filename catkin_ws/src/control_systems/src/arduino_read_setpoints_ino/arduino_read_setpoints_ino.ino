@@ -4,8 +4,7 @@
  */
 
 #include <ros.h>
-#include <ros/time.h>
-#include <std_msgs/Time.h>
+
 #include <control_systems/SetPoints.h>
 
 
@@ -97,10 +96,10 @@ void update_wheel_values(const control_systems::SetPoints& cmd_msg)
 
   //angles
   String steering = "S110";
-  int thetaFL = abs(90.*(cmd_msg.thetaFL)/pi) + 90;
-  int thetaRL = abs(90.*(cmd_msg.thetaRL)/pi) + 90;
-  int thetaRR = abs(90.*(cmd_msg.thetaRR)/pi) + 90;
-  int thetaFR = abs(90.*(cmd_msg.thetaFR)/pi) + 90;
+  int thetaFL = abs(90.*(cmd_msg.thetaFL)/pi + 45);
+  int thetaRL = abs(90.*(cmd_msg.thetaRL)/pi + 45);
+  int thetaRR = abs(90.*(cmd_msg.thetaRR)/pi + 45);
+  int thetaFR = abs(90.*(cmd_msg.thetaFR)/pi + 45);
 
   if (thetaFL > 90){
     steering = steering + "90";
@@ -153,9 +152,8 @@ void update_wheel_values(const control_systems::SetPoints& cmd_msg)
   nh.loginfo(middle.c_str());
   nh.loginfo(rear.c_str());
   nh.loginfo(steering.c_str());
-  nh.loginfo("?");
 }
-ros::Subscriber<control_systems::SetPoints> wheels_sub("/wheels",&update_wheel_values,10);
+ros::Subscriber<control_systems::SetPoints> wheels_sub("/wheels",&update_wheel_values);
 
 void setup()
 {
