@@ -31,6 +31,12 @@ class MovementReader(object):
 		rospy.Subscriber('/wheels',SetPoints,self.update_wheels,
 			queue_size=10)
 
+		self.pubSpeeds = rospy.Publisher('/odo_speeds',RoverSpeed,queue_size=10,
+			latch=10)
+
+	def push_speeds(self):
+
+
 	def update_wheels(self, msg):
 		#update all settings from wheels
 		self.settings.thetaFL = msg.thetaFL
@@ -52,6 +58,8 @@ class MovementReader(object):
 		r = rospy.Rate(60)
         #continue endlessly
 		while not rospy.is_shutdown():
+			#output results
+			self.pubSpeeds.publish(self.speeds)
 			#log rospy speed
 			rospy.loginfo(self.speeds)
 			r.sleep()

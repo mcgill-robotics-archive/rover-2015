@@ -59,9 +59,9 @@ void update_wheel_values(const control_systems::SetPoints& cmd_msg)
   middle = middle + "Z";
   rear = rear + "Z";
   
-  //Serial1.print(front);
-  //Serial1.print(middle);
-  //Serial1.print(rear);
+  Serial1.print(front);
+  Serial1.print(middle);
+  Serial1.print(rear);
   nh.loginfo(front.c_str());
   nh.loginfo(middle.c_str());
   nh.loginfo(rear.c_str());

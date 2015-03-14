@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import math #for trig functions
-from control_systems.msg import SetPoints #for swerve drive
+from control_systems.msg import SetPoints
 import rospy #to export parameters
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
