@@ -1,6 +1,6 @@
-control/wh_distance_fr: 0.5 #distance between middle and front wheel
-control/wh_distancd_bk: 0.5 #homologue for back wheel
-control/wh_base: 0.4 #wheel base (half robot width)
+control/wh_distance_fr: 0.421005 #distance between middle and front wheel
+control/wh_distancd_bk: 0.421005 #homologue for back wheel
+control/wh_base: 0.372745 #wheel base (half robot width)
 control/wh_radius: 0.1016 # wheel radius
 control/wh_width: 0.15 # wheel width
 
