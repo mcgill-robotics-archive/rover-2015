@@ -21,4 +21,4 @@ class KeyMapping(object):
     
 class misc_vars(object):
     GUI_UPDATE_PERIOD = 10
-    controller_updateFrequency = 10
+    controller_updateFrequency = 100
