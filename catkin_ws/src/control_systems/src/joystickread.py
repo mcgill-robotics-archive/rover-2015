@@ -67,7 +67,7 @@ class DualJoystickReader(object):
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
-                print self.value,self.motion.SWERVE 
+                #print self.value,self.motion.SWERVE 
 		#if not swerving, turn off swerving bool
                 if self.swerving.data and not self.motion.SWERVE:
 			self.swerving.data = False
@@ -173,7 +173,7 @@ class DualJoystickReader(object):
 	#function publishes
 	def run(self):
         #calculate required wheel angles, speeds
-		r = rospy.Rate(60)
+		r = rospy.Rate(10)
         #continue endlessly
 		while not rospy.is_shutdown():
 			logMessage = String()
