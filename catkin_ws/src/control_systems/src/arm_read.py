@@ -22,7 +22,7 @@ from std_msgs.msg import String
 #length of first part of arm
 a1 = rospy.get_param('control/ln_upperarm',1)
 #length of second part of arm
-a2 = rospy.get_param('control/ln_forearm',0.5)
+a2 = rospy.get_param('control/ln_forearm',1)
 
 ############################################
 #if lengths are same, gives div by zero 
@@ -91,9 +91,6 @@ class ArmControlReader(object):
             self.pubArm.publish(self.angles)
             #next iteration
             r.sleep()
-
-
-
 
 #xi and yi are always between 0 and 1 (they are the fraction)
 def getArmExtension (xi, yi, tht1_0, tht2_0):

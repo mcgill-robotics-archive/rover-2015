@@ -7,6 +7,7 @@ from PyQt4 import QtCore, QtGui
 from JoystickController import JoystickController
 from VARIABLES import *
 from publisher import Publisher
+import pyqtgraph as pg
 
 import sys
 import rospy
@@ -17,7 +18,8 @@ from std_msgs.msg import Float64
 from std_msgs.msg import Int16
 from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, Pose
+from geometry_msgs.msg import Pose
 
 class CentralUi(QtGui.QMainWindow):
 	def __init__(self, parent=None):
@@ -28,6 +30,7 @@ class CentralUi(QtGui.QMainWindow):
 		self.controller = JoystickController()
 		self.publisher = Publisher()
 		self.modeId = 0 
+		self.grip = 0
 
 		# feed 1 holders
 		self.__image1=None
@@ -62,13 +65,59 @@ class CentralUi(QtGui.QMainWindow):
 		QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
 		QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
 		QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
+		
+		self.ui.pushButton.clicked.connect(self.addWayPoint)
+		self.ui.pushButton_2.clicked.connect(self.clearMap)
 
 		self.screen_redraw_timer=QtCore.QTimer(self)
 		self.screen_redraw_timer.timeout.connect(self.repaint_image)
 		self.screen_redraw_timer.start(100)
+		self.setupMinimap()
 
 		self.ros_init()
+		rospy.Subscriber('pose', Pose, self.handlePose)
 		rospy.loginfo("HCI initialization completed")
+		
+	def setupMinimap(self):
+		self.x = []
+		self.y = []
+		self.x_waypoints = [0]
+		self.y_waypoints = [0]
+		self.w1 = self.ui.graphicsView.addViewBox()
+		self.w1.setAspectLocked(False)
+		self.w1.enableAutoRange('xy',True)
+		self.ui.graphicsView.nextRow()
+		
+		self.s1 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)
+		self.s1.addPoints(self.x_waypoints,self.y_waypoints,size=10,symbol='t',brush='b')
+		self.w1.addItem(self.s1)
+	
+	def handlePose(self,data):
+		self.addPoint(data.position.x,data.position.y)
+		
+	def addPoint(self,x_coord,y_coord):
+		self.x.append(x_coord)
+		self.y.append(y_coord)
+		self.newx = [x_coord]
+		self.newy = [y_coord]
+		self.s1.addPoints(self.newx,self.newy,size=3,symbol='o',brush='w')
+		self.w1.autoRange()
+		
+	def addWayPoint(self):
+		self.x_waypoints.append(self.newx[0])
+		self.y_waypoints.append(self.newx[0])
+		self.x_waypoint = [self.newx[0]]
+		self.y_waypoint = [self.newy[0]]
+		self.s1.addPoints(self.x_waypoint,self.y_waypoint,size=10,symbol='t',brush='b')
+		self.w1.autoRange()
+		
+	def clearMap(self):
+		self.x = []
+		self.y = []
+		self.x_waypoints = [0]
+		self.y_waypoints = [0]
+		self.s1.setData(self.x,self.y,size=10,symbol='o',brush='r')
+		self.s1.addPoints(self.x_waypoints,self.y_waypoints,size=10,symbol='t',brush='b')
 
 	def setPointSteer(self, boolean):
 		self.publisher.setSteerMode(boolean)
@@ -115,18 +164,28 @@ class CentralUi(QtGui.QMainWindow):
 
 	def publishControlls(self):
 		if self.modeId == 0:
-			#drive
 			self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
-			self.publisher.publish_camera(self.controller.a3,self.controller.a4)
 		elif self.modeId == 1:
-			#arm base
 			length = -self.controller.a2
 			height = self.controller.a1
 			angle = self.controller.a3
 			self.publisher.publish_arm_base_movement(length,height,angle)
 		elif self.modeId == 2:
-			#end effector
-			x=1;
+			x = -self.controller.a2
+			y = self.controller.a3
+			rotate = self.controller.a1
+			if self.grip == 0 :
+				if self.controller.b3 :
+					self.grip = 1
+				elif self.controller.b4 :
+					self.grip = -1
+			else :
+				if self.controller.b3 or self.controller.b4 :
+					self.grip = 0
+			grip = self.grip
+
+			self.publisher.publish_endEffector(x,y,rotate,grip)
+
 			#end effector mode
 			#use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
 
@@ -193,7 +252,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen1Subscriber.unregister()
+		self.__screen1Subscriber.unsubscribe()
 		self.__screen1Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -203,7 +262,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen2Subscriber.unregister()
+		self.__screen2Subscriber.unsubscribe()
 		self.__screen2Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 
@@ -213,7 +272,7 @@ class CentralUi(QtGui.QMainWindow):
 		except IndexError :
 			rospy.logwarn("New camera feed topic name not found")
 			return
-		self.__screen3Subscriber.unregister()
+		self.__screen3Subscriber.unsubscribe()
 		self.__screen3Subscriber = rospy.Subscriber(topic, Image, self.callbackScreen1)
 
 

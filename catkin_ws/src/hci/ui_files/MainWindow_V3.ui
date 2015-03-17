@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>775</width>
-    <height>843</height>
+    <width>812</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,170 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_10">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="QComboBox" name="Camera1Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="camera1">
-          <property name="text">
-           <string>cam 1</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <widget class="QComboBox" name="Camera2Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="camera2">
-          <property name="text">
-           <string>cam 2</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-        <item>
-         <widget class="QComboBox" name="Camera3Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="camera3">
-          <property name="text">
-           <string>cam 3</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="Line" name="line_7">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -238,6 +74,12 @@
           <string>Clear</string>
          </property>
         </widget>
+        <zorder>MinimapLabel</zorder>
+        <zorder>graphicsView</zorder>
+        <zorder>pushButton</zorder>
+        <zorder>pushButton_2</zorder>
+        <zorder>selectorFrame</zorder>
+        <zorder>selectorFrame</zorder>
        </widget>
       </item>
       <item>
@@ -707,9 +549,148 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>300</y>
+           <width>201</width>
+           <height>271</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QComboBox" name="Camera2Feed">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>26</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Front Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Left Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Right Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Arm</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Pan/Tilt</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="Camera1Feed">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>26</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Front Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Left Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Right Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Arm</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Pan/Tilt</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="Camera3Feed">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>26</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Front Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Left Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Right Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Arm</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Pan/Tilt</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -718,7 +699,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>775</width>
+     <width>812</width>
      <height>25</height>
     </rect>
    </property>

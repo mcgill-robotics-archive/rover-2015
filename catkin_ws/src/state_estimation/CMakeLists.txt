@@ -1,19 +1,31 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(odometry)
+project(state_estimation)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cmake_modules
   geometry_msgs
-  roscpp
-  rospy
-  std_msgs
   message_generation
   nav_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  tf
 )
 
-find_package(Boost REQUIRED COMPONENTS date_time)
+## Have to put this in a separate find_package because we need to
+## find cmake_modules first
+find_package(Eigen REQUIRED)
+
+catkin_package(
+  CATKIN_DEPENDS
+  roscpp
+  rospy
+)
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -49,18 +61,18 @@ find_package(Boost REQUIRED COMPONENTS date_time)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   Tachometers.msg
-   RoverSpeed.msg
+# add_message_files(
+#   FILES
+#   Message1.msg
 #   Message2.msg
- )
+# )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   DisplacementMiddleWheels.srv
- )
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -70,10 +82,10 @@ find_package(Boost REQUIRED COMPONENTS date_time)
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   geometry_msgs   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   geometry_msgs#   nav_msgs#   sensor_msgs#   std_msgs
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -86,8 +98,8 @@ find_package(Boost REQUIRED COMPONENTS date_time)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES odometry
-  CATKIN_DEPENDS controls geometry_msgs roscpp rospy std_msgs
+#  LIBRARIES state_estimation
+#  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf
 #  DEPENDS system_lib
 )
 
@@ -98,24 +110,26 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories( include
+include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-# add_library(mw_odo src/mw_odo.cpp)
+# add_library(state_estimation
+#   src/${PROJECT_NAME}/state_estimation.cpp
+# )
 
 ## Declare a cpp executable
-add_executable(mw_odo src/mw_odo.cpp)
-add_executable(odometry src/odometry.cpp)
+# add_executable(state_estimation_node src/state_estimation_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(mw_odo odometry_generate_messages_cpp)
+# add_dependencies(state_estimation_node state_estimation_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(mw_odo ${catkin_LIBRARIES})
-target_link_libraries(odometry ${catkin_LIBRARIES})
+# target_link_libraries(state_estimation_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -132,7 +146,7 @@ target_link_libraries(odometry ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS odometry odometry_node
+# install(TARGETS state_estimation state_estimation_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -157,7 +171,7 @@ target_link_libraries(odometry ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_odometry.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_state_estimation.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

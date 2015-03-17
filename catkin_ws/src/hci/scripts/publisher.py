@@ -2,7 +2,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Int16
-from control_systems.msg import MotionType, PanTiltZoom, ArmMotion
+from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector
 
 class Publisher(object):
     def __init__(self):
@@ -10,7 +10,7 @@ class Publisher(object):
         self.cam_pub = rospy.Publisher(rospy.get_param("electrical_interface/cameraPos_topic","electrical_interface/camera"),PanTiltZoom, queue_size=10)
         self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic","cmd_vel"),Twist, queue_size=10)
         self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","/cmd_arm"),ArmMotion, queue_size=10)
-        self.arm_rotate_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic","electrical_interface/arm"),Int16, queue_size=10)
+        self.arm_endEffector_pub = rospy.Publisher(rospy.get_param("cmd_endEffector_topic","cmd_endEffector"),EndEffector,queue_size=10)
         self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic","cmd_motion"),MotionType, queue_size=10)
 
 
@@ -37,6 +37,14 @@ class Publisher(object):
         msg.theta = angle
         msg.on = True
         self.arm_movement_pub.publish(msg)
+    
+    def publish_endEffector(self, x, y, rotate, grip):
+        msg = EndEffector()
+        msg.x = x
+        msg.y = y
+        msg.theta = rotate
+        msg.grip = grip # grip is either 1,0, or -1.
+        self.arm_endEffector_pub.publish(msg)
     
 
     #publish camera zoom from axis 4
