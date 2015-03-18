@@ -11,6 +11,7 @@ import pyqtgraph as pg
 
 import sys
 import rospy
+import Queue
 
 from std_msgs.msg import String  # ros message types
 from std_msgs.msg import Float32
@@ -44,9 +45,11 @@ class CentralUi(QtGui.QMainWindow):
 
 		## List of topic names for the camera feeds, compiled from parameter server
 		self.camera_topic_list = []
+                
+                self.tempPose = Queue.Queue()
 
 		self.controller_timer = QtCore.QTimer()
-		self.thrust_pub_timer = QtCore.QTimer()
+		self.addPointTimer = QtCore.QTimer()
 		
 		self.setControllerTimer()
 		rospy.loginfo("Starting joystick acquisition")
@@ -54,7 +57,10 @@ class CentralUi(QtGui.QMainWindow):
 		##button connects
 		# controller timer connect
 		QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.readController)
-		# joystick mode buttons signal connect
+            	QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.addPointTimeout)
+                
+                self.addPointTimer.start(100)
+                # joystick mode buttons signal connect
 		QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), self.setMode0)
 		QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.setMode1)
 		QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.setMode2)
@@ -93,8 +99,18 @@ class CentralUi(QtGui.QMainWindow):
 		self.w1.addItem(self.s1)
 	
 	def handlePose(self,data):
-		self.addPoint(data.position.x,data.position.y)
+                #add (x,y) to tempPose queue
+                self.tempPose.put(data)
 		
+        def addPointTimeout(self):
+                while not self.tempPose.empty():
+                    pose=self.tempPose.get()
+                    self.newx=[pose.position.x]
+                    self.newy=[pose.position.y]
+                    self.s1.addPoints(self.newx,self.newy, size=3, symbol='o', brush='w')
+                    self.w1.autoRange()
+
+
 	def addPoint(self,x_coord,y_coord):
 		self.x.append(x_coord)
 		self.y.append(y_coord)
