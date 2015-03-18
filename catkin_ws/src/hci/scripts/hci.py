@@ -140,7 +140,7 @@ class CentralUi(QtGui.QMainWindow):
 
 	def setControllerTimer(self):
 		if self.controller.controller is not None:
-			self.controller_timer.start(misc_vars.controller_updateFrequency)
+			self.controller_timer.start(100)
 			rospy.loginfo("Started controller timer")
 		else:
 			rospy.loginfo("Missing controller, timer aborted")

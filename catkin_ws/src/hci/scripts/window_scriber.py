@@ -1,41 +1,30 @@
 #!/usr/bin/python
 
-from RoverWindow import *
+from VideoWindow import *
 ##from no_imu import *
 from PyQt4 import QtCore, QtGui
 from sensor_msgs.msg import Image
 ##import publisher
 
-from VARIABLES import *
-from std_msgs.msg import String
-
 import sys
 import signal
 import rospy
 
-##import rospy
-import pygame
-
-from std_msgs.msg import String  # ros message types
-from std_msgs.msg import Float32
-from std_msgs.msg import Float64
-from std_msgs.msg import Int16
-from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
 
 class CentralUi(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         super(CentralUi,self).__init__(parent)
+       
         self.image1=None
         self.image2=None
         self.image3=None
-        self.image4=None
+      
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.signal=QtCore.QTimer(self)
         self.signal.timeout.connect(self.repaint_image)
-        self.signal.timeout.connect(self.check_signal)
         self.listener()
         self.signal.start(100)
     
@@ -54,34 +43,6 @@ class CentralUi(QtGui.QMainWindow):
             self.image1=data
         finally:
             pass
-    def callback4(self,data):
-        try:
-            self.image4=data
-        finally:
-            pass
-	
-    def check_signal(self):
-        if self.ui.Camera1Feed.currentIndex() != 0:
-            self.listen1.unregister()
-            self.listen1=rospy.Subscriber("/hello",Image,self.callback4)
-            self.image1=None
-        else:
-            self.listen1.unregister()
-            self.listen1=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback1)
-        if self.ui.Camera2Feed.currentIndex() != 0:
-            self.listen2.unregister()
-            self.listen2=rospy.Subscriber("/hello",Image,self.callback4)
-            self.image2=None
-        else:
-            self.listen2.unregister()
-            self.listen2=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback2)    
-        if self.ui.Camera3Feed.currentIndex() != 0:
-            self.listen3.unregister()
-            self.listen3=rospy.Subscriber("/hello",Image,self.callback4)
-            self.image3=None
-        else:
-            self.listen3.unregister()
-            self.listen3=rospy.Subscriber("/camera_front_right/camera/image_raw",Image, self.callback3)
 
     def repaint_image(self):
         if self.image2 is not None:
@@ -117,10 +78,6 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.camera1.setPixmap(image1)
         else:
             self.ui.camera1.setText("no video feed")
-
-
-
-	
 
     def listener(self):
         rospy.init_node('listener',anonymous=False)
