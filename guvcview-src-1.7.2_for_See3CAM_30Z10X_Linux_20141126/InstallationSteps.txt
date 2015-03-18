@@ -1,0 +1,6 @@
+1. Extract the package.
+2. Open the terminal and change the path to source directory "src" of the project.
+3. Run the command ./configure --prefix=/usr/local/see3cam
+4. Run the command sudo make install
+5. Connect the camera
+6. Start the application by the command sudo /usr/local/see3cam/bin/see3camguvcview
