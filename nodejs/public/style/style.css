@@ -31,23 +31,18 @@ auv-card {
   width: 400px;
   margin: 20px auto;
 }
-#navheader {
-  background-color: #93db70;
-}
 content {
   padding: 20px;
 }
-core-header-panel {
-  background: #e0e0e0;
-}
 core-toolbar {
+  color: #000;
   background-color: #fff;
 }
 .toolbar_info {
   padding: 0.1em 1em 0.1em 0.1em;
   border-radius: 0.1em;
   font-size: 0.7em;
-  background-color: #fff;
+  font-color: #000;
 }
 core-animated-pages {
   width: 95%;
@@ -66,5 +61,5 @@ core-item a {
   margin-left: 5px;
 }
 core-menu > core-item.core-selected {
-  background: #93db70;
+  background: #526e9c;
 }

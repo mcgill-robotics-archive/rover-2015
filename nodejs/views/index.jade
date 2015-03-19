@@ -27,57 +27,37 @@ html(lang='en')
 
 
     
-    
-
-   
-
-
     body()
         template(is="auto-binding")   
-            core-drawer-panel#drawerPanel
-                core-header-panel(drawer)
+            core-scaffold#scaffold
+                nav
                     core-toolbar#navheader
-                        span McGill Mars Rover Monitor
+                        span Artemis
                     core-menu(valueattr="hash" selected="{{route}}")
                         template(repeat="{{page in pages}}")
-                            core-item(hash="{{page.hash}}" noink)
+                             core-item(hash="{{page.hash}}" noink)
                                 a(href="#{{page.hash}}") {{page.name}}
-                    //- core-menu
-                    //-     core-item(noink)
-                    //-         a(href='#all') All
-                    //-     core-item(noink)
-                    //-         a(href="#battery") Battery
-                    //-     core-item(noink)
-                    //-         a(href="#science") Science
-                    //-     core-item(noink)
-                    //-         a(href="#navigation") Navigation
-                    //-     core-item(noink)
-                    //-         a(href="#encoders") Encoders
-                    //-     core-item(noink)
-                    //-         a(href="#arm") Arm
+                
+                core-toolbar#mainheader(tool flex)
+                    .flex(flex) 
+                    paper-icon-button#navicon(icon="menu")
+                    span 
+                    .toolbar_info Uptime:
+                        #uptime 24:24:24
+                    .toolbar_info Voltage:
+                        #voltage 100V
+                    .toolbar_info Current:
+                        #current 100AMP
+                    .toolbar_info Speed:
+                        #gps 99m/s
+                .content(layout horizontal center-center fit)
+                    core-animated-pages(valueattr="hash" selected="{{route}}" transitions="slide-from-right")
+                        template(repeat="{{page in pages}}")
+                            section(hash="{{page.hash}}" layout vertical center-center)
+                                .pagename
+                                    {{page.name}}
 
-                core-header-panel(main)
-                    core-toolbar#mainheader
-                        paper-icon-button#navicon(icon="menu")
-                        span 
-                      
-                        .toolbar_info Uptime:
-                            #uptime 24:24:24
-                        .toolbar_info Voltage:
-                            #voltage 100V
-                        .toolbar_info Current:
-                            #current 100AMP
-                        .toolbar_info Speed:
-                            #gps 99m/s
-                    .content(layout horizontal center-center fit)
-                        core-animated-pages(valueattr="hash" selected="{{route}}" transitions="slide-from-right")
-                            template(repeat="{{page in pages}}")
-                                section(hash="{{page.hash}}" layout vertical center-center)
-                                    .pagename
-                                        {{page.name}}
-                                     
-
-
+     
         script.
             var template = document.querySelector('template[is="auto-binding');
             template.pages =[
@@ -90,15 +70,7 @@ html(lang='en')
             ];
 
 
-        script.
-            document.addEventListener('polymer-ready', function() {
-              var navicon = document.getElementById('navicon');
-              var drawerPanel = document.getElementById('drawerPanel');
-              navicon.addEventListener('click', function() {
-                drawerPanel.togglePanel();
-              });
-            });
-
+    
 
 
         
