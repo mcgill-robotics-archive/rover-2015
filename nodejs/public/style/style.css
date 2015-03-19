@@ -46,6 +46,25 @@ core-toolbar {
 .toolbar_info {
   padding: 0.1em 1em 0.1em 0.1em;
   border-radius: 0.1em;
-  font-size: 0.8em;
+  font-size: 0.7em;
   background-color: #fff;
+}
+core-animated-pages {
+  width: 95%;
+  height: 95%;
+  -webkit-user-select: none;
+  overflow: hidden;
+}
+core-animated-pages > * {
+  border-radius: 5px;
+  font-size: 50px;
+  background-color: #fff;
+}
+core-item a {
+  text-decoration: none;
+  color: currentcolor;
+  margin-left: 5px;
+}
+core-menu > core-item.core-selected {
+  background: #93db70;
 }

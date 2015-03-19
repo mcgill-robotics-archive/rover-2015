@@ -24,41 +24,175 @@ html(lang='en')
     script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
     script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
+
+
     
-    body(onload="start()")
+    
 
-        core-drawer-panel#drawerPanel
-            core-header-panel(drawer)
-                core-toolbar#navheader
-                    span McGill Mars Rover Monitor
-                    
+   
 
-                core-menu
-                    core-item(label="All")
-                    core-item(label="Battery")
-                    core-item(label="Science")
-                    core-item(label="Navigation")
-                    core-item(label="Encoders")
 
-            core-header-panel(main)
-                core-toolbar#mainheader
-                    paper-icon-button#navicon(icon="menu")
-                    span 
-                  
-                    .toolbar_info Uptime:
-                        #uptime 24:24:24
-                    .toolbar_info Voltage:
-                        #voltage 100V
-                    .toolbar_info Current:
-                        #current 100AMP
-                    .toolbar_info Speed:
-                        #gps 99m/s
-                .content Pose values
-                #time
-                #sendPose1
-                #sendPose2
-                #sendPose3
-                #sendPose4    
+    body()
+        template(is="auto-binding")   
+            core-drawer-panel#drawerPanel
+                core-header-panel(drawer)
+                    core-toolbar#navheader
+                        span McGill Mars Rover Monitor
+                    core-menu(valueattr="hash" selected="{{route}}")
+                        template(repeat="{{page in pages}}")
+                            core-item(hash="{{page.hash}}" noink)
+                                a(href="#{{page.hash}}") {{page.name}}
+                    //- core-menu
+                    //-     core-item(noink)
+                    //-         a(href='#all') All
+                    //-     core-item(noink)
+                    //-         a(href="#battery") Battery
+                    //-     core-item(noink)
+                    //-         a(href="#science") Science
+                    //-     core-item(noink)
+                    //-         a(href="#navigation") Navigation
+                    //-     core-item(noink)
+                    //-         a(href="#encoders") Encoders
+                    //-     core-item(noink)
+                    //-         a(href="#arm") Arm
+
+                core-header-panel(main)
+                    core-toolbar#mainheader
+                        paper-icon-button#navicon(icon="menu")
+                        span 
+                      
+                        .toolbar_info Uptime:
+                            #uptime 24:24:24
+                        .toolbar_info Voltage:
+                            #voltage 100V
+                        .toolbar_info Current:
+                            #current 100AMP
+                        .toolbar_info Speed:
+                            #gps 99m/s
+                    .content(layout horizontal center-center fit)
+                        core-animated-pages(valueattr="hash" selected="{{route}}" transitions="slide-from-right")
+                            template(repeat="{{page in pages}}")
+                                section(hash="{{page.hash}}" layout vertical center-center)
+                                    .pagename
+                                        {{page.name}}
+                                     
+
+
+        script.
+            var template = document.querySelector('template[is="auto-binding');
+            template.pages =[
+                {name: 'All' , hash : 'all'},
+                {name: 'Battery', hash :'battery'},
+                {name: 'Science' , hash : 'science'},
+                {name: 'Navigation' , hash : 'navigation'},
+                {name: 'Encoders' , hash : 'encoders'},
+                {name: 'Arm' , hash : 'arm'}
+            ];
+
+
+        script.
+            document.addEventListener('polymer-ready', function() {
+              var navicon = document.getElementById('navicon');
+              var drawerPanel = document.getElementById('drawerPanel');
+              navicon.addEventListener('click', function() {
+                drawerPanel.togglePanel();
+              });
+            });
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        //- core-animated-pages(selected="0" transitions="slide-from-right")
+                        //-     section(layout vertical center-center)
+                        //-         .single Test 123
+                        //-     section(layout vertical center-center) 
+                        //-         .page ssadas
+                        //-             #time
+                        //-             #sendPose1
+                        //-             #sendPose2
+                        //-             #sendPose3
+                        //-             #sendPose4  
+
+               
 
 
    
