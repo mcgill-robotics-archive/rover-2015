@@ -32,8 +32,20 @@ auv-card {
   margin: 20px auto;
 }
 #navheader {
-  background-color: #ff0;
+  background-color: #93db70;
 }
 content {
   padding: 20px;
+}
+core-header-panel {
+  background: #e0e0e0;
+}
+core-toolbar {
+  background-color: #fff;
+}
+.toolbar_info {
+  padding: 0.1em 1em 0.1em 0.1em;
+  border-radius: 0.1em;
+  font-size: 0.8em;
+  background-color: #fff;
 }

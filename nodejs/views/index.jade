@@ -8,7 +8,7 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
     meta(name='mobile-web-app-capable' content='yes')
     meta(name='apple-mobile-web-app-capable' content='yes')
-    meta(name='description', content='Robotics AUV 2015 webpage')
+    meta(name='description', content='Rover Monitoring ')
 
     //- Title
     title= title
@@ -17,60 +17,51 @@ html(lang='en')
     link(rel='stylesheet', href='style/style.css', shim-shadowdom)
 
     link(rel='import', href='components/elements/index_elements.html')
-    script(scr='webcomponentsjs/webcomponents.js')
+    script(src='js/main.js')
     script(src='/socket.io/socket.io.js')
     script(src='//code.jquery.com/jquery-1.7.2.min.js')
     script(src='http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js')
     script(src='http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js')
     script(src='http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js')
     script(src='http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js')
-    script.
-        function loadpose(){
-            var socket = io();
-            var posearray = []
-            socket.on('sendPose', function(msg){
-                console.log(msg);
-                posearray[0]=msg[0];
-                posearray[1]=msg[1];
-                posearray[2]=msg[2];
-                posearray[3]=msg[2];
-                document.getElementById("sendPose1").innerHTML = posearray[0];
-                document.getElementById("sendPose2").innerHTML = posearray[1];
-                document.getElementById("sendPose3").innerHTML = posearray[2];
-                document.getElementById("sendPose4").innerHTML = posearray[3];
-            });
-        }
-    script.
-        function loadtime(){
-            var socket = io();
-            socket.on('time', function(data) {
-                console.log(data);
-                $('#time').html(data.time);
-            });
-        }
-    script.
-        function start(){
-            loadpose();
-            loadtime();
-        }
-
     
     body(onload="start()")
-        core-scaffold
-            core-header-panel(nagivation flex)
-                core-toolbar(#navheader)
-                    span 
-                core-menu
-                    core-item(label="ONE")
-                    core-item(label="TWO")
-            span(tool) Robotics Monitoring
-            .content Pose values
 
-                    #sendPose1
-                    #sendPose2
-                    #sendPose3
-                    #sendPose4 
-                    #time
+        core-drawer-panel#drawerPanel
+            core-header-panel(drawer)
+                core-toolbar#navheader
+                    span McGill Mars Rover Monitor
+                    
+
+                core-menu
+                    core-item(label="All")
+                    core-item(label="Battery")
+                    core-item(label="Science")
+                    core-item(label="Navigation")
+                    core-item(label="Encoders")
+
+            core-header-panel(main)
+                core-toolbar#mainheader
+                    paper-icon-button#navicon(icon="menu")
+                    span 
+                  
+                    .toolbar_info Uptime:
+                        #uptime 24:24:24
+                    .toolbar_info Voltage:
+                        #voltage 100V
+                    .toolbar_info Current:
+                        #current 100AMP
+                    .toolbar_info Speed:
+                        #gps 99m/s
+                .content Pose values
+                #time
+                #sendPose1
+                #sendPose2
+                #sendPose3
+                #sendPose4    
+
+
+   
 
 
   

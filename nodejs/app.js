@@ -43,15 +43,7 @@ listener.subscribe(function(message) {
   // If desired, we can unsubscribe from the topic as well.
   
 });
-// $.getScript('http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js', function(){
-//   var viewer = new MJPEGCANVAS.Viewer({
-//     divID : 'mjpeg',
-//     host : 'localhost',
-//     width : 640,
-//     height : 480,
-//     topic : '/camera_front_right/camera/image_raw'
-//   });
-// });
+
   var posedata = [];
 
  // First, we create a Topic object with details of the topic's name and message type.
@@ -83,27 +75,8 @@ listener.subscribe(function(message) {
 
 
 
-
-  // Then we create the payload to be published. The object we pass in to ros.Message matches the
-  // fields defined in the geometry_msgs/Twist.msg definition.
-/*  var twist = new ROSLIB.Message({
-    linear : {
-      x : 0.1,
-      y : 0.2,
-      z : 0.3
-    },
-    angular : {
-      x : -0.1,
-      y : -0.2,
-      z : -0.3
-    }
-  });
-
-  //cmdVel.publish(twist);
-  console.log('published');*/
-/*
- * Modules
- */
+ //* Modules
+ 
 var compiler = require('./modules/compile');
 
 /*
@@ -161,6 +134,7 @@ app.use(cookieParser());
 /*
  * Append directories to base path
  */
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
 
@@ -181,10 +155,10 @@ function sendPose(){
 }
 setInterval(sendPose, 100);
 function sendTime() {
-    io.sockets.emit('time', { time: new Date().toJSON() });
+    io.sockets.emit('time', { time: new Date().toLocaleTimeString() });
 }
 
-// Send current time every 10 secs
+// Send current time every 1 secs
 setInterval(sendTime, 1000);
 
 
