@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'VideoWindow.ui'
+# Form implementation generated from reading ui file 'ui_files/VideoWindow.ui'
 #
-# Created: Mon Mar  9 21:31:26 2015
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Thu Mar 19 22:12:47 2015
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,43 +26,43 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(706, 419)
+        MainWindow.resize(747, 577)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.horizontalLayoutWidget = QtGui.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 10, 701, 361))
-        self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
-        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.camera1 = QtGui.QLabel(self.horizontalLayoutWidget)
+        self.camera1 = QtGui.QLabel(self.centralwidget)
+        self.camera1.setFrameShape(QtGui.QFrame.Box)
         self.camera1.setObjectName(_fromUtf8("camera1"))
-        self.verticalLayout.addWidget(self.camera1)
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.camera2 = QtGui.QLabel(self.horizontalLayoutWidget)
+        self.horizontalLayout.addWidget(self.camera1)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.camera2 = QtGui.QLabel(self.centralwidget)
+        self.camera2.setFrameShape(QtGui.QFrame.Box)
         self.camera2.setObjectName(_fromUtf8("camera2"))
-        self.horizontalLayout_2.addWidget(self.camera2)
-        self.horizontalLayout.addLayout(self.horizontalLayout_2)
-        self.horizontalLayout_3 = QtGui.QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
-        self.camera3 = QtGui.QLabel(self.horizontalLayoutWidget)
+        self.verticalLayout_2.addWidget(self.camera2)
+        self.camera3 = QtGui.QLabel(self.centralwidget)
+        self.camera3.setFrameShape(QtGui.QFrame.Box)
         self.camera3.setObjectName(_fromUtf8("camera3"))
-        self.horizontalLayout_3.addWidget(self.camera3)
-        self.horizontalLayout.addLayout(self.horizontalLayout_3)
+        self.verticalLayout_2.addWidget(self.camera3)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 706, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 747, 22))
         self.menubar.setObjectName(_fromUtf8("menubar"))
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName(_fromUtf8("menuFile"))
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setObjectName(_fromUtf8("statusbar"))
-        MainWindow.setStatusBar(self.statusbar)
+        self.actionReset = QtGui.QAction(MainWindow)
+        self.actionReset.setObjectName(_fromUtf8("actionReset"))
+        self.actionQuit = QtGui.QAction(MainWindow)
+        self.actionQuit.setObjectName(_fromUtf8("actionQuit"))
+        self.menuFile.addAction(self.actionReset)
+        self.menuFile.addAction(self.actionQuit)
+        self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
+        QtCore.QObject.connect(self.actionQuit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -70,4 +70,7 @@ class Ui_MainWindow(object):
         self.camera1.setText(_translate("MainWindow", "cam1", None))
         self.camera2.setText(_translate("MainWindow", "cam2", None))
         self.camera3.setText(_translate("MainWindow", "cam3", None))
+        self.menuFile.setTitle(_translate("MainWindow", "File", None))
+        self.actionReset.setText(_translate("MainWindow", "Reset", None))
+        self.actionQuit.setText(_translate("MainWindow", "Close", None))
 
