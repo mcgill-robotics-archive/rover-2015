@@ -44,6 +44,8 @@ class CentralUi(QtGui.QMainWindow):
         self.newy = []
         self.w1 = None
         self.s1 = None
+        self.x_waypoints = []
+        self.y_waypoints = []
 
         rospy.loginfo("Starting joystick acquisition")
 
@@ -64,18 +66,22 @@ class CentralUi(QtGui.QMainWindow):
         # connect for point steer mode
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.setPointSteer)
         # camera feed selection signal connects
-        QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
-        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
+        #QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
+        #QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
+        #QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
+        #TODO: Remove comments when done with switcher implementation
+
 
         self.ui.pushButton.clicked.connect(self.addWayPoint)
         self.ui.pushButton_2.clicked.connect(self.clearMap)
 
         self.setupMinimap()
 
+        rospy.init_node('listener',anonymous=False)
+                
         rospy.Subscriber('pose', Pose, self.handlePose)
 
-        self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
+        #self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
 
         self.feed1index = 0
         self.feed2index = 0
@@ -91,8 +97,11 @@ class CentralUi(QtGui.QMainWindow):
         self.w1.enableAutoRange('xy',True)
         self.ui.graphicsView.nextRow()
 
+        self.x_waypoints.append(0)
+        self.y_waypoints.append(0)
+
         self.s1 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)
-        self.s1.addPoints([0], [0], size=10,symbol='t',brush='b')
+        self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10,symbol='t',brush='b')
         self.w1.addItem(self.s1)
 
     def handlePose(self,data):
@@ -109,6 +118,8 @@ class CentralUi(QtGui.QMainWindow):
 
 
     def addWayPoint(self):
+        self.x_waypoints.append(self.newx[0])
+        self.y_waypoints.append(self.newx[0])
         self.s1.addPoints([self.newx[0]],[self.newy[0]],size=10,symbol='t',brush='b')
         self.w1.autoRange()
 
