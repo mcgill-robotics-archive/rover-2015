@@ -5,7 +5,6 @@ from RoverWindow import *
 from PyQt4 import QtCore, QtGui
 ##import publisher
 from JoystickController import JoystickController
-from VARIABLES import *
 from publisher import Publisher
 import pyqtgraph as pg
 
@@ -79,6 +78,7 @@ class CentralUi(QtGui.QMainWindow):
 
         rospy.init_node('listener',anonymous=False)
                 
+
         rospy.Subscriber('pose', Pose, self.handlePose)
 
         #self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
