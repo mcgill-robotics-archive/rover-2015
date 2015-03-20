@@ -1,0 +1,25 @@
+#!/bin/bash
+
+####
+#
+# Install dependencies for hci and monitoring software
+#
+####
+
+
+function get_dependencies () {
+  if [[ -s ${ROBOTIC_PATH}/dependencies/packages/$1 ]]; then
+    cat ${ROBOTIC_PATH}/dependencies/packages/$1
+  fi
+}
+
+echo "Updating apt dependencies..."
+get_dependencies apt | xargs sudo apt-get -y -qq install || :
+
+
+echo "Updating pip dependencies..."
+pip=$(comm -12 --nocheck-order \
+  <(pip freeze --local | grep -v '^\-e' | cut -d = -f 1) \
+  <(get_dependencies pip))
+echo ${pip} | xargs sudo pip install --upgrade > /dev/null || :
+
