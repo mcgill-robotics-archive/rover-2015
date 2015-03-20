@@ -2,7 +2,6 @@
 
 import xlsxwriter
 import rospy
-import time
 import datetime
 
 from rosgraph_msgs.msg import Log
@@ -29,14 +28,22 @@ class LogRosout():
         self.yellow_fill = None
         self.red_fill = None
         self.black_fill = None
-        self.row_index = 0
+        self.row_index = 2
 
         self.format_page()
 
-        self.init_ros()
         self.sub = None
+        self.init_ros()
 
     def format_page(self):
+        big_font = self.workbook.add_format({'font_size':'30'})
+        self.page.write_string(0, 0, "Rosout Log", big_font)
+        self.page.set_row(0, 35)
+
+        self.page.write_string(1, 0, "Date")
+        self.page.write_string(1, 1, "Severity")
+        self.page.write_string(1, 2, "Node")
+        self.page.write_string(1, 3, "Message")
         self.extended_date = self.workbook.add_format({'num_format': 'dd/mm/yyyy hh:mm:ss'})
 
         self.yellow_fill = self.workbook.add_format()
@@ -53,6 +60,9 @@ class LogRosout():
         self.black_fill.set_font_color('white')
 
         self.page.set_column(0, 0, 20)
+        self.page.set_column(1, 1, 10)
+        self.page.set_column(2, 2, 20)
+        self.page.set_column(3, 3, 100)
 
     def log_callback(self, message):
         self.page.write_datetime(self.row_index,
@@ -84,27 +94,18 @@ class LogRosout():
 
         print message
 
-    """
-    def log_info(self, message):
-
-
-    def log_warm(self, message):
-
-
-    def log_error(self, message):
-
-
-    def log_debug(self, message):
-
-    """
     def init_ros(self):
         rospy.init_node("logger", anonymous=True)
         self.sub = rospy.Subscriber("/rosout_agg", Log, self.log_callback)
+        rospy.loginfo("Rosout logger initialized")
 
+    def close(self):
+        self.page.autofilter(1, 0, logger.row_index, 2)
 
 if __name__ == "__main__":
     workbook = xlsxwriter.Workbook('demo.xlsx')
     worksheet = workbook.add_worksheet()
     logger = LogRosout(workbook, worksheet)
     rospy.spin()
+    logger.close()
     workbook.close()
