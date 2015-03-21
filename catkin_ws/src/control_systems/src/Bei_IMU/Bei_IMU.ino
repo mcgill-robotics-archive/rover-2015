@@ -33,7 +33,7 @@ void loop()
   //Serial.print("ax = "); Serial.println(ax);
   //Serial.print("ay = "); Serial.println(ay);
   //Serial.print("az = "); Serial.println(az);
-  long double accel = sqrt(ax*ax + ay*ay + az*az);
+  long double accel = 9.81 * sqrt(ax*ax + ay*ay + az*az)/16269.73;
   //sumforavg += accel;
   //measures ++;
   //double average = sumforavg/measures;
@@ -42,5 +42,5 @@ void loop()
   //Serial.print(", curr =  ");Serial.println((double)accel);
   Serial.println((double)accel);
   
-  delay(1);
+  delay(50);
 }
