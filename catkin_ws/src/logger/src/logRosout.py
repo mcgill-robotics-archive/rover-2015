@@ -95,12 +95,12 @@ class LogRosout():
         print message
 
     def init_ros(self):
-        rospy.init_node("logger", anonymous=True)
+        #rospy.init_node("logger", anonymous=True)
         self.sub = rospy.Subscriber("/rosout_agg", Log, self.log_callback)
         rospy.loginfo("Rosout logger initialized")
 
     def close(self):
-        self.page.autofilter(1, 0, logger.row_index, 2)
+        self.page.autofilter(1, 0, self.row_index, 2)
 
 if __name__ == "__main__":
     workbook = xlsxwriter.Workbook('demo.xlsx')

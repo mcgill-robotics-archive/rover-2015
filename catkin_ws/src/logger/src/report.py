@@ -4,7 +4,7 @@ import xlsxwriter,rospy,time
 from control_systems.msg import SetPoints
 from std_msgs.msg import Int16
 from odometry.msg import RoverSpeed
-
+from logRosout import LogRosout
 
 class GenerateReport():
     def __init__(self):
@@ -14,6 +14,11 @@ class GenerateReport():
         self.dataSheets = [self.document.add_worksheet('data'),
             self.document.add_worksheet('timedData')]
         self.speeds = RoverSpeed()
+        self.rosout_sheet = self.document.add_worksheet("rosout")
+        
+        self.logRosout=LogRosout(self.document, self.rosout_sheet)
+
+        
       
         self.index = [0,0]
         self.graphs = 0
@@ -81,6 +86,7 @@ class GenerateReport():
         self.close()
 
     def close(self):
+        self.logRosout.close()
         print"called close"
         #need to create graph for each relation we want to display
         self.createGraph(1,1,2,"Time (s)", "Linear Speed (m/s)","Linear")
