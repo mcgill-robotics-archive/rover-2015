@@ -51,4 +51,8 @@ print ("gyroscope x bias = ", gyroBiasX)
 print ("gyroscope y bias = ", gyroBiasY)
 print ("gyroscope z bias = ", gyroBiasZ)
 
+#Current bias seems to be around -200 for each axis (flat 
+#IMU with leads facing up)
+#http://www.i2cdevlib.com/forums/topic/91-how-to-decide-gyro-and-accelerometer-offsett/#entry257
+
 arduino.close()
