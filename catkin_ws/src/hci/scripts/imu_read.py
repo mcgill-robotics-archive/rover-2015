@@ -30,7 +30,7 @@ startRead = time.time()
 serialCalibData = []
 calibValues = []
 #read from IMU for specified seconds to calibrate
-while time.time() - startRead < 1:
+while time.time() - startRead < 5:
 	#split up into list
 	a = arduino.readline()
 	serialCalibData.append(a)
@@ -52,7 +52,17 @@ gyroBiasY = numpy.median([x[1] for x in calibValues])
 gyroBiasZ = numpy.median([x[2] for x in calibValues])
 acelBiasX = numpy.median([x[3] for x in calibValues])
 acelBiasY = numpy.median([x[4] for x in calibValues])
+#MPU 6050 gives +16384 for right side up. This program interprets
+#which way the accelerometer is pointed, and interprets from there
+#get reading, then modify for correct value
 acelBiasZ = numpy.median([x[5] for x in calibValues])
+
+#points correct way
+if acelBiasZ > 0:
+	acelBiasZ -= 16384
+else:
+	#points incorrect way
+	acelBiasZ += 16384
 
 print ("gyroscope x bias = ", gyroBiasX)
 print ("gyroscope y bias = ", gyroBiasY)
@@ -61,8 +71,6 @@ print ("accelerometer x bias = ", acelBiasX)
 print ("accelerometer y bias = ", acelBiasY)
 print ("accelerometer z bias = ", acelBiasZ)
 
-#Current bias seems to be around -200 for each axis (flat 
-#IMU with leads facing up)
 #http://www.i2cdevlib.com/forums/topic/91-how-to-decide-gyro-and-accelerometer-offsett/#entry257
 
 arduino.close()
