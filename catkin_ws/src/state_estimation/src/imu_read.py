@@ -43,7 +43,7 @@ class IMUReader(object):
         #read from IMU for specified seconds to calibrate
         while time.time() - startRead < 1:
             #split up into list
-            a = arduino.readline()
+            a = self.arduino.readline()
             serialCalibData.append(a)
 
         for x in serialCalibData:
@@ -83,12 +83,12 @@ class IMUReader(object):
                 #make them float after removing non numericals
                 values = [float(y) for y in a]
                 #correct all according to biases
-                values[0] -= gyroBiasX
-                values[1] -= gyroBiasY
-                values[2] -= gyroBiasZ
-                values[3] -= acelBiasX
-                values[4] -= acelBiasY
-                values[5] -= acelBiasZ
+                values[0] -= self.gyroBiasX
+                values[1] -= self.gyroBiasY
+                values[2] -= self.gyroBiasZ
+                values[3] -= self.acelBiasX
+                values[4] -= self.acelBiasY
+                values[5] -= self.acelBiasZ
                 self.settings.gyroX = values[0]
                 self.settings.gyroY = values[1]
                 self.settings.gyroZ = values[2]
@@ -96,17 +96,21 @@ class IMUReader(object):
                 self.settings.acelX = 9.81*values[3]/16384
                 self.settings.acelY = 9.81*values[4]/16384
                 self.settings.acelZ = 9.81*values[5]/16384
-        except: return
+        except: return 
 
-    #function will publish at 60Hz
+
+    #function will publish at 1kHz
     def run(self):
-        r = rospy.Rate(60)
+        r = rospy.Rate(1000)
         #continue until quit
         while not rospy.is_shutdown():
             #get new values
             self.update_settings()
             #publish to topic
             self.pubImu.publish(self.settings)
+            #about every tenth iteration, publish settings
+            if int(time.time())%10 == 0:
+            	rospy.loginfo(self.settings)
             #next iteration
             r.sleep()
 
@@ -114,3 +118,9 @@ class IMUReader(object):
     def close(self):
         self.arduino.close()
 
+if __name__ == '__main__':
+    print "Initializing Node"
+    reader1 = IMUReader()
+    print "Running Node"
+    reader1.run()
+    rospy.spin()
