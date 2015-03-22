@@ -8,7 +8,7 @@
 #serial for serial connection, time for function timing, 
 #numpy for median, regex (re) for number scraping
 import serial, time, numpy, re, rospy
-from state_estimation.msg import Imu
+from control_systems.msg import Imu
 
 #regular expression for numbers
 renum = '-?[0-9]+\.?[0-9]+'
@@ -75,35 +75,36 @@ class IMUReader(object):
 
     def update_settings(self):
         a = self.arduino.readline().split(',')
-		#the following will fail if there is no number in the string
-		try:
-			#pull out numeric part of string
-			a = [re.search(renum,y).group(0) for y in a]
-			if len(a) == 6:
-				#make them float after removing non numericals
-				values = [float(y) for y in a]
-				#correct all according to biases
-				values[0] -= gyroBiasX
-				values[1] -= gyroBiasY
-				values[2] -= gyroBiasZ
-				values[3] -= acelBiasX
-				values[4] -= acelBiasY
-				values[5] -= acelBiasZ
-				self.settings.gyroX = values[0]
-				self.settings.gyroY = values[1]
-				self.settings.gyroZ = values[2]
-				#convert the following to standard units (m/s^2)
-				self.settings.acelX = 9.81*values[3]/16384
-				self.settings.acelY = 9.81*values[4]/16384
-				self.settings.acelZ = 9.81*values[5]/16384
+        #the following will fail if there is no number in the string
+        try:
+            #pull out numeric part of string
+            a = [re.search(renum,y).group(0) for y in a]
+            if len(a) == 6:
+                #make them float after removing non numericals
+                values = [float(y) for y in a]
+                #correct all according to biases
+                values[0] -= gyroBiasX
+                values[1] -= gyroBiasY
+                values[2] -= gyroBiasZ
+                values[3] -= acelBiasX
+                values[4] -= acelBiasY
+                values[5] -= acelBiasZ
+                self.settings.gyroX = values[0]
+                self.settings.gyroY = values[1]
+                self.settings.gyroZ = values[2]
+                #convert the following to standard units (m/s^2)
+                self.settings.acelX = 9.81*values[3]/16384
+                self.settings.acelY = 9.81*values[4]/16384
+                self.settings.acelZ = 9.81*values[5]/16384
+        except: return
 
     #function will publish at 60Hz
     def run(self):
         r = rospy.Rate(60)
         #continue until quit
         while not rospy.is_shutdown():
-        	#get new values
-        	self.update_settings()
+            #get new values
+            self.update_settings()
             #publish to topic
             self.pubImu.publish(self.settings)
             #next iteration
@@ -111,5 +112,5 @@ class IMUReader(object):
 
     #exit
     def close(self):
-    	self.arduino.close()
+        self.arduino.close()
 
