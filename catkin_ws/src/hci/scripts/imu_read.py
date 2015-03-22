@@ -56,13 +56,14 @@ acelBiasY = numpy.median([x[4] for x in calibValues])
 #which way the accelerometer is pointed, and interprets from there
 #get reading, then modify for correct value
 acelBiasZ = numpy.median([x[5] for x in calibValues])
+#multiplies by -1 if upside down at start
+uDownMulti = 1
 
 #points correct way
-if acelBiasZ > 0:
-	acelBiasZ -= 16384
-else:
-	#points incorrect way
-	acelBiasZ += 16384
+if acelBiasZ < 0:
+	uDownMulti = -1
+acelBiasZ *= uDownMulti
+acelBiasZ -= 16384
 
 print ("gyroscope x bias = ", gyroBiasX)
 print ("gyroscope y bias = ", gyroBiasY)
