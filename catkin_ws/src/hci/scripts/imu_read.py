@@ -40,10 +40,10 @@ for x in serialCalibData:
 	#the following will fail if there is no number in the string
 	try:
 		#pull out numeric part of string
-		a = [re.search(renum,x).group(0) for x in a]
+		a = [re.search(renum,y).group(0) for y in a]
 		if len(a) == 6:
 			#make them float after removing non numericals
-			values = [float(x) for x in a]
+			values = [float(y) for y in a]
 			calibValues.append(values)
 	except: continue
 #calculate median bias for gyro and accelerometer
@@ -56,14 +56,12 @@ acelBiasY = numpy.median([x[4] for x in calibValues])
 #which way the accelerometer is pointed, and interprets from there
 #get reading, then modify for correct value
 acelBiasZ = numpy.median([x[5] for x in calibValues])
-#multiplies by -1 if upside down at start
-uDownMulti = 1
 
 #points correct way
-if acelBiasZ < 0:
-	uDownMulti = -1
-acelBiasZ *= uDownMulti
-acelBiasZ -= 16384
+if acelBiasZ > 0:
+	acelBiasZ -= 16384
+else: #upside down!
+	acelBiasZ += 16384
 
 print ("gyroscope x bias = ", gyroBiasX)
 print ("gyroscope y bias = ", gyroBiasY)
@@ -73,5 +71,34 @@ print ("accelerometer y bias = ", acelBiasY)
 print ("accelerometer z bias = ", acelBiasZ)
 
 #http://www.i2cdevlib.com/forums/topic/91-how-to-decide-gyro-and-accelerometer-offsett/#entry257
+
+###Current test values are:
+#('gyroscope x bias = ', 20.0)
+#('gyroscope y bias = ', -487.0)
+#('gyroscope z bias = ', -215.0)
+#('accelerometer x bias = ', 2512.0)
+#('accelerometer y bias = ', -1220.0)
+#('accelerometer z bias = ', -480.0)
+
+#now, for readings, need to subtract bias from each. (and uDown multi!)
+for x in serialCalibData:
+	a = x.split(',')
+	#the following will fail if there is no number in the string
+	try:
+		#pull out numeric part of string
+		a = [re.search(renum,y).group(0) for y in a]
+		if len(a) == 6:
+			#make them float after removing non numericals
+			values = [float(y) for y in a]
+			#correct all according to biases
+			values[0] += gyroBiasX
+			values[1] += gyroBiasY
+			values[2] += gyroBiasZ
+			values[3] += acelBiasX
+			values[4] += acelBiasY
+			values[5] += acelBiasZ
+			print values
+	except: continue
+
 
 arduino.close()
