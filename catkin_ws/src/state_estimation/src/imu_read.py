@@ -8,99 +8,108 @@
 #serial for serial connection, time for function timing, 
 #numpy for median, regex (re) for number scraping
 import serial, time, numpy, re, rospy
+from state_estimation.msg import Imu
 
 #regular expression for numbers
 renum = '-?[0-9]+\.?[0-9]+'
 
+class IMUReader(object):
+    def __init__ (self):
+        #initiate node
+        rospy.init_node('imu_reader')
+        #publish imu settings to this topic
+        self.pubImu = rospy.Publisher('/imu',Imu,queue_size=10,latch=10)
+        #settings to be read in
+        self.settings = Imu()
+        #set values to 0
+		self.settings.gyroX = 0
+		self.settings.gyroY = 0
+		self.settings.gyroZ = 0
+		self.settings.acelX = 0
+		self.settings.acelY = 0
+		self.settings.acelZ = 0
+		self.arduino = 0
+		try:
+			#initialize arduino at port and specified baud rate
+			self.arduino = serial.Serial('/dev/ttyACM0',115200)
+		except serial.serialutil.SerialException:
+			print("Connection could not be established")
+			quit()
 
-print("Initializing serial connection")
+		##Calibration Stage
+		startRead = time.time()
+		serialCalibData = []
+		calibValues = []
+		#read from IMU for specified seconds to calibrate
+		while time.time() - startRead < 1:
+			#split up into list
+			a = arduino.readline()
+			serialCalibData.append(a)
 
-try:
-	#initialize arduino at port and specified baud rate
-	arduino = serial.Serial('/dev/ttyACM0',115200)
-except serial.serialutil.SerialException:
-	print("Connection could not be established")
-	quit()
+		for x in serialCalibData:
+			a = x.split(',')
+			#the following will fail if there is no number in the string
+			try:
+				#pull out numeric part of string
+				a = [re.search(renum,y).group(0) for y in a]
+				if len(a) == 6:
+					#make them float after removing non numericals
+					values = [float(y) for y in a]
+					calibValues.append(values)
+			except: continue
+		#calculate median bias for gyro and accelerometer
+		self.gyroBiasX = numpy.median([x[0] for x in calibValues])
+		self.gyroBiasY = numpy.median([x[1] for x in calibValues])
+		self.gyroBiasZ = numpy.median([x[2] for x in calibValues])
+		self.acelBiasX = numpy.median([x[3] for x in calibValues])
+		self.acelBiasY = numpy.median([x[4] for x in calibValues])
+		#MPU 6050 gives +16384 for right side up. This program interprets
+		#which way the accelerometer is pointed, and interprets from there
+		#get reading, then modify for correct value
+		self.acelBiasZ = numpy.median([x[5] for x in calibValues])
+		#points correct way
+		if self.acelBiasZ > 0:
+			self.acelBiasZ -= 16384
+		else: #upside down!
+			self.acelBiasZ += 16384
 
-print("Connection established")
+    def update_settings(self):
+        a = self.arduino.readline().split(',')
+		#the following will fail if there is no number in the string
+		try:
+			#pull out numeric part of string
+			a = [re.search(renum,y).group(0) for y in a]
+			if len(a) == 6:
+				#make them float after removing non numericals
+				values = [float(y) for y in a]
+				#correct all according to biases
+				values[0] -= gyroBiasX
+				values[1] -= gyroBiasY
+				values[2] -= gyroBiasZ
+				values[3] -= acelBiasX
+				values[4] -= acelBiasY
+				values[5] -= acelBiasZ
+				self.settings.gyroX = values[0]
+				self.settings.gyroY = values[1]
+				self.settings.gyroZ = values[2]
+				self.settings.acelX = 9.81*values[3]/16384
+				self.settings.acelY = 9.81*values[4]/16384
+				self.settings.acelZ = 9.81*values[5]/16384
+		except: continue
 
-print("Calculating Gyro Bias")
-startRead = time.time()
+    #function will publish at 60Hz
+    def run(self):
+        r = rospy.Rate(60)
+        #continue until quit
+        while not rospy.is_shutdown():
+        	#get new values
+        	self.update_settings()
+            #publish to topic
+            self.pubImu.publish(self.settings)
+            #next iteration
+            r.sleep()
 
-serialCalibData = []
-calibValues = []
-#read from IMU for specified seconds to calibrate
-while time.time() - startRead < 1:
-	#split up into list
-	a = arduino.readline()
-	serialCalibData.append(a)
+    #exit
+    def close(self):
+    	self.arduino.close()
 
-for x in serialCalibData:
-	a = x.split(',')
-	#the following will fail if there is no number in the string
-	try:
-		#pull out numeric part of string
-		a = [re.search(renum,y).group(0) for y in a]
-		if len(a) == 6:
-			#make them float after removing non numericals
-			values = [float(y) for y in a]
-			calibValues.append(values)
-	except: continue
-#calculate median bias for gyro and accelerometer
-gyroBiasX = numpy.median([x[0] for x in calibValues])
-gyroBiasY = numpy.median([x[1] for x in calibValues])
-gyroBiasZ = numpy.median([x[2] for x in calibValues])
-acelBiasX = numpy.median([x[3] for x in calibValues])
-acelBiasY = numpy.median([x[4] for x in calibValues])
-#MPU 6050 gives +16384 for right side up. This program interprets
-#which way the accelerometer is pointed, and interprets from there
-#get reading, then modify for correct value
-acelBiasZ = numpy.median([x[5] for x in calibValues])
-
-#points correct way
-if acelBiasZ > 0:
-	acelBiasZ -= 16384
-else: #upside down!
-	acelBiasZ += 16384
-
-print ("gyroscope x bias = ", gyroBiasX)
-print ("gyroscope y bias = ", gyroBiasY)
-print ("gyroscope z bias = ", gyroBiasZ)
-print ("accelerometer x bias = ", acelBiasX)
-print ("accelerometer y bias = ", acelBiasY)
-print ("accelerometer z bias = ", acelBiasZ)
-
-#http://www.i2cdevlib.com/forums/topic/91-how-to-decide-gyro-and-accelerometer-offsett/#entry257
-
-###Current test values are:
-#('gyroscope x bias = ', 20.0)
-#('gyroscope y bias = ', -487.0)
-#('gyroscope z bias = ', -215.0)
-#('accelerometer x bias = ', 2512.0)
-#('accelerometer y bias = ', -1220.0)
-#('accelerometer z bias = ', -480.0)
-
-startRead = time.time()
-#now, for readings, need to subtract bias from each. 
-#continue for specified number of seconds
-while time.time() - startRead < 3:
-	a = arduino.readline().split(',')
-	#the following will fail if there is no number in the string
-	try:
-		#pull out numeric part of string
-		a = [re.search(renum,y).group(0) for y in a]
-		if len(a) == 6:
-			#make them float after removing non numericals
-			values = [float(y) for y in a[3:]]
-			#correct all according to biases
-			values[0] -= acelBiasX
-			values[1] -= acelBiasY
-			values[2] -= acelBiasZ
-			print "The accelerations are :"
-			print "x =", 9.81*values[0]/16384, "m/s^2"
-			print "y =", 9.81*values[1]/16384, "m/s^2"
-			print "z =", 9.81*values[2]/16384, "m/s^2"
-	except: continue
-
-
-arduino.close()
