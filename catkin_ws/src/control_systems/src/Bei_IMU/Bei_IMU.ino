@@ -7,10 +7,8 @@
 #include <Wire.h>
 
 const int mpu = 0x68; //I2C address of the MPU-6050
-long double ax, ay, az, gx, gy, gz, tmp;
+double ax, ay, az, gx, gy, gz, tmp;
 
-long double sumforavg = 0;
-int measures = 0;
 void setup()
 {
   Wire.begin();
@@ -23,6 +21,7 @@ void setup()
 
 void loop()
 {
+  //initialize communication
   Wire.beginTransmission(mpu);
   Wire.write(0x3B);
   Wire.endTransmission(false);
@@ -37,21 +36,12 @@ void loop()
   gy= Wire.read()<<8|Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
   gz= Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
   
-  //magnitude of acceleration
-  long double accel = 9.81 * sqrt(ax*ax + ay*ay + az*az)/16269.73;
-  //sumforavg += accel;
-  //measures ++;
-  //double average = sumforavg/measures;
-  //Serial.print("accel = "); Serial.println(accel);
-  //Serial.print("avgaccel = "); Serial.print(average);
-  //Serial.print(", curr =  ");Serial.println((double)accel);
-  //Serial.println((double)accel);
-  Serial.print((double)gx);
-  Serial.print(",");Serial.print((double)gy);
-  Serial.print(",");Serial.print((double)gz);
-  Serial.print(",");Serial.print((double)ax);
-  Serial.print(",");Serial.print((double)ay);
-  Serial.print(",");Serial.println((double)az);
-  
-  delay(50);
+  //print out values
+  Serial.print(gx);
+  Serial.print(",");Serial.print(gy);
+  Serial.print(",");Serial.print(gz);
+  Serial.print(",");Serial.print(ax);
+  Serial.print(",");Serial.print(ay);
+  Serial.print(",");Serial.println(az);
+  //no delay so that arduino will print at maximum rate
 }
