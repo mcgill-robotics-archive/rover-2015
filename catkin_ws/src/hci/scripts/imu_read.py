@@ -12,9 +12,15 @@ import serial, time, numpy, re
 #regular expression for numbers
 renum = '-?[0-9]+\.?[0-9]+'
 
+
 print("Initializing serial connection")
-#initialize arduino at port and specified baud rate
-arduino = serial.Serial('/dev/ttyACM0',115200)
+
+try:
+	#initialize arduino at port and specified baud rate
+	arduino = serial.Serial('/dev/ttyACM0',115200)
+except serial.serialutil.SerialException:
+	print("Connection could not be established")
+	quit()
 
 print("Connection established")
 
@@ -23,12 +29,11 @@ startRead = time.time()
 
 serialCalibData = []
 calibValues = []
-#read from IMU for 5 seconds to calibrate
+#read from IMU for specified seconds to calibrate
 while time.time() - startRead < 1:
 	#split up into list
 	a = arduino.readline()
 	serialCalibData.append(a)
-
 
 for x in serialCalibData:
 	a = x.split(',')
@@ -39,16 +44,15 @@ for x in serialCalibData:
 		if len(a) == 6:
 			#make them float after removing non numericals
 			values = [float(x) for x in a]
-			calibValues.append(gyroValues)
+			calibValues.append(values)
 	except: continue
-
 #calculate median bias for gyro and accelerometer
-gyroBiasX = numpy.median(calibValues[:][0])
-gyroBiasY = numpy.median(calibValues[:][1])
-gyroBiasZ = numpy.median(calibValues[:][2])
-acelBiasX = numpy.median(calibValues[:][3])
-acelBiasY = numpy.median(calibValues[:][4])
-acelBiasZ = numpy.median(calibValues[:][5])
+gyroBiasX = numpy.median([x[0] for x in calibValues])
+gyroBiasY = numpy.median([x[1] for x in calibValues])
+gyroBiasZ = numpy.median([x[2] for x in calibValues])
+acelBiasX = numpy.median([x[3] for x in calibValues])
+acelBiasY = numpy.median([x[4] for x in calibValues])
+acelBiasZ = numpy.median([x[5] for x in calibValues])
 
 print ("gyroscope x bias = ", gyroBiasX)
 print ("gyroscope y bias = ", gyroBiasY)
