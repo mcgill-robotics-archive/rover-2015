@@ -1,4 +1,7 @@
 [submodule "rosserial"]
     path=catkin_ws/src/rosserial
     url=https://github.com/ros-drivers/rosserial.git
+[submodule "camera_umd"]
+    path=catkin_ws/src/camera_umd
+    url=https://github.com/ktossell/camera_umd.git
 
