@@ -8,6 +8,7 @@ import signal
 
 import rospy
 from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 
 class CentralUi(QtGui.QMainWindow):
 
@@ -27,7 +28,7 @@ class CentralUi(QtGui.QMainWindow):
         
         self.ros_init()
 
-        self.signal.start(100)
+        self.signal.start(1000/60)
     
  
  
@@ -55,7 +56,7 @@ class CentralUi(QtGui.QMainWindow):
     def repaint_image(self):
         if self.imageMain is not None:
             try:
-                qimageMain = QtGui.QImage(self.imageMain.data, self.imageMain.width/3, self.imageMain.height/3,QtGui.QImage.Format_RGB888)
+                qimageMain = QtGui.QImage(self.imageMain.data, self.imageMain.width, self.imageMain.height,QtGui.QImage.Format_RGB888)
                 #TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
                 # wiskey-tango-foxtrot
                 imageMain = QtGui.QPixmap.fromImage(qimageMain)     
@@ -67,7 +68,7 @@ class CentralUi(QtGui.QMainWindow):
         
         if self.imageTop is not None:
         	try: 
-        		qimageTop = QtGui.QImage(self.imageTop.data, self.imageTop.width/3, self.imageTop.height/3,QtGui.QImage.Format_RGB888)
+        		qimageTop = QtGui.QImage(self.imageTop.data, self.imageTop.width, self.imageTop.height,QtGui.QImage.Format_RGB888)
         		#TODO: FIGURE OUT THIS DIVIDED BY 3 !!! 
         		# wiskey-tango-foxtrot
         		imageTop = QtGui.QPixmap.fromImage(qimageTop)		
@@ -93,7 +94,7 @@ class CentralUi(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer',anonymous=True)  
         self.getimageTopic() 
-        rospy.Subscriber(self.feedTopics[0], Image, self.receiveimageMain)
+        rospy.Subscriber("/image_raw",Image, self.receiveimageMain)
         rospy.Subscriber(self.feedTopics[1], Image, self.receiveimageTop)
         rospy.Subscriber(self.feedTopics[2], Image, self.receiveimageBottom)
 
