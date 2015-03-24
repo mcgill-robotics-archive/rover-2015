@@ -1,0 +1,5 @@
+cmd_vel_topic	: "cmd_vel"
+cmd_endEffector_topic : "cmd_endEffector"
+electrical_interface/arm_topic : "electrical_interface/arm"
+electrical_interface/cameraPos_topic  : "electrical_interface/cameraPan"
+cmd_motion_topic : "cmd_motion"

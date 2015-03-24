@@ -1,0 +1,8 @@
+<launch>
+    <include file="$(find hci)/launch/camera_base.launch" >
+        <arg name="CAMERA_NAME" value="camera_front_right" />
+        <arg name="CAMERA_ID" value="1e10:2004" />
+        <arg name="viewFeed" default="0"/>
+        <arg name="hd" default="0"/>
+    </include>
+</launch>

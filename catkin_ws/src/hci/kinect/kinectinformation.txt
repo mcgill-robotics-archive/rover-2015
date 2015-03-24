@@ -1,0 +1,2 @@
+Kinect power cable puts out 12 V, 1.08 A. The brick is missing so a
+power supply is needed

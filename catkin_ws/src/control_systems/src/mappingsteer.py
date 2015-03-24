@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import math #for trig functions
+from control_systems.msg import SetPoints
+import rospy #to export parameters
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
 # pfsa: port front wheel steering angle
@@ -14,12 +16,13 @@ import math #for trig functions
 # prrv: port rear wheel rotation velocity
 # srrv: starboard rear wheel rotation velocity
 
-D = 50e-2  # distance between wheels of: front and middle/middle and rear[m]   
-B = 40e-2  # distance between longitudinal axis and port/startboard wheels[m]
-R = 16.5e-2 # wheel radius [m]
-W = 15e-2 # wheel width [m]
-#This value needs to be tested for
-T = 3*math.pi/8 # max angle of front and rear wheels [rad] (technically no max)
+# distance between wheels of: front and middle/middle and rear[m]
+D = rospy.get_param('control/wh_distance_fr',0.5)
+# distance between longitudinal axis and port/startboard wheels[m]
+B = rospy.get_param('control/wh_base',0.4)
+
+R = rospy.get_param('control/wh_radius',0.165) # wheel radius [m]
+W = rospy.get_param('control/wh_width',0.15) # wheel width [m]
 
 #angle on the wheels for point steering
 pointSteeringAngle = math.pi/2 - math.atan(B/D)
@@ -27,8 +30,18 @@ pointSteeringAngle = math.pi/2 - math.atan(B/D)
 pointSteeringRadius = math.sqrt(D**2+B**2)
 zero = 1e-10 # Offers protection against numbers very close to zero
 
-#the minimum distance of the IPCR that the wheels can accomodate
-rhoMin = D*math.tan(math.pi/2-T)+B
+#minimum rhoMin (just in front of wheel)
+rhoMin = B + W/2
+
+def angleMod(n):
+	return divmod(n,2*math.pi)[1]
+
+def maxMag(numbers):
+	greatest = 0
+	for x in numbers:
+		if abs(x) > abs(greatest):
+			greatest = x
+	return greatest
 
 #function returns the sign of a variable (1,0 or -1)
 def sign(n): 
@@ -70,7 +83,8 @@ def steer(vBody, wBody):
 	sgnw = sign(wBody)
 	#absolute values used in the calculations
 	vBody,wBody = abs(float(vBody)),abs(float(wBody))
-	#I could make an adjustment at start to force wbody positive, then change later
+	#I could make an adjustment at start to force wbody positive, then change 
+		#later
 	
 	#if robot not moving
 	if abs(vBody) < zero:
@@ -165,10 +179,9 @@ def steer(vBody, wBody):
 #also note this does not respect the max angle of the wheel
 #######################
 def pointTurn(wBody):
-	if abs(wBody) < zero:
-		#if no velocity, stop motion and keep angles
-		return stop()
 	wBody = float(wBody)
+	#movement may occur to position wheels even if 
+	#robot is not moving around
 	movement = True
 	#wheels have specific angle - all of them should form a circle together
 	pfsa = pointSteeringAngle #forms circle
@@ -178,15 +191,25 @@ def pointTurn(wBody):
 	prsa = -pfsa
 	srsa = pfsa
 
-	r = pointSteeringRadius
-	v = wBody*r #linear velocity of each wheel
+	if abs(wBody) < zero:
+		#if no velocity, return angles and nothing else
+		pfrv = 0
+		sfrv = 0
+		pmrv = 0
+		smrv = 0
+		prrv = 0
+		srrv = 0
+	else:
+		#configure speeds
+		r = pointSteeringRadius
+		v = wBody*r #linear velocity of each wheel
 
-	pfrv = v/R #match angular velocity to rotation of wheel
-	sfrv = -pfrv #should all move in circle
-	pmrv = wBody*B/R #same angular velocity
-	smrv = -pmrv
-	prrv = pfrv
-	srrv = -pfrv	
+		pfrv = v/R #match angular velocity to rotation of wheel
+		sfrv = -pfrv #should all move in circle
+		pmrv = wBody*B/R #same angular velocity
+		smrv = -pmrv
+		prrv = pfrv
+		srrv = -pfrv	
 	#I split them up to stay within 80 columns 
 	out={'movement':movement,'pfsa': pfsa,'sfsa': sfsa,'pmsa': pmsa}
 	#add more values
@@ -218,7 +241,7 @@ def translationalMotion(y,x):
 	#rotation whenever the joystick goes past 90 from forward
 	if sgnx > 0 and theta < 0:#make theta positive
 		theta = math.pi - theta
-	elif sgnx <0 and theta > 0:#make theta negative
+	elif sgnx < 0 and theta > 0:#make theta negative
 		theta = theta - math.pi
 	movement = True
 	pfsa = theta
@@ -246,6 +269,98 @@ def translationalMotion(y,x):
 	out.update({'sfrv': sfrv,'pmrv': pmrv,'smrv': smrv,'prrv': prrv})
 	out.update({'srrv': srrv})
 	return out
+
+#swerve drive! - spinning while moving in a linear direction
+def swerve (settings, time, wBody, vBody, heading, rotation):
+	#settings is the previous wheel settings. this is used to find new rotation
+	#time is the time since the last swerve function
+	#wBody is the rotational speed of the rover
+	#vBody is the linear speed of the rover centre
+	#heading is the direction of the linear velocity of the rover centre, which
+	#is relative to the initial forward direction when swerve started
+	#rotation is the cumulative angle of rotation of the rover from the start
+
+	#Safety:
+	heading = angleMod(heading)
+
+	#first, calculate the previous wBody (can be found from any wheel)
+	#easiest from middle wheels (requires them to be spinning)
+	###########################################
+	#it's also important to note that the middle
+	#wheels should not spin when others are 
+	#getting in position
+	###########################################
+	wBodyOld = settings.speedML*R/B
+
+	#find the new rotation of the rover - also get the modulus of it
+	newRotation = angleMod(rotation + wBodyOld * time)
+
+	if abs(vBody) < zero and abs(wBody) < zero:
+		return (stop(),newRotation)
+
+	#now that we have the wanted direction of the rover, and the rotation,
+	#we can create the knew settings
+	#first, define some vectors in the forward x direction of the rover
+	#this is of the FL wheel with just the rotation
+	vrx = D * wBody 
+	vry = B * wBody
+	#beta is angle between axis perpindicular to forward direction of 
+	#rover, and heading
+	psi = angleMod(newRotation+math.pi/2)
+	beta = 0
+	if psi > heading:
+		beta = psi-heading
+	else:
+		beta = heading-psi
+	#the following vector va is the linear velocity, which is combined
+	#with the rotational velocity
+	vax = math.cos(beta) * vBody
+	vay = math.sin(beta) * vBody
+
+	#final velocity vectors for each wheel
+	#FL wheel
+	vFLx =  vrx + vax
+	vFLy =  vry + vay
+	vFL = math.sqrt(vFLx**2 + vFLy**2)/R
+
+	##########################################
+	##The following would seem to also block
+	##the rover wheels from turning a full 360
+	##although this may need to be updated 
+	##later for smoother travel
+	##########################################
+	thetaFL = math.atan(vFLx/vFLy)
+	#FR wheel
+	vFRx =  vrx + vax
+	vFRy = -vry + vay
+	vFR = math.sqrt(vFRx**2 + vFRy**2)/R
+	thetaFR = math.atan(vFRx/vFRy)
+	#BR wheel
+	vBRx = -vrx + vax
+	vBRy = -vry + vay
+	vBR = math.sqrt(vBRx**2 + vBRy**2)/R
+	thetaBR = math.atan(vBRx/vBRy)
+	#BL wheel
+	vBLx = -vrx + vax
+	vBLy =  vry + vay
+	vBL = math.sqrt(vBLx**2 + vBLy**2)/R
+	thetaBL = math.atan(vBLx/vBLy)
+
+	#middle wheel
+	thetaML = 0
+	thetaMR = 0
+	vML = wBody*B/R
+	vMR = -vML
+
+	movement = True
+
+	#I split them up to stay within 80 columns
+	out={'movement':movement,'pfsa': thetaFL,'sfsa': thetaFR,'pmsa': thetaML}
+	out.update({'smsa': thetaMR,'prsa': thetaBL,'srsa': thetaBR,'pfrv': vFL})
+	out.update({'sfrv': vFR,'pmrv': vML,'smrv': vMR,'prrv': vBR,'srrv': vBL})
+	return (out, newRotation)
+
+
 
 #testing code and sample usage
 #a= pointTurn(-1)

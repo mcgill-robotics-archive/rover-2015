@@ -1,0 +1,7 @@
+<launch>
+	<rosparam command="load" file="$(find odometry)/config/radius.yaml"/>
+	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
+
+	<node name="mw_odo" pkg="odometry" type="mw_odo" respawn="false" output="screen"/> 
+
+</launch>
