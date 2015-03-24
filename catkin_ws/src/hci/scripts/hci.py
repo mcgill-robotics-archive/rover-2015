@@ -47,7 +47,7 @@ class CentralUi(QtGui.QMainWindow):
         # controller timer connect
         self.controller_timer = QtCore.QTimer()
         self.addPointTimer = QtCore.QTimer()
-        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.readController)
+        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.read_controller)
         QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.addPointTimeout)
         self.setControllerTimer()
         self.addPointTimer.start(100)
@@ -130,16 +130,16 @@ class CentralUi(QtGui.QMainWindow):
         else:
             rospy.loginfo("Missing controller, timer aborted")
 
-    def readController(self):
+    def read_controller(self):
         self.controller.update()
         self.ui.MainX.setValue(self.controller.a1*1000)
         self.ui.MainY.setValue(-self.controller.a2*1000)
         self.ui.StickRotation.setValue(self.controller.a3*1000)
         self.ui.SecondaryY.setValue(-self.controller.a4*1000)
 
-        if self.controller.b3:
+        if self.controller.b5:
             self.ui.Camera1Feed.setCurrentIndex(5)
-        elif self.controller.b4:
+        elif self.controller.b6:
             self.ui.Camera1Feed.setCurrentIndex(4)
         elif self.controller.hat == (-1, 0):
             self.ui.Camera1Feed.setCurrentIndex(1)
@@ -149,7 +149,9 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.Camera1Feed.setCurrentIndex(3)
         elif self.controller.hat == (1, 0):
             self.ui.Camera1Feed.setCurrentIndex(2)
-        if self.controller.b2:
+        if self.controller.b4:
+            self.toggle_coordinate()
+        if self.controller.b3:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
         if self.controller.b7:
             self.setControllerMode(0)
@@ -161,9 +163,12 @@ class CentralUi(QtGui.QMainWindow):
             self.setControllerMode(3)
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
-        self.publishControls()
+        self.publish_controls()
 
-    def publishControls(self):
+    def toggle_coordinate(self):
+        self.ui.coordinateSystem.setCurrentIndex((self.ui.coordinateSystem.currentIndex()+1) % 2)
+
+    def publish_controls(self):
         if self.modeId == 0:
             # drive mode
             self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
