@@ -179,9 +179,12 @@ class CentralUi(QtGui.QMainWindow):
             height = self.controller.a1
             angle = self.controller.a3
             cart = False
-            if self.ui.coordinateSystem.currentIndex() is 0:
+            vel = False
+            if self.ui.coordinateSystem.currentIndex() is 1:
                 cart = True
-            self.publisher.publish_arm_base_movement(length, height, angle, cart)
+            if self.ui.arm_mode.currentIndex() is 1:
+                vel = True
+            self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
 
         elif self.modeId == 2:
             # end effector mode

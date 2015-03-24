@@ -30,7 +30,7 @@ class Publisher(object):
         self.vel_pub.publish(msg)
 
     # publish 2 main joystick axes for arm base movement (mode must be arm)
-    def publish_arm_base_movement(self, armLength, armHeight, angle, cartesian=False):
+    def publish_arm_base_movement(self, armLength, armHeight, angle, cartesian=False, velocity=False):
         """
         Publish base arm position
         """
@@ -40,6 +40,7 @@ class Publisher(object):
         msg.theta = angle
         msg.cartesian = cartesian
         msg.on = True
+        msg.velocity = velocity
         self.arm_movement_pub.publish(msg)
     
     # publish end effector position
