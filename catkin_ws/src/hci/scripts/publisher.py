@@ -38,6 +38,7 @@ class Publisher(object):
         msg.on = True
         self.arm_movement_pub.publish(msg)
     
+    # publish end effector position
     def publish_endEffector(self, x, y, rotate, grip):
         msg = EndEffector()
         msg.x = x
@@ -47,14 +48,14 @@ class Publisher(object):
         self.arm_endEffector_pub.publish(msg)
     
 
-    #publish camera zoom from axis 4
+    # publish camera zoom from axis 4
     def publish_camera(self, a3, a4):
         msg = PanTiltZoom()
         msg.pan=a3
         msg.tilt=a4
         self.cam_pub.publish(msg)
 
-
+    # publish steering mode
     def setSteerMode(self, boolean):
         motionType = MotionType()
         

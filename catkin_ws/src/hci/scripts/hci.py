@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
 from RoverWindow import *
-##from no_imu import *
 from PyQt4 import QtCore, QtGui
-##import publisher
 from JoystickController import JoystickController
 from publisher import Publisher
 import pyqtgraph as pg
@@ -12,16 +10,12 @@ import sys
 import rospy
 import Queue
 
-from std_msgs.msg import String  # ros message types
-from std_msgs.msg import Float32
-from std_msgs.msg import Float64
-from std_msgs.msg import Int16
-from std_msgs.msg import Int32
-from sensor_msgs.msg import Image
-from geometry_msgs.msg import Twist, Pose
+from std_msgs.msg import *
+from geometry_msgs.msg import Pose
 
-#TODO: create service
+# TODO: create service
 # from hci import Switch_Feeds
+
 
 class CentralUi(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -34,7 +28,7 @@ class CentralUi(QtGui.QMainWindow):
         self.modeId = 0
         self.grip = 0
 
-        ## List of topic names for the camera feeds, compiled from parameter server
+        # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []
 
         # map place holders
@@ -48,7 +42,7 @@ class CentralUi(QtGui.QMainWindow):
 
         rospy.loginfo("Starting joystick acquisition")
 
-        ##button connects
+        # button connects
         # controller timer connect
         self.controller_timer = QtCore.QTimer()
         self.addPointTimer = QtCore.QTimer()
@@ -64,24 +58,23 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.setMode3)
         # connect for point steer mode
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.setPointSteer)
+        
         # camera feed selection signal connects
-        #QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        #QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
-        #QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
-        #TODO: Remove comments when done with switcher implementation
-
+        # QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
+        # QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
+        # QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
+        # TODO: Remove comments when done with switcher implementation
 
         self.ui.pushButton.clicked.connect(self.addWayPoint)
         self.ui.pushButton_2.clicked.connect(self.clearMap)
 
         self.setupMinimap()
 
-        rospy.init_node('listener',anonymous=False)
-                
+        rospy.init_node('listener', anonymous=False)
 
         rospy.Subscriber('pose', Pose, self.handlePose)
 
-        #self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
+        # self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
 
         self.feed1index = 0
         self.feed2index = 0
@@ -89,12 +82,11 @@ class CentralUi(QtGui.QMainWindow):
 
         rospy.loginfo("HCI initialization completed")
 
-
     def setupMinimap(self):
 
         self.w1 = self.ui.graphicsView.addViewBox()
         self.w1.setAspectLocked(False)
-        self.w1.enableAutoRange('xy',True)
+        self.w1.enableAutoRange('xy', True)
         self.ui.graphicsView.nextRow()
 
         self.x_waypoints.append(0)
@@ -104,28 +96,29 @@ class CentralUi(QtGui.QMainWindow):
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10,symbol='t',brush='b')
         self.w1.addItem(self.s1)
 
-    def handlePose(self,data):
-        #add (x,y) to tempPose queue
+    def handlePose(self, data):
+        # add (x,y) to tempPose queue
         self.tempPose.put(data)
 
     def addPointTimeout(self):
         while not self.tempPose.empty():
-            pose=self.tempPose.get()
-            self.newx=[pose.position.x]
-            self.newy=[pose.position.y]
-            self.s1.addPoints(self.newx,self.newy, size=3, symbol='o', brush='w')
-            self.w1.autoRange()
-
+            pose = self.tempPose.get()
+            self.newx = [pose.position.x]
+            self.newy = [pose.position.y]
+            self.s1.addPoints(self.newx, self.newy, size=3, symbol='o', brush='w')
+            if self.ui.zoomGraph.isChecked():
+                self.w1.autoRange()
 
     def addWayPoint(self):
         self.x_waypoints.append(self.newx[0])
         self.y_waypoints.append(self.newx[0])
-        self.s1.addPoints([self.newx[0]],[self.newy[0]],size=10,symbol='t',brush='b')
-        self.w1.autoRange()
+        self.s1.addPoints([self.newx[0]], [self.newy[0]], size=10, symbol='t', brush='b')
+        if self.ui.zoomGraph.isChecked():
+            self.w1.autoRange()
 
     def clearMap(self):
-        self.s1.setData([],[],size=10,symbol='o',brush='r')
-        self.s1.addPoints(self.x_waypoints,self.y_waypoints,size=10,symbol='t',brush='b')
+        self.s1.setData([], [], size=10, symbol='o', brush='r')
+        self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
     def setPointSteer(self, boolean):
         self.publisher.setSteerMode(boolean)
@@ -167,7 +160,7 @@ class CentralUi(QtGui.QMainWindow):
         elif self.controller.hat ==(1,0):
             self.ui.Camera1Feed.setCurrentIndex(2)
         self.controller.clear_buttons()
-        #minus sign to compensate for joystick inherent positive and negative mappings
+        # minus sign to compensate for joystick inherent positive and negative mappings
         self.publishControls()
 
     def publishControls(self):
@@ -177,25 +170,25 @@ class CentralUi(QtGui.QMainWindow):
             length = -self.controller.a2
             height = self.controller.a1
             angle = self.controller.a3
-            self.publisher.publish_arm_base_movement(length,height,angle)
+            self.publisher.publish_arm_base_movement(length, height, angle)
         elif self.modeId == 2:
             x = -self.controller.a2
             y = self.controller.a3
             rotate = self.controller.a1
-            if self.grip == 0 :
-                if self.controller.b3 :
+            if self.grip == 0:
+                if self.controller.b3:
                     self.grip = 1
-                elif self.controller.b4 :
+                elif self.controller.b4:
                     self.grip = -1
-            else :
-                if self.controller.b3 or self.controller.b4 :
+            else:
+                if self.controller.b3 or self.controller.b4:
                     self.grip = 0
             grip = self.grip
 
-            self.publisher.publish_endEffector(x,y,rotate,grip)
+            self.publisher.publish_endEffector(x, y, rotate, grip)
 
-            #end effector mode
-            #use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
+            # end effector mode
+            # use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
 
     def setMode0(self):
         self.setControllerMode(0)
