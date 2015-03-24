@@ -3,3 +3,4 @@ float32 y
 float32 theta
 bool on
 bool cartesian
+bool velocity

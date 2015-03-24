@@ -20,12 +20,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## find cmake_modules first
 find_package(Eigen REQUIRED)
 
-catkin_package(
-  CATKIN_DEPENDS
-  roscpp
-  rospy
-)
-
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -81,10 +75,11 @@ catkin_package(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   geometry_msgs#   nav_msgs#   sensor_msgs#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs
+  std_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -98,7 +93,7 @@ catkin_package(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES state_estimation
-#  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf
+  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf
 #  DEPENDS system_lib
 )
 

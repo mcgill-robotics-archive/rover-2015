@@ -55,7 +55,6 @@ find_package(catkin REQUIRED COMPONENTS
    ArmAngles.msg
    EndEffector.msg
    PanTiltZoom.msg
-   Imu.msg
 )
 
 ## Generate services in the 'srv' folder
