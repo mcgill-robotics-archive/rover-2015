@@ -16,13 +16,6 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_7">
     <item>
-     <widget class="Line" name="line_7">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <widget class="QLabel" name="MinimapLabel">
@@ -406,6 +399,15 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="armSetX"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="armSetY"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="armSetZ"/>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
@@ -427,16 +429,14 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QDoubleSpinBox" name="armSetX"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="armSetY"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="armSetZ"/>
-          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="sendCoords">
+          <property name="text">
+           <string>Send</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -536,44 +536,8 @@
      </layout>
     </item>
    </layout>
-   <zorder>line_7</zorder>
-   <zorder>graphicsView</zorder>
    <zorder></zorder>
    <zorder></zorder>
-   <zorder>MinimapLabel</zorder>
-   <zorder>StickRotation</zorder>
-   <zorder>MainY</zorder>
-   <zorder>Camera2Feed</zorder>
-   <zorder>Camera1Feed</zorder>
-   <zorder>MainX</zorder>
-   <zorder>SecondaryY</zorder>
-   <zorder>Camera3Feed</zorder>
-   <zorder>OtherDataLabel</zorder>
-   <zorder>OtherData</zorder>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>label_5</zorder>
-   <zorder>pointSteer</zorder>
-   <zorder>arm_mode</zorder>
-   <zorder>armSetX</zorder>
-   <zorder>armSetY</zorder>
-   <zorder>armSetZ</zorder>
-   <zorder>label_4</zorder>
-   <zorder>HandTypeChoice</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label</zorder>
-   <zorder>label_8</zorder>
-   <zorder>coordinateSystem</zorder>
-   <zorder>label_9</zorder>
-   <zorder>label_10</zorder>
-   <zorder>label_11</zorder>
-   <zorder>label_3</zorder>
-   <zorder>line</zorder>
-   <zorder>EndEffectorMode</zorder>
-   <zorder>function4</zorder>
-   <zorder>ArmBaseMode</zorder>
-   <zorder>DriveMode</zorder>
-   <zorder>zoomGraph</zorder>
-   <zorder>sig_qual</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -584,23 +548,6 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuWindow">
-    <property name="title">
-     <string>window</string>
-    </property>
-   </widget>
-   <addaction name="menuWindow"/>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
@@ -612,5 +559,54 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>armSetX</sender>
+   <signal>editingFinished()</signal>
+   <receiver>sendCoords</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>671</x>
+     <y>469</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>508</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>armSetY</sender>
+   <signal>editingFinished()</signal>
+   <receiver>sendCoords</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>758</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>758</x>
+     <y>497</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>armSetZ</sender>
+   <signal>editingFinished()</signal>
+   <receiver>sendCoords</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>834</x>
+     <y>459</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>833</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

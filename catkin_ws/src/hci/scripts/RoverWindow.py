@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files/MainWindow_V4.ui'
 #
-# Created: Thu Mar 19 22:50:06 2015
+# Created: Tue Mar 24 11:34:48 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,11 +31,6 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout_7 = QtGui.QHBoxLayout(self.centralwidget)
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
-        self.line_7 = QtGui.QFrame(self.centralwidget)
-        self.line_7.setFrameShape(QtGui.QFrame.HLine)
-        self.line_7.setFrameShadow(QtGui.QFrame.Sunken)
-        self.line_7.setObjectName(_fromUtf8("line_7"))
-        self.horizontalLayout_7.addWidget(self.line_7)
         self.verticalLayout_5 = QtGui.QVBoxLayout()
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
         self.MinimapLabel = QtGui.QLabel(self.centralwidget)
@@ -182,15 +177,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.gridLayout_2 = QtGui.QGridLayout()
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
-        self.label_9 = QtGui.QLabel(self.centralwidget)
-        self.label_9.setObjectName(_fromUtf8("label_9"))
-        self.gridLayout_2.addWidget(self.label_9, 0, 0, 1, 1)
-        self.label_10 = QtGui.QLabel(self.centralwidget)
-        self.label_10.setObjectName(_fromUtf8("label_10"))
-        self.gridLayout_2.addWidget(self.label_10, 0, 1, 1, 1)
-        self.label_11 = QtGui.QLabel(self.centralwidget)
-        self.label_11.setObjectName(_fromUtf8("label_11"))
-        self.gridLayout_2.addWidget(self.label_11, 0, 2, 1, 1)
         self.armSetX = QtGui.QDoubleSpinBox(self.centralwidget)
         self.armSetX.setObjectName(_fromUtf8("armSetX"))
         self.gridLayout_2.addWidget(self.armSetX, 1, 0, 1, 1)
@@ -200,7 +186,19 @@ class Ui_MainWindow(object):
         self.armSetZ = QtGui.QDoubleSpinBox(self.centralwidget)
         self.armSetZ.setObjectName(_fromUtf8("armSetZ"))
         self.gridLayout_2.addWidget(self.armSetZ, 1, 2, 1, 1)
+        self.label_9 = QtGui.QLabel(self.centralwidget)
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.gridLayout_2.addWidget(self.label_9, 0, 0, 1, 1)
+        self.label_10 = QtGui.QLabel(self.centralwidget)
+        self.label_10.setObjectName(_fromUtf8("label_10"))
+        self.gridLayout_2.addWidget(self.label_10, 0, 1, 1, 1)
+        self.label_11 = QtGui.QLabel(self.centralwidget)
+        self.label_11.setObjectName(_fromUtf8("label_11"))
+        self.gridLayout_2.addWidget(self.label_11, 0, 2, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_2)
+        self.sendCoords = QtGui.QPushButton(self.centralwidget)
+        self.sendCoords.setObjectName(_fromUtf8("sendCoords"))
+        self.verticalLayout.addWidget(self.sendCoords)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label_2 = QtGui.QLabel(self.centralwidget)
@@ -243,18 +241,15 @@ class Ui_MainWindow(object):
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 907, 22))
         self.menubar.setObjectName(_fromUtf8("menubar"))
-        self.menuWindow = QtGui.QMenu(self.menubar)
-        self.menuWindow.setObjectName(_fromUtf8("menuWindow"))
         MainWindow.setMenuBar(self.menubar)
-        self.toolBar = QtGui.QToolBar(MainWindow)
-        self.toolBar.setObjectName(_fromUtf8("toolBar"))
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuWindow.menuAction())
 
         self.retranslateUi(MainWindow)
+        QtCore.QObject.connect(self.armSetX, QtCore.SIGNAL(_fromUtf8("editingFinished()")), self.sendCoords.click)
+        QtCore.QObject.connect(self.armSetY, QtCore.SIGNAL(_fromUtf8("editingFinished()")), self.sendCoords.click)
+        QtCore.QObject.connect(self.armSetZ, QtCore.SIGNAL(_fromUtf8("editingFinished()")), self.sendCoords.click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -295,6 +290,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "X", None))
         self.label_10.setText(_translate("MainWindow", "Y", None))
         self.label_11.setText(_translate("MainWindow", "Z", None))
+        self.sendCoords.setText(_translate("MainWindow", "Send", None))
         self.label_2.setText(_translate("MainWindow", "Arm mode", None))
         self.arm_mode.setItemText(0, _translate("MainWindow", "Position Control", None))
         self.arm_mode.setItemText(1, _translate("MainWindow", "Velocity Control", None))
@@ -304,7 +300,5 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Hand type", None))
         self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
         self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))
-        self.menuWindow.setTitle(_translate("MainWindow", "window", None))
-        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
 
 from pyqtgraph import GraphicsLayoutWidget
