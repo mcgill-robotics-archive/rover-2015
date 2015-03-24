@@ -488,12 +488,12 @@
            <widget class="QComboBox" name="coordinateSystem">
             <item>
              <property name="text">
-              <string>Cartesian</string>
+              <string>Cylindrical</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Cylindrical</string>
+              <string>Cartesian</string>
              </property>
             </item>
            </widget>

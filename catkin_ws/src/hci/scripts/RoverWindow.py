@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files/MainWindow_V4.ui'
 #
-# Created: Tue Mar 24 11:34:48 2015
+# Created: Tue Mar 24 17:34:58 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -295,8 +295,8 @@ class Ui_MainWindow(object):
         self.arm_mode.setItemText(0, _translate("MainWindow", "Position Control", None))
         self.arm_mode.setItemText(1, _translate("MainWindow", "Velocity Control", None))
         self.label_8.setText(_translate("MainWindow", "Coordinate", None))
-        self.coordinateSystem.setItemText(0, _translate("MainWindow", "Cartesian", None))
-        self.coordinateSystem.setItemText(1, _translate("MainWindow", "Cylindrical", None))
+        self.coordinateSystem.setItemText(0, _translate("MainWindow", "Cylindrical", None))
+        self.coordinateSystem.setItemText(1, _translate("MainWindow", "Cartesian", None))
         self.label.setText(_translate("MainWindow", "Hand type", None))
         self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
         self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))
