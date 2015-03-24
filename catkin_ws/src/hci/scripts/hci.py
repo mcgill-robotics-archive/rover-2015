@@ -19,10 +19,11 @@ from geometry_msgs.msg import Pose
 
 class CentralUi(QtGui.QMainWindow):
     def __init__(self, parent=None):
-        super(CentralUi,self).__init__(parent)
+        super(CentralUi, self).__init__(parent)
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.DriveMode.setChecked(True)
         self.controller = JoystickController()
         self.publisher = Publisher()
         self.modeId = 0
@@ -49,14 +50,13 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.readController)
         QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.addPointTimeout)
         self.setControllerTimer()
-
         self.addPointTimer.start(100)
+
         # joystick mode buttons signal connect
         QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), self.setMode0)
         QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.setMode1)
         QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.setMode2)
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.setMode3)
-        # connect for point steer mode
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.setPointSteer)
         
         # camera feed selection signal connects
@@ -141,9 +141,17 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.Camera1Feed.setCurrentIndex(5)
         elif self.controller.b4:
             self.ui.Camera1Feed.setCurrentIndex(4)
-        elif self.controller.b2:
+        elif self.controller.hat == (-1, 0):
+            self.ui.Camera1Feed.setCurrentIndex(1)
+        elif self.controller.hat == (0, 1):
+            self.ui.Camera1Feed.setCurrentIndex(0)
+        elif self.controller.hat == (0, -1):
+            self.ui.Camera1Feed.setCurrentIndex(3)
+        elif self.controller.hat == (1, 0):
+            self.ui.Camera1Feed.setCurrentIndex(2)
+        if self.controller.b2:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        elif self.controller.b7:
+        if self.controller.b7:
             self.setControllerMode(0)
         elif self.controller.b8:
             self.setControllerMode(1)
@@ -151,27 +159,27 @@ class CentralUi(QtGui.QMainWindow):
             self.setControllerMode(2)
         elif self.controller.b10:
             self.setControllerMode(3)
-        elif self.controller.hat ==(-1,0):
-            self.ui.Camera1Feed.setCurrentIndex(1)
-        elif self.controller.hat ==(0,1):
-            self.ui.Camera1Feed.setCurrentIndex(0)
-        elif self.controller.hat ==(0,-1):
-            self.ui.Camera1Feed.setCurrentIndex(3)
-        elif self.controller.hat ==(1,0):
-            self.ui.Camera1Feed.setCurrentIndex(2)
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
         self.publishControls()
 
     def publishControls(self):
         if self.modeId == 0:
+            # drive mode
             self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
+
         elif self.modeId == 1:
+            # arm base mode
             length = -self.controller.a2
             height = self.controller.a1
             angle = self.controller.a3
-            self.publisher.publish_arm_base_movement(length, height, angle)
+            cart = False
+            if self.ui.coordinateSystem.currentIndex() is 0:
+                cart = True
+            self.publisher.publish_arm_base_movement(length, height, angle, cart)
+
         elif self.modeId == 2:
+            # end effector mode
             x = -self.controller.a2
             y = self.controller.a3
             rotate = self.controller.a1

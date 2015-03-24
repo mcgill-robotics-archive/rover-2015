@@ -1,9 +1,7 @@
-## 
+#
 #  Main file for Joystick Controller
 #
 #  @author David Lavoie-Boutin
-
-
 
 try:
     import os
@@ -16,21 +14,21 @@ except ImportError:
     print "Missing libraries, exiting"
     sys.exit()
 
-#os.environ["SDL_VIDEODRIVER"] = "dummy"
-
 ##
 #  Class abstracting the joystick controller
 #
+
+
 class JoystickController(object):
     ##
-    #Constructor of the ps3Controller. 
-    #It basically initialize the joystick so we can fetch data form it.
+    # Constructor of the ps3Controller.
+    # It basically initialize the joystick so we can fetch data form it.
     def __init__(self):
         pygame.init()
         pygame.joystick.init()
 
-        ##Default config as ps3 controller not existant
-        #will be changed to true if the controller is initialized. 
+        # Default config as ps3 controller not existant
+        # will be changed to true if the controller is initialized.
 
         self.b1 = False
         self.b2 = False
@@ -101,4 +99,3 @@ class JoystickController(object):
                 self.a4 = self.controller.get_axis(3)
             else:
                 self.hat = self.controller.get_hat(0)
-            
