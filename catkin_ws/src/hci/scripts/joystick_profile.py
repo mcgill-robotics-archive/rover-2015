@@ -19,7 +19,7 @@ class ProfileParser():
         self.param_value = {}
         self.mapping = {}
         for param in param_names:
-            self.mapping[param] = rospy.get_param(param)
+            self.mapping[param] = rospy.get_param(param, None)
 
     def update_values(self):
         for param in param_names:
@@ -56,3 +56,5 @@ class ProfileParser():
                 self.param_value[param] = self.controller.hat_right
             elif value == "hat_down":
                 self.param_value[param] = self.controller.hat_down
+            else:
+                self.param_value[param] = None
