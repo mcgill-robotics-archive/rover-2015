@@ -134,32 +134,33 @@ class CentralUi(QtGui.QMainWindow):
 
     def read_controller(self):
         self.controller.update()
+        self.profile.update_values()
         self.ui.MainX.setValue(self.controller.a1*1000)
         self.ui.MainY.setValue(-self.controller.a2*1000)
         self.ui.StickRotation.setValue(self.controller.a3*1000)
         self.ui.SecondaryY.setValue(-self.controller.a4*1000)
 
-        if self.profile.param_value["joystick/camera/pantilt"]:
+        if self.profile.param_value["/joystick/camera/pantilt"]:
             self.ui.Camera1Feed.setCurrentIndex(5)
-        elif self.profile.param_value["joystick/camera/arm"]:
+        elif self.profile.param_value["/joystick/camera/arm"]:
             self.ui.Camera1Feed.setCurrentIndex(4)
-        elif self.profile.param_value["joystick/camera/haz_left"]:
+        elif self.profile.param_value["/joystick/camera/haz_left"]:
             self.ui.Camera1Feed.setCurrentIndex(1)
-        elif self.profile.param_value["joystick/camera/haz_front"]:
+        elif self.profile.param_value["/joystick/camera/haz_front"]:
             self.ui.Camera1Feed.setCurrentIndex(0)
-        elif self.profile.param_value["joystick/camera/haz_back"]:
+        elif self.profile.param_value["/joystick/camera/haz_back"]:
             self.ui.Camera1Feed.setCurrentIndex(3)
-        elif self.profile.param_value["joystick/camera/haz_right"]:
+        elif self.profile.param_value["/joystick/camera/haz_right"]:
             self.ui.Camera1Feed.setCurrentIndex(2)
-        if self.profile.param_value["joystick/coord_system"]:
+        if self.profile.param_value["/joystick/coord_system"]:
             self.toggle_coordinate()
-        if self.profile.param_value["joystick/point_steer"]:
+        if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.profile.param_value["joystick/drive_mode"]:
+        if self.profile.param_value["/joystick/drive_mode"]:
             self.setControllerMode(0)
-        elif self.profile.param_value["joystick/arm_mode"]:
+        elif self.profile.param_value["/joystick/arm_base_mode"]:
             self.setControllerMode(1)
-        elif self.profile.param_value["joystick/end_effector_mode"]:
+        elif self.profile.param_value["/joystick/end_effector_mode"]:
             self.setControllerMode(2)
         elif self.controller.b10:
             self.setControllerMode(3)

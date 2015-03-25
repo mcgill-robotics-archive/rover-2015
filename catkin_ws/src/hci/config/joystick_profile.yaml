@@ -1,10 +1,10 @@
-joystick/drive_mode :           7
-joystick/arm_base_mode :        8
-joystick/end_effector_mode :    9
-joystick/point_steer :          3
-joystick/coord_system :         4
-joystick/camera/arm :           6
-joystick/camera/pantilt :       5
+joystick/drive_mode :           "7"
+joystick/arm_base_mode :        "8"
+joystick/end_effector_mode :    "9"
+joystick/point_steer :          "3"
+joystick/coord_system :         "4"
+joystick/camera/arm :           "6"
+joystick/camera/pantilt :       "5"
 joystick/camera/haz_front :     "hat_top"
 joystick/camera/haz_back :      "hat_down"
 joystick/camera/haz_right :     "hat_right"

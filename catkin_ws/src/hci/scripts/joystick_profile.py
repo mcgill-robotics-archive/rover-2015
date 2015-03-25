@@ -12,41 +12,47 @@ param_names = ["/joystick/drive_mode",
                "/joystick/camera/haz_right",
                "/joystick/camera/haz_left"]
 
+
 class ProfileParser():
     def __init__(self, controller):
         self.controller = controller
         self.param_value = {}
+        self.mapping = {}
         for param in param_names:
-            value = rospy.get_param(param)
-            if value is 1:
+            self.mapping[param] = rospy.get_param(param)
+
+    def update_values(self):
+        for param in param_names:
+            value = self.mapping[param]
+            if value == "1":
                 self.param_value[param] = self.controller.b1
-            elif value is 2:
+            elif value == "2":
                 self.param_value[param] = self.controller.b2 
-            elif value is 3:
+            elif value == "3":
                 self.param_value[param] = self.controller.b3 
-            elif value is 4:
+            elif value == "4":
                 self.param_value[param] = self.controller.b4 
-            elif value is 5:
+            elif value == "5":
                 self.param_value[param] = self.controller.b5 
-            elif value is 6:
+            elif value == "6":
                 self.param_value[param] = self.controller.b6 
-            elif value is 7:
+            elif value == "7":
                 self.param_value[param] = self.controller.b7 
-            elif value is 8:
+            elif value == "8":
                 self.param_value[param] = self.controller.b8 
-            elif value is 9:
+            elif value == "9":
                 self.param_value[param] = self.controller.b9 
-            elif value is 10:
+            elif value == "10":
                 self.param_value[param] = self.controller.b10 
-            elif value is 11:
+            elif value == "11":
                 self.param_value[param] = self.controller.b11 
-            elif value is 12:
+            elif value == "12":
                 self.param_value[param] = self.controller.b12
-            elif value is "hat_top":
+            elif value == "hat_top":
                 self.param_value[param] = self.controller.hat_top
-            elif value is "hat_left":
+            elif value == "hat_left":
                 self.param_value[param] = self.controller.hat_left
-            elif value is "hat_right":
+            elif value == "hat_right":
                 self.param_value[param] = self.controller.hat_right
-            elif value is "hat_down":
+            elif value == "hat_down":
                 self.param_value[param] = self.controller.hat_down
