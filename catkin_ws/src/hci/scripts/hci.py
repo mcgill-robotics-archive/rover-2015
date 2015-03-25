@@ -12,6 +12,7 @@ import Queue
 
 from std_msgs.msg import *
 from geometry_msgs.msg import Pose
+from joystick_profile import ProfileParser
 
 # TODO: create service
 # from hci import Switch_Feeds
@@ -25,6 +26,7 @@ class CentralUi(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.ui.DriveMode.setChecked(True)
         self.controller = JoystickController()
+        self.profile = ProfileParser(self.controller)
         self.publisher = Publisher()
         self.modeId = 0
         self.grip = 0
@@ -137,27 +139,27 @@ class CentralUi(QtGui.QMainWindow):
         self.ui.StickRotation.setValue(self.controller.a3*1000)
         self.ui.SecondaryY.setValue(-self.controller.a4*1000)
 
-        if self.controller.b5:
+        if self.profile.param_value["joystick/camera/pantilt"]:
             self.ui.Camera1Feed.setCurrentIndex(5)
-        elif self.controller.b6:
+        elif self.profile.param_value["joystick/camera/arm"]:
             self.ui.Camera1Feed.setCurrentIndex(4)
-        elif self.controller.hat == (-1, 0):
+        elif self.profile.param_value["joystick/camera/haz_left"]:
             self.ui.Camera1Feed.setCurrentIndex(1)
-        elif self.controller.hat == (0, 1):
+        elif self.profile.param_value["joystick/camera/haz_front"]:
             self.ui.Camera1Feed.setCurrentIndex(0)
-        elif self.controller.hat == (0, -1):
+        elif self.profile.param_value["joystick/camera/haz_back"]:
             self.ui.Camera1Feed.setCurrentIndex(3)
-        elif self.controller.hat == (1, 0):
+        elif self.profile.param_value["joystick/camera/haz_right"]:
             self.ui.Camera1Feed.setCurrentIndex(2)
-        if self.controller.b4:
+        if self.profile.param_value["joystick/coord_system"]:
             self.toggle_coordinate()
-        if self.controller.b3:
+        if self.profile.param_value["joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.controller.b7:
+        if self.profile.param_value["joystick/drive_mode"]:
             self.setControllerMode(0)
-        elif self.controller.b8:
+        elif self.profile.param_value["joystick/arm_mode"]:
             self.setControllerMode(1)
-        elif self.controller.b9:
+        elif self.profile.param_value["joystick/end_effector_mode"]:
             self.setControllerMode(2)
         elif self.controller.b10:
             self.setControllerMode(3)
@@ -204,7 +206,7 @@ class CentralUi(QtGui.QMainWindow):
             self.publisher.publish_endEffector(x, y, rotate, grip)
 
             # end effector mode
-            # use joystick to controll a1,a2, a3 for rotating motion and someother button for grip motion
+            # use joystick to control a1,a2, a3 for rotating motion and some other button for grip motion
 
     def setMode0(self):
         self.setControllerMode(0)

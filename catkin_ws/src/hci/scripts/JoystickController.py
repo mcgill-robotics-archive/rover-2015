@@ -45,6 +45,11 @@ class JoystickController(object):
 
         self.hat = 0
 
+        self.hat_left = False
+        self.hat_top = False
+        self.hat_down = False
+        self.hat_right = False
+
         self.a1 = 0
         self.a2 = 0
         self.a3 = 0
@@ -71,6 +76,11 @@ class JoystickController(object):
         self.b12 = False
 
         self.hat = 0
+
+        self.hat_left = False
+        self.hat_top = False
+        self.hat_down = False
+        self.hat_right = False
 
     def update(self):
         """
@@ -99,3 +109,11 @@ class JoystickController(object):
                 self.a4 = self.controller.get_axis(3)
             else:
                 self.hat = self.controller.get_hat(0)
+                if self.hat == (-1, 0):
+                    self.hat_left = True
+                elif self.hat == (0, 1):
+                    self.hat_top = True
+                elif self.hat == (0, -1):
+                    self.hat_down = True
+                elif self.hat == (1, 0):
+                    self.hat_right = True
