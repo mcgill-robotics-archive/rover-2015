@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import rospy
-from rover_camera.srv import ChangeFeed
+from rover_camera.srv import *
 import time
 
 import subprocess
@@ -35,7 +35,7 @@ class FeedSwitcher():
         self.screen_top_pid = 0
         self.screen_bottom_pid = 0
 
-        self.camera_list = ["dev/video0", "dev/video1"]
+        self.camera_list = ["/dev/video0", "/dev/video1"]
         self.camera_name = ["haz_front", "haz_left"]
 
         rospy.init_node("feed_switcher", anonymous=False)
@@ -46,6 +46,31 @@ class FeedSwitcher():
         rospy.spin()
 
     def handle_change_feed(self, req):
+        screen = req.screenId
+        camera = req.feedId
+        name = self.camera_name[camera]
+        dev = self.camera_list[camera]
+        if screen is 1:
+            kill_process(self.screen_main_pid)
+            time.sleep(0.5)
+            topic = "main/compressed"
+            self.screen_main_pid = call_launch_file(name, dev, topic)
+            rospy.logerr("AFTER THE PROCESS")
+        elif screen is 2:
+            kill_process(self.screen_top_pid)
+            time.sleep(0.5)
+            topic = "top/compressed"
+            self.screen_top_pid = call_launch_file(name, dev, topic)
+        elif screen is 3:
+            kill_process(self.screen_bottom_pid)
+            time.sleep(0.5)
+            topic = "bottom/compressed"
+            self.screen_bottom_pid = call_launch_file(name, dev, topic)
+
+        call_launch_file("banane", "/dev/video1", "foo")
+        return ChangeFeedResponse(123)
+
+    def dhandle_change_feed(self, req):
         screen = req.screenId
         camera = req.feedId
 
@@ -59,6 +84,7 @@ class FeedSwitcher():
             kill_process(self.screen_main_pid)
             topic = "main/compressed"
             self.screen_main_pid = call_launch_file(name, dev, topic)
+            rospy.logerr("AFTER THE PROCESS")
         elif screen is 2:
             kill_process(self.screen_top_pid)
             topic = "top/compressed"
@@ -68,7 +94,7 @@ class FeedSwitcher():
             topic = "bottom/compressed"
             self.screen_bottom_pid = call_launch_file(name, dev, topic)
 
-        return 200
+        return ChangeFeedResponse(200)
 
 
 switcher = FeedSwitcher()
