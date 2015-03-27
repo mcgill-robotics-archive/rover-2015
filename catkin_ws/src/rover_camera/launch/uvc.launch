@@ -1,6 +1,9 @@
 <launch>
 <arg name="name" />
 <arg name="device" />
+<arg name="topic" />
+<arg name="topic_name" />
+
 <group ns="$(arg name)" >
   <node pkg="uvc_camera" type="uvc_camera_node" name="uvc_camera" output="screen">
     <param name="width" type="int" value="1280" /> 
@@ -38,7 +41,9 @@
       <node pkg="rover_camera" type="reduce_fps.py" name="reduce_fps">
         <param name="_fps" type="int" value="10" />
         <remap from="/image_mono/compressed" to="/$(arg name)/image_mono/compressed" />
-        <remap from="/reduced/compressed" to="/$(arg name)/reduced/compressed" />
+        
+        <remap if="$(arg topic)"  from="/reduced/compressed" to="/$(arg topic_name)" />
+        <remap unless="$(arg topic)"  from="/reduced/compressed" to="/$(arg name)/reduced/compressed" />
       </node>
 
     </group>
