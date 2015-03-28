@@ -684,8 +684,8 @@ void setup()
 
 
   Serial.begin(9600);
-  Serial.println(F("InvenSense MPU-6050"));
-  Serial.println(F("June 2012"));
+  Serial.println(F("Bei's MPU-6050"));
+  Serial.println(F("2015"));
 
   // Initialize the 'Wire' class for the I2C-bus.
   Wire.begin();
@@ -694,6 +694,7 @@ void setup()
   // default at power-up:
   //    Gyro at 250 degrees second
   //    Acceleration at 2g
+  //    Magnetometer at ???
   //    Clock source at internal 8MHz
   //    The device is in sleep mode.
   //
@@ -731,13 +732,13 @@ void loop()
   Serial.println(F("MPU-6050"));
 
   // Read the raw values.
-  // Read 14 bytes at once, 
-  // containing acceleration, temperature and gyro.
+  // Read 14 bytes at once, (+6 = 20 bytes ???) 
+  // containing acceleration, temperature, gyro, and magnetometer.
   // With the default settings of the MPU-6050,
   // there is no filter enabled, and the values
   // are not very stable.
   error = MPU6050_read (MPU6050_ACCEL_XOUT_H, (uint8_t *) &accel_t_gyro, sizeof(accel_t_gyro));
-  Serial.print(F("Read accel, temp and gyro, error = "));
+  Serial.print(F("Read accel, temp, gyro, and magnetometer, error = "));
   Serial.println(error,DEC);
 
 
@@ -755,6 +756,9 @@ void loop()
   SWAP (accel_t_gyro.reg.x_gyro_h, accel_t_gyro.reg.x_gyro_l);
   SWAP (accel_t_gyro.reg.y_gyro_h, accel_t_gyro.reg.y_gyro_l);
   SWAP (accel_t_gyro.reg.z_gyro_h, accel_t_gyro.reg.z_gyro_l);
+  SWAP (accel_t_gyro.reg.x_magn_h, accel_t_gyro.reg.x_magn_l);
+  SWAP (accel_t_gyro.reg.y_magn_h, accel_t_gyro.reg.y_magn_l);
+  SWAP (accel_t_gyro.reg.z_magn_h, accel_t_gyro.reg.z_magn_l);
 
 
   // Print the raw acceleration values
@@ -789,6 +793,17 @@ void loop()
   Serial.print(accel_t_gyro.value.y_gyro, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.z_gyro, DEC);
+  Serial.print(F(", "));
+  Serial.println(F(""));
+  
+  // Print the raw magnetometer values.
+
+  Serial.print(F("magnetometer x,y,z : "));
+  Serial.print(accel_t_gyro.value.x_magn, DEC);
+  Serial.print(F(", "));
+  Serial.print(accel_t_gyro.value.y_magn, DEC);
+  Serial.print(F(", "));
+  Serial.print(accel_t_gyro.value.z_magn, DEC);
   Serial.print(F(", "));
   Serial.println(F(""));
 
