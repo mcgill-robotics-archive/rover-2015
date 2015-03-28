@@ -683,7 +683,7 @@ void setup()
   uint8_t c;
 
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(F("Bei's MPU-6050"));
   Serial.println(F("2015"));
 
@@ -728,9 +728,6 @@ void loop()
   accel_t_gyro_union accel_t_gyro;
 
 
-  Serial.println(F(""));
-  Serial.println(F("MPU-6050"));
-
   // Read the raw values.
   // Read 14 bytes at once, (+6 = 20 bytes ???) 
   // containing acceleration, temperature, gyro, and magnetometer.
@@ -738,8 +735,8 @@ void loop()
   // there is no filter enabled, and the values
   // are not very stable.
   error = MPU6050_read (MPU6050_ACCEL_XOUT_H, (uint8_t *) &accel_t_gyro, sizeof(accel_t_gyro));
-  Serial.print(F("Read accel, temp, gyro, and magnetometer, error = "));
-  Serial.println(error,DEC);
+  //Serial.print(F("Read accel, temp, gyro, and magnetometer, error = "));
+  //Serial.println(error,DEC);
 
 
   // Swap all high and low bytes.
@@ -763,13 +760,13 @@ void loop()
 
   // Print the raw acceleration values
 
-  Serial.print(F("accel x,y,z: "));
+  //Serial.print(F("accel x,y,z: "));
   Serial.print(accel_t_gyro.value.x_accel, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.y_accel, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.z_accel, DEC);
-  Serial.println(F(""));
+  Serial.print(F(""));
 
 
   // The temperature sensor is -40 to +85 degrees Celsius.
@@ -778,36 +775,33 @@ void loop()
   //   340 per degrees Celsius, -512 at 35 degrees.
   // At 0 degrees: -512 - (340 * 35) = -12412
 
-  Serial.print(F("temperature: "));
+  //Serial.print(F("temperature: "));
   dT = ( (double) accel_t_gyro.value.temperature + 12412.0) / 340.0;
   Serial.print(dT, 3);
-  Serial.print(F(" degrees Celsius"));
-  Serial.println(F(""));
+  //Serial.print(F(" degrees Celsius"));
+  Serial.print(F(", "));
 
 
   // Print the raw gyro values.
 
-  Serial.print(F("gyro x,y,z : "));
+  //Serial.print(F("gyro x,y,z : "));
   Serial.print(accel_t_gyro.value.x_gyro, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.y_gyro, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.z_gyro, DEC);
   Serial.print(F(", "));
-  Serial.println(F(""));
   
   // Print the raw magnetometer values.
 
-  Serial.print(F("magnetometer x,y,z : "));
+  //Serial.print(F("magnetometer x,y,z : "));
   Serial.print(accel_t_gyro.value.x_magn, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.y_magn, DEC);
   Serial.print(F(", "));
   Serial.print(accel_t_gyro.value.z_magn, DEC);
-  Serial.print(F(", "));
   Serial.println(F(""));
 
-  delay(1000);
 }
 
 
