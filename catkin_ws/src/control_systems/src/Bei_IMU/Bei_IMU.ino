@@ -7,7 +7,7 @@
 #include <Wire.h>
 
 const int mpu = 0x68; //I2C address of the MPU-6050
-double ax, ay, az, gx, gy, gz, tmp;
+double ax, ay, az, gx, gy, gz, tmp, mx, my, mz;
 
 void setup()
 {
@@ -36,12 +36,20 @@ void loop()
   gy= Wire.read()<<8|Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
   gz= Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
   
+  //Magnetometer readings
+  mx= Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
+  my= Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
+  mz= Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
+  
   //print out values
   Serial.print(gx);
   Serial.print(",");Serial.print(gy);
   Serial.print(",");Serial.print(gz);
   Serial.print(",");Serial.print(ax);
   Serial.print(",");Serial.print(ay);
-  Serial.print(",");Serial.println(az);
+  Serial.print(",");Serial.print(az);
+  Serial.print(",");Serial.print(mx);
+  Serial.print(",");Serial.print(my);
+  Serial.print(",");Serial.println(mz);
   //no delay so that arduino will print at maximum rate
 }
