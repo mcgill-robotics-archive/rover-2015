@@ -654,6 +654,12 @@ typedef union accel_t_gyro_union
     uint8_t y_gyro_l;
     uint8_t z_gyro_h;
     uint8_t z_gyro_l;
+    uint8_t x_magn_h;
+    uint8_t x_magn_l;
+    uint8_t y_magn_h;
+    uint8_t y_magn_l;
+    uint8_t z_magn_h;
+    uint8_t z_magn_l;
   } reg;
   struct 
   {
@@ -664,6 +670,9 @@ typedef union accel_t_gyro_union
     int16_t x_gyro;
     int16_t y_gyro;
     int16_t z_gyro;
+    int16_t x_magn;
+    int16_t y_magn;
+    int16_t z_magn;
   } value;
 };
 
