@@ -22,10 +22,10 @@ class IMUReader(object):
         #settings to be read in
         self.settings = Imu()
         #set values to 0
-        self.settings.tmp = 0
         self.settings.gyroX = 0
         self.settings.gyroY = 0
         self.settings.gyroZ = 0
+        self.settings.tmp   = 0
         self.settings.acelX = 0
         self.settings.acelY = 0
         self.settings.acelZ = 0
@@ -44,75 +44,63 @@ class IMUReader(object):
         startRead = time.time()
         serialCalibData = []
         calibValues = []
-        print "Calculating BIAS"
         #read from IMU for specified seconds to calibrate
-        while time.time() - startRead < 3:
+        while time.time() - startRead < 1:
             #split up into list
             a = self.arduino.readline()
             serialCalibData.append(a)
-
-        #The list will be: ax,ay,az,tmp,gx,gy,gz,mx,my,mz
 
         for x in serialCalibData:
             a = x.split(',')
             #the following will fail if there is no number in the string
             try:
                 #pull out numeric part of string
-                a = [float(y) for y in a]#[re.search(renum,y).group(0) for y in a]
-                if len(a) == 10:
+                a = [re.search(renum,y).group(0) for y in a]
+                if len(a) == 6:
                     #make them float after removing non numericals
-                    #values = [float(y) for y in a]
-                    #print values
-                    #calibValues.append(values)
-                    calibValues.append(a)
+                    values = [float(y) for y in a]
+                    calibValues.append(values)
             except: continue
-
         #calculate median bias for gyro and accelerometer
-        self.gyroBiasX = numpy.median([x[4] for x in calibValues])
-        self.gyroBiasY = numpy.median([x[5] for x in calibValues])
-        self.gyroBiasZ = numpy.median([x[6] for x in calibValues])
-        self.acelBiasX = numpy.median([x[0] for x in calibValues])
-        self.acelBiasY = numpy.median([x[1] for x in calibValues])
+        self.gyroBiasX = numpy.median([x[0] for x in calibValues])
+        self.gyroBiasY = numpy.median([x[1] for x in calibValues])
+        self.gyroBiasZ = numpy.median([x[2] for x in calibValues])
+        self.acelBiasX = numpy.median([x[3] for x in calibValues])
+        self.acelBiasY = numpy.median([x[4] for x in calibValues])
         #MPU 6050 gives +16384 for right side up. This program interprets
         #which way the accelerometer is pointed, and interprets from there
         #get reading, then modify for correct value
-        self.acelBiasZ = numpy.median([x[2] for x in calibValues])
-        self.magnBiasX = numpy.median([x[7] for x in calibValues])
-        self.magnBiasY = numpy.median([x[8] for x in calibValues])
-        self.magnBiasZ = numpy.median([x[9] for x in calibValues])
-        #for new IMU, use default setting up and giving zero
-        self.acelBiasZ -= 16384
+        self.acelBiasZ = numpy.median([x[5] for x in calibValues])
+        #points correct way
+        if self.acelBiasZ > 0:
+            self.acelBiasZ -= 16384
+        else: #upside down!
+            self.acelBiasZ += 16384
 
     def update_settings(self):
-        a = self.arduino.readline().strip().split(',')
+        a = self.arduino.readline().split(',')
         #the following will fail if there is no number in the string
-        #print a
         try:
             #pull out numeric part of string
-            values = [float(y) for y in a]#[re.search(renum,y).group(0) for y in a]
-            if len(values) == 10:
+            a = [re.search(renum,y).group(0) for y in a]
+            if len(a) == 6:
                 #make them float after removing non numericals
-                #values = [float(y) for y in a]
+                values = [float(y) for y in a]
                 #correct all according to biases
-                values[4] -= self.gyroBiasX
-                values[5] -= self.gyroBiasY
-                values[6] -= self.gyroBiasZ
-                values[0] -= self.acelBiasX
-                values[1] -= self.acelBiasY
-                values[2] -= self.acelBiasZ
-                self.settings.gyroX = values[4]
-                self.settings.gyroY = values[5]
-                self.settings.gyroZ = values[6]
+                values[0] -= self.gyroBiasX
+                values[1] -= self.gyroBiasY
+                values[2] -= self.gyroBiasZ
+                values[3] -= self.acelBiasX
+                values[4] -= self.acelBiasY
+                values[5] -= self.acelBiasZ
+                self.settings.gyroX = values[0]
+                self.settings.gyroY = values[1]
+                self.settings.gyroZ = values[2]
                 #convert the following to standard units (m/s^2)
-                self.settings.acelX = 9.81*values[0]/16384
-                self.settings.acelY = 9.81*values[1]/16384
-                self.settings.acelZ = 9.81*values[2]/16384
-                self.settings.tmp = values[3]
-                self.settings.magnX = values[7]
-                self.settings.magnX = values[8]
-                self.settings.magnX = values[9]
-        except Exception as inst:
-            return 
+                self.settings.acelX = 9.81*values[3]/16384
+                self.settings.acelY = 9.81*values[4]/16384
+                self.settings.acelZ = 9.81*values[5]/16384
+        except: return 
 
 
     #function will publish at 1kHz
@@ -125,8 +113,8 @@ class IMUReader(object):
             #publish to topic
             self.pubImu.publish(self.settings)
             #about every tenth iteration, publish settings
-            #if int(time.time())%10 == 0:
-            #	rospy.loginfo(self.settings)
+            if int(time.time())%10 == 0:
+                rospy.loginfo(self.settings)
             #next iteration
             r.sleep()
 
