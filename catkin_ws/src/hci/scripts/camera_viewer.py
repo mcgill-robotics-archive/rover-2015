@@ -80,9 +80,9 @@ class CentralUi(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         self.getimageTopic()
-        rospy.Subscriber("/reduced/compressed", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber(self.feedTopics[1], CompressedImage, self.receiveimageTop)
-        rospy.Subscriber(self.feedTopics[2], CompressedImage, self.receiveimageBottom)
+        rospy.Subscriber("/banane", CompressedImage, self.receiveimageMain)
+        rospy.Subscriber("/cam2/reduced/compressed", CompressedImage, self.receiveimageTop)
+        rospy.Subscriber("/cam3/reduced/compressed", CompressedImage, self.receiveimageBottom)
 
     def getimageTopic(self):
         self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))
