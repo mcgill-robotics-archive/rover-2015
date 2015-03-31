@@ -10,6 +10,7 @@ class ReduceFPS():
     def __init__(self):
 
         self.temp_image = None
+        self.last_image = None
         self.pub = rospy.Publisher("/reduced/compressed", CompressedImage, queue_size=10)
         rospy.Subscriber("/image_mono/compressed", CompressedImage, self.receive_image)
 
@@ -25,9 +26,9 @@ class ReduceFPS():
 
     def publish_image(self):
         if self.temp_image is not None:
-            self.pub.publish(self.temp_image)
-            rospy.loginfo("Published")
-
+            if self.temp_image is not self.last_image:
+                self.pub.publish(self.temp_image)
+                self.last_image = self.temp_image
 
 # Main function.
 if __name__ == '__main__':

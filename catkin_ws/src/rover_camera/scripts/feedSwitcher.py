@@ -36,65 +36,53 @@ class FeedSwitcher():
         self.screen_bottom_pid = 0
 
         self.camera_list = ["/dev/video0", "/dev/video1"]
-        self.camera_name = ["haz_front", "haz_left"]
+        self.camera_name = ["vid0", "vid1"]
 
         rospy.init_node("feed_switcher", anonymous=False)
         s = rospy.Service('changeFeed', ChangeFeed, self.handle_change_feed)
 
         rospy.loginfo('feed_switcher ready')
         print "Loaded"
-        rospy.spin()
+        
 
     def handle_change_feed(self, req):
         screen = req.screenId
         camera = req.feedId
-        name = self.camera_name[camera]
-        dev = self.camera_list[camera]
-        if screen is 1:
-            kill_process(self.screen_main_pid)
-            time.sleep(0.5)
-            topic = "main/compressed"
-            self.screen_main_pid = call_launch_file(name, dev, topic)
-            rospy.logerr("AFTER THE PROCESS")
-        elif screen is 2:
-            kill_process(self.screen_top_pid)
-            time.sleep(0.5)
-            topic = "top/compressed"
-            self.screen_top_pid = call_launch_file(name, dev, topic)
-        elif screen is 3:
-            kill_process(self.screen_bottom_pid)
-            time.sleep(0.5)
-            topic = "bottom/compressed"
-            self.screen_bottom_pid = call_launch_file(name, dev, topic)
-
-        call_launch_file("banane", "/dev/video1", "foo")
-        return ChangeFeedResponse(123)
-
-    def dhandle_change_feed(self, req):
-        screen = req.screenId
-        camera = req.feedId
-
-        if camera > len(self.camera_list)-1 or 0 > screen > 3:
-            return 400
 
         name = self.camera_name[camera]
         dev = self.camera_list[camera]
-
+        rospy.loginfo("Switching monitor %d to feed %d",screen,camera)
         if screen is 1:
-            kill_process(self.screen_main_pid)
+            if self.screen_main_pid is not 0:
+                kill_process(self.screen_main_pid)
+            time.sleep(0.1)
             topic = "main/compressed"
             self.screen_main_pid = call_launch_file(name, dev, topic)
-            rospy.logerr("AFTER THE PROCESS")
         elif screen is 2:
-            kill_process(self.screen_top_pid)
+            if self.screen_top_pid is not 0:
+                kill_process(self.screen_top_pid)
+            time.sleep(0.1)
             topic = "top/compressed"
             self.screen_top_pid = call_launch_file(name, dev, topic)
         elif screen is 3:
-            kill_process(self.screen_bottom_pid)
+            if self.screen_bottom_pid is not 0:
+                kill_process(self.screen_bottom_pid)
+            time.sleep(0.1)
             topic = "bottom/compressed"
             self.screen_bottom_pid = call_launch_file(name, dev, topic)
 
         return ChangeFeedResponse(200)
 
+    def close(self):
+        print
+        print "Called close"
+        kill_process(self.screen_main_pid)
+        kill_process(self.screen_top_pid)
+        kill_process(self.screen_bottom_pid)
+        exit(0)
+
+  
 
 switcher = FeedSwitcher()
+rospy.spin()
+switcher.close()
