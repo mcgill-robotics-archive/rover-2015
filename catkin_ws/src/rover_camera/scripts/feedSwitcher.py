@@ -26,8 +26,9 @@ def call_launch_file(cam_name, device_file, output_topic):
 
 def kill_process(pid):
     print "Killing pid ", pid
-    pid_str = str(pid)
-    subprocess.Popen(["kill", pid_str])
+    if pid is not 0:
+        pid_str = str(pid)
+        subprocess.Popen(["kill", pid_str])
 
 
 class FeedSwitcher():
@@ -44,8 +45,8 @@ class FeedSwitcher():
         # feedId : screedId
         self.feed_map = {}
 
-        self.camera_list = ["/dev/video0", "/dev/video1"]
-        self.camera_name = ["vid0", "vid1"]
+        self.camera_list = ["/dev/video0", "/dev/video1", "/dev/video2"]
+        self.camera_name = ["vid0", "vid1", "vid2"]
 
         rospy.init_node("feed_switcher", anonymous=False)
         s = rospy.Service('changeFeed', ChangeFeed, self.new_handle_change_feed)
@@ -91,21 +92,42 @@ class FeedSwitcher():
             print "NEW"
             print "NEW"
             print "NEW"
-            other_feed_id = self.feed_map[desired_screen_id]
+            other_feed_id = None
+            try: # no need for try
+                for i in self.feed_map:
+                    if self.feed_map[i] is desired_screen_id:
+                        other_feed_id = i
+                        break
+            except KeyError:
+                other_feed_id = None
 
-            kill_process(self.process_map[other_screen_id])  # kill the already assigned pid
-            kill_process(self.process_map[desired_screen_id])  # kill the target screen
+            try:
+                kill_process(self.process_map[other_screen_id])  # kill the already assigned pid
+                for i in self.feed_map:
+                    if self.feed_map[i] is other_screen_id:
+                        self.feed_map.pop(i)
+                        break
 
+                kill_process(self.process_map[desired_screen_id])  # kill the target screen
+                for i in self.feed_map:
+                    if self.feed_map[i] is desired_screen_id:
+                        self.feed_map.pop(i)
+                        break
+
+            except KeyError:
+                pass
+            time.sleep(0.1)
             self.process_map[desired_screen_id] = call_launch_file(self.camera_name[desired_feed_id],
                                                                    self.camera_list[desired_feed_id],
                                                                    self.topic_list[desired_screen_id])
             self.feed_map[desired_feed_id] = desired_screen_id
 
-            self.process_map[other_screen_id] = call_launch_file(self.camera_name[other_feed_id],
-                                                                 self.camera_list[other_feed_id],
-                                                                 self.topic_list[other_screen_id])
-            self.feed_map[other_feed_id] = other_screen_id
-            pass
+            if other_feed_id is not None:
+                self.process_map[other_screen_id] = call_launch_file(self.camera_name[other_feed_id],
+                                                                     self.camera_list[other_feed_id],
+                                                                     self.topic_list[other_screen_id])
+                self.feed_map[other_feed_id] = other_screen_id
+
         return ChangeFeedResponse(self.process_map[desired_screen_id])
 
     def handle_change_feed(self, req):
