@@ -35,6 +35,11 @@ class FeedSwitcher():
         self.screen_top_pid = 0
         self.screen_bottom_pid = 0
 
+        # screenId : PID
+        self.process_map = {1:0, 2:0, 3:0}
+        self.topic_list = {1:"main/compressed", 2:"top/compressed", 3:"bottom/compressed"}
+        self.feed_map = {}
+
         self.camera_list = ["/dev/video0", "/dev/video1"]
         self.camera_name = ["vid0", "vid1"]
 
@@ -43,7 +48,44 @@ class FeedSwitcher():
 
         rospy.loginfo('feed_switcher ready')
         print "Loaded"
-        
+
+    def new_handle_change_feed(self, req):
+
+        screen_id = req.screenId
+        feed_id = req.feedId
+
+        try:
+            assigned_to_screen = self.feed_map[feed_id]
+        except KeyError:
+            assigned_to_screen = None
+
+        if assigned_to_screen is None:
+            # traditional switch
+            if self.process_map[screen_id] is not 0:
+                kill_process(self.process_map[screen_id])
+            time.sleep(0.1)
+            self.process_map[screen_id] = call_launch_file(self.camera_name[feed_id],
+                                                    self.camera_list[feed_id],
+                                                    self.topic_list[screen_id])
+            self.feed_map[feed_id]=screen_id
+
+        else:
+            # screen interchange
+            current_screen_feed = self.feed_map[screen_id]
+
+            kill_process(self.process_map[assigned_to_screen]) # kill the already assigned pid
+            kill_process(self.process_map[screen_id]) # kill the target screen
+
+            self.process_map[screen_id] = call_launch_file(self.camera_name[feed_id],
+                                                           self.camera_list[feed_id],
+                                                           self.topic_list[screen_id])
+            self.feed_map[feed_id]=screen_id
+
+            self.process_map[assigned_to_screen] = call_launch_file(self.camera_name[current_screen_feed],
+                                                                    self.camera_list[current_screen_feed],
+                                                                    self.topic_list[assigned_to_screen])
+            self.feed_map[current_screen_feed] = assigned_to_screen
+            pass
 
     def handle_change_feed(self, req):
         screen = req.screenId
