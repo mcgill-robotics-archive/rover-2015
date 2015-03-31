@@ -51,40 +51,40 @@ class FeedSwitcher():
 
     def new_handle_change_feed(self, req):
 
-        screen_id = req.screenId
-        feed_id = req.feedId
+        desired_screen_id = req.screenId
+        desired_feed_id = req.feedId
 
         try:
-            assigned_to_screen = self.feed_map[feed_id]
+            other_screen_id = self.feed_map[desired_feed_id]
         except KeyError:
-            assigned_to_screen = None
+            other_screen_id = None
 
-        if assigned_to_screen is None:
+        if other_screen_id is None:
             # traditional switch
-            if self.process_map[screen_id] is not 0:
-                kill_process(self.process_map[screen_id])
+            if self.process_map[desired_screen_id] is not 0:
+                kill_process(self.process_map[desired_screen_id])
             time.sleep(0.1)
-            self.process_map[screen_id] = call_launch_file(self.camera_name[feed_id],
-                                                    self.camera_list[feed_id],
-                                                    self.topic_list[screen_id])
-            self.feed_map[feed_id]=screen_id
+            self.process_map[desired_screen_id] = call_launch_file(self.camera_name[desired_feed_id],
+                                                    self.camera_list[desired_feed_id],
+                                                    self.topic_list[desired_screen_id])
+            self.feed_map[desired_feed_id]=desired_screen_id
 
         else:
             # screen interchange
-            current_screen_feed = self.feed_map[screen_id]
+            other_feed_id = self.feed_map[desired_screen_id]
 
-            kill_process(self.process_map[assigned_to_screen]) # kill the already assigned pid
-            kill_process(self.process_map[screen_id]) # kill the target screen
+            kill_process(self.process_map[other_screen_id]) # kill the already assigned pid
+            kill_process(self.process_map[desired_screen_id]) # kill the target screen
 
-            self.process_map[screen_id] = call_launch_file(self.camera_name[feed_id],
-                                                           self.camera_list[feed_id],
-                                                           self.topic_list[screen_id])
-            self.feed_map[feed_id]=screen_id
+            self.process_map[desired_screen_id] = call_launch_file(self.camera_name[desired_feed_id],
+                                                           self.camera_list[desired_feed_id],
+                                                           self.topic_list[desired_screen_id])
+            self.feed_map[desired_feed_id]=desired_screen_id
 
-            self.process_map[assigned_to_screen] = call_launch_file(self.camera_name[current_screen_feed],
-                                                                    self.camera_list[current_screen_feed],
-                                                                    self.topic_list[assigned_to_screen])
-            self.feed_map[current_screen_feed] = assigned_to_screen
+            self.process_map[other_screen_id] = call_launch_file(self.camera_name[other_feed_id],
+                                                                    self.camera_list[other_feed_id],
+                                                                    self.topic_list[other_screen_id])
+            self.feed_map[other_feed_id] = other_screen_id
             pass
 
     def handle_change_feed(self, req):
