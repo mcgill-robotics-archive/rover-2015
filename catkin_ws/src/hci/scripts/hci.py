@@ -13,6 +13,7 @@ import Queue
 from std_msgs.msg import *
 from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
+from rover_camera.srv import ChangeFeed
 
 # TODO: create service
 # from hci import Switch_Feeds
@@ -62,10 +63,9 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         
         # camera feed selection signal connects
-        # QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        # QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
-        # QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
-        # TODO: Remove comments when done with switcher implementation
+        QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
+        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
+        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
 
         self.ui.pushButton.clicked.connect(self.add_way_point)
         self.ui.pushButton_2.clicked.connect(self.clear_map)
@@ -76,7 +76,7 @@ class CentralUi(QtGui.QMainWindow):
 
         rospy.Subscriber('pose', Pose, self.handle_pose)
 
-        # self.switch_feed = rospy.ServiceProxy('switch_feeds', Switch_Feeds) #TODO: FIX NAME
+        self.switch_feed = rospy.ServiceProxy('/changeFeed', ChangeFeed)
 
         self.feed1index = 0
         self.feed2index = 0
@@ -244,45 +244,45 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.EndEffectorMode.setChecked(False)
             self.ui.function4.setChecked(True)
 
-    """ #TODO:Demonstration of desired operation MAKE FUNCTIONAL
+    #TODO:Demonstration of desired operation MAKE FUNCTIONAL
     def setFeed1Index(self, newIndex):
-        rospy.wait_for_service('switch_feeds')
+        rospy.wait_for_service('/changeFeed')
         try:
-            topic = self.camera_topic_list[newIndex]
-            resp = self.switch_feed(0,topic)
-        except IndexError :
-            rospy.logwarn("New camera feed topic name not found")
-            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
-            return
-        except rospy.ServiceException :
+            resp = self.switch_feed(1, newIndex)
+        except rospy.ServiceException:
             rospy.logwarn("Service call failed")
             self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
             return
-        if resp.success is True:
+        if resp.success is 200:
             self.feed1index = newIndex
         else:
-            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
             rospy.loginfo("Switch in camera1 failed")
-        #TODO: Service call to switcher application for proper topic to proper screen
 
     def setFeed2Index(self, newIndex):
+        rospy.wait_for_service('/changeFeed')
         try:
-            topic = self.camera_topic_list[newIndex]
-        except IndexError :
-            rospy.logwarn("New camera feed topic name not found")
-            self.ui.Camera2Feed.setCurrentIndex(self.feed2index)
+            resp = self.switch_feed(2, newIndex)
+        except rospy.ServiceException:
+            rospy.logwarn("Service call failed")
+            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
             return
-        #TODO: Service call to switcher application for proper topic to proper screen
+        if resp.success is 200:
+            self.feed1index = newIndex
+        else:
+            rospy.loginfo("Switch in camera1 failed")
 
     def setFeed3Index(self, newIndex):
+        rospy.wait_for_service('/changeFeed')
         try:
-            topic = self.camera_topic_list[newIndex]
-        except IndexError :
-            rospy.logwarn("New camera feed topic name not found")
-            self.ui.Camera3Feed.setCurrentIndex(self.feed3index)
+            resp = self.switch_feed(3, newIndex)
+        except rospy.ServiceException:
+            rospy.logwarn("Service call failed")
+            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
             return
-        #TODO: Service call to switcher application for proper topic to proper screen
-    """
+        if resp.success is 200:
+            self.feed1index = newIndex
+        else:
+            rospy.loginfo("Switch in camera1 failed")
 
     def get_image_topic(self):
         self.camera_topic_list.append(rospy.get_param("camera/topic_haz_front", "/hazcam_front/camera/image_raw"))

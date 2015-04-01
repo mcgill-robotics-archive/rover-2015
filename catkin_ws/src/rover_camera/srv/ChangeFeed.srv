@@ -2,3 +2,4 @@ int16 screenId
 int16 feedId
 ---
 int16 success
+int16[] feedList
