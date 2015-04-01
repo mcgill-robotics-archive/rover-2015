@@ -8,6 +8,7 @@ import subprocess
 
 
 def call_launch_file(cam_name, device_file, output_topic):
+    log = open("/home/artemis/"+cam_name,'a')
     device = "device:=" + device_file
     camera = "name:=" + cam_name
     topic = "topic:=True"
@@ -19,7 +20,7 @@ def call_launch_file(cam_name, device_file, output_topic):
         device,
         camera,
         topic,
-        topic_name])
+        topic_name], stdout=log, stderr=log)
     print "launched ", device_file
     return process.pid
 
@@ -45,8 +46,8 @@ class FeedSwitcher():
         # feedId : screedId
         self.feed_map = {}
 
-        self.camera_list = ["/dev/video0", "/dev/video1", "/dev/video2"]
-        self.camera_name = ["vid0", "vid1", "vid2"]
+        self.camera_list = ["/dev/video0", "/dev/video1", "/dev/video2", "/dev/video3"]
+        self.camera_name = ["vid0", "vid1", "vid2", "vid3"]
 
         rospy.init_node("feed_switcher", anonymous=False)
         s = rospy.Service('changeFeed', ChangeFeed, self.new_handle_change_feed)
@@ -93,13 +94,10 @@ class FeedSwitcher():
             print "NEW"
             print "NEW"
             other_feed_id = None
-            try: # no need for try
-                for i in self.feed_map:
-                    if self.feed_map[i] is desired_screen_id:
-                        other_feed_id = i
-                        break
-            except KeyError:
-                other_feed_id = None
+            for i in self.feed_map:
+                if self.feed_map[i] is desired_screen_id:
+                    other_feed_id = i
+                    break
 
             try:
                 kill_process(self.process_map[other_screen_id])  # kill the already assigned pid

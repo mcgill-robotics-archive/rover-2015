@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import rospy
 import time
-from PyQt4 import QtCore
 from sensor_msgs.msg import CompressedImage
 import sys
 
