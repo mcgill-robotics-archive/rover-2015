@@ -1,0 +1,20 @@
+<launch>
+    <node name="camera" pkg="usb_cam" type="usb_cam_node" output="screen" >
+        <param name="video_device" value="/dev/video1" />
+        <param name="image_width" value="352" />
+        <param name="image_height" value="288" />
+        <param name="pixel_format" value="yuyv" />
+        <param name="framerate" value="10" />
+        <param name="camera_frame_id" value="webcam" />
+    </node>
+ <node ns="camera" pkg="image_proc" type="image_proc" name="image_proc" if="0"/>
+    <group>
+      <node pkg="nodelet" type="nodelet"
+        args="standalone image_proc/debayer"
+        name="debayer">
+        <remap from="image_raw" to="camera/image_raw"/>
+      </node>
+
+</group>
+
+</launch>
