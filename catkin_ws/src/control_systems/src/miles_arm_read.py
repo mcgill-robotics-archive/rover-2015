@@ -36,6 +36,8 @@ class ArmControlReader(object):
 		self.settings.theta = 0
 		self.settings.on = False
 		self.settings.cartesian = False
+		#speed
+		self.settings.velocity = False
 		#angles:
 		#angle at base
 		self.angles = ArmAngles()
