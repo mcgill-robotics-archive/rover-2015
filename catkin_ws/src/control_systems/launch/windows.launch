@@ -1,0 +1,4 @@
+<launch>
+	<node name="wheel_visual" pkg="control_systems" type="wheel_simulation.py" respawn="false" output="screen"/>
+	<node name="arm_visual" pkg="control_systems" type="arm_simulation.py" respawn="false" output="screen"/>
+</launch>
