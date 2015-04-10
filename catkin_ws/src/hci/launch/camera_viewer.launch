@@ -1,6 +1,0 @@
-<launch>
-    <rosparam command="load" file="$(find hci)/config/joystick_profile.yaml"/>
-    <node pkg="hci" type="camera_viewer.py" name="camera_viewer" output="screen"/>
-    <node pkg="rover_camera" type="feedSwitcher.py" name="switcher" />
-    <node pkg="hci" type="hci.py" name="hci" />
-</launch>
