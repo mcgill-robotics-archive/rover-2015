@@ -1,0 +1,6 @@
+<launch>
+	<rosparam command="load" file="$(find odometry)/config/radius.yaml"/>
+	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
+	<node name="arm_reader" pkg="control_systems" type="miles_arm_read.py" 	respawn="false" output="screen"/>
+	<node name="steering" pkg="control_systems" type="joystickread.py" respawn="false" output="screen"/> 
+</launch>

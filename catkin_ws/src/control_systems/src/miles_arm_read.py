@@ -36,6 +36,8 @@ class ArmControlReader(object):
 		self.settings.theta = 0
 		self.settings.on = False
 		self.settings.cartesian = False
+		#velocity of the arm
+		self.settings.velocity = False
 		#angles:
 		#angle at base
 		self.angles = ArmAngles()
@@ -54,10 +56,16 @@ class ArmControlReader(object):
 		#self.settings.x = msg.x
 		#self.settings.y = msg.y
 		self.settings.cartesian = msg.cartesian
+		self.settings.velocity = msg.velocity
 		if self.settings.cartesian:
 			###########################################################################################
 			#needs protection against div/0
 			msg.x,msg.y,msg.theta = convertCartesian(msg.x,msg.y,msg.theta)
+		#If user is uploading velocity coordinates (velocity)
+		if self.settings.velocity: 
+			#add on old settings
+			msg.x,msg.y,msg.theta += self.settings.x,\
+				self.settings.y,self.settings.theta
 
 
 		#bounds for x and y are not necessarily a rectangle,

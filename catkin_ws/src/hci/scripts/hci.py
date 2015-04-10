@@ -9,6 +9,7 @@ import pyqtgraph as pg
 import sys
 import rospy
 import Queue
+import os
 
 from std_msgs.msg import *
 from geometry_msgs.msg import Pose
@@ -35,6 +36,11 @@ class CentralUi(QtGui.QMainWindow):
         # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []
 
+        #signal quality timer
+        self.quality_timer = QtCore.QTimer()
+        QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"),self.get_signal_quality)
+        self.quality_timer.start(1000)
+        
         # map place holders
         self.tempPose = Queue.Queue()
         self.new_x = []
@@ -122,6 +128,17 @@ class CentralUi(QtGui.QMainWindow):
         self.s1.setData([], [], size=10, symbol='o', brush='r')
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
+    def get_signal_quality(self):
+        #s = os.popen("ping -c 1 artemis")
+        s = os.popen("ping -c 1 localhost")
+        s.readline()
+        k = s.readline()
+        temp = k.split('=')
+        res = temp[-1].split(' ')
+        result = res[0]
+        self.ui.sig_qual.setText("%s ms"%result)
+    
+    
     def set_point_steer(self, boolean):
         self.publisher.setSteerMode(boolean)
 
