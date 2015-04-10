@@ -24,8 +24,8 @@ class Publisher(object):
         Publish linear and angular command velocity in twist for control systems
         """
         msg = Twist()
-        msg.linear.x = a2
-        msg.angular.z = a1
+        msg.linear.x = a2*3
+        msg.angular.z = a1*3
 
         self.vel_pub.publish(msg)
 
@@ -35,8 +35,8 @@ class Publisher(object):
         Publish base arm position
         """
         msg = ArmMotion()
-        msg.x = armLength  # y axis on joystick moves the target point forward and back
-        msg.y = armHeight  # rotation of the joystick moves the target point up and down
+        msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
+        msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
         msg.theta = angle
         msg.cartesian = cartesian
         msg.on = True
