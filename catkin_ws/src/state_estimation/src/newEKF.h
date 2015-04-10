@@ -4,6 +4,8 @@
 #include <Eigen/Dense>
 using namespace Eigen;
 
+
+
 const int SENSOR_DIMS = 6;
 const int STATE_DIMS = 6;
 
@@ -45,7 +47,6 @@ public:
 
 
 
-private:
 	const SquareStateMatrix f;
 	SquareStateMatrix F;
 	StateVector X;
@@ -68,8 +69,7 @@ private:
 
 
 
-};
-
+}; // end of the class
 
 
 

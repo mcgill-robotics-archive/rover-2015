@@ -3,9 +3,36 @@
 #include "newEKF.h"
 //#include "ekf.h"
 using namespace std;
+//using namespace ekf;
 using Eigen::MatrixXd;
 
 //typedef Matrix<double, SENSOR_DIMS, SENSOR_DIMS> SquareSensorMatrix;
+
+
+SquareStateMatrix EKF::FCalc(){
+	int row, column;
+	//set up the F = 
+	SquareStateMatrix F;
+	for (row = 0; row< SENSOR_DIMS; row++) {
+		for (column = 0; column < SENSOR_DIMS; column++) {
+			if (row == 0 && column == 0) {
+				F(row, column) = 2; 
+			}
+			else if (row == 1 && column == 1) {
+				F(row, column) = 2;
+			}
+			else if (row == 2 && column == 2) {
+				F(row, column) = 2;
+			}
+			else {
+				F(row, column) = 0;
+			}
+		}
+	}
+	cout << F << endl;
+	return F;
+}
+
 
 int main()
 {
@@ -19,29 +46,26 @@ int main()
 
 	matrix2(0, 0) = 12312412;
 
+	//cout << matrix1 << endl;
+
 	SensorVector y; 
 
 	y(0, 0) = 45678910;
 	
 	z = &y;
 
-	EKF ekf(&y, matrix1, matrix2, matrix2);
+	EKF e(&y, matrix1, matrix2, matrix2);
 
-
-
-
-
-
-	MatrixXd m(3,3);
-	m(0,0) = 3;
-	m(1,0) = 2.5;
-	m(0,1) = -1;
-	m(1,1) = m(1,0) + m(0,1);
-	cout << *z << std::endl;
-	//cout << *ekf.z << endl;
 	y(1, 0) = 222;
-	//z = &y;
-	cout << *ekf.z << endl;
 
+
+	//cout << *z << std::endl;
+	//cout << *ekf.z << endl;
+	//y(1, 0) = 222;
+	z = &y;
+	//cout << *ekf.z << endl;
+
+	e.FCalc();
+	//FCalc();
 	return 0;
 }
