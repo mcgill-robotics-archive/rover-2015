@@ -12,12 +12,13 @@ SoftwareSerial ss(RXPin, TXPin);
 
 ros::NodeHandle nh;
 rover_msgs::GPS msg;
-
+ros::Publisher publisher("raw_gps", &msg);
 void setup()
 {
   ss.begin(GPSBaud);
   
   nh.initNode();
+  nh.advertise(publisher);
 }
 
 void loop()
@@ -61,5 +62,5 @@ void displayInfo()
     msg.isValid = false;
   }
 
-  Serial.println();
+  publisher.publish(&msg);
 }
