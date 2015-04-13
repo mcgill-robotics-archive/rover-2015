@@ -9,6 +9,8 @@ int16 day
 int16 year
 
 int16 hour
-int16 min
+int16 minute
 int16 sec
 int16 csec
+
+bool isValid
