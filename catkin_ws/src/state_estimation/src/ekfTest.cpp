@@ -2,11 +2,14 @@
 //#include <Eigen/Dense>
 #include "newEKF.h"
 //#include "ekf.h"
+#include <ros/ros.h>
+
 using namespace std;
 //using namespace ekf;
 using Eigen::MatrixXd;
 
 //typedef Matrix<double, SENSOR_DIMS, SENSOR_DIMS> SquareSensorMatrix;
+
 
 
 SquareStateMatrix EKF::FCalc(){
@@ -29,43 +32,85 @@ SquareStateMatrix EKF::FCalc(){
 			}
 		}
 	}
-	cout << F << endl;
+	//cout << F << endl;
 	return F;
 }
+
+StateVector EKF::XPredict(StateVector &previous_X){
+	//set up the small f with 1 and delta t 
+	SquareStateMatrix small_f;
+
+
+	return f * previous_X;
+}
+
+SquareStateMatrix EKF::PPredict(SquareStateMatrix &previous_P, SquareStateMatrix &F){
+	
+	//set up Q --> we can adjust the values accordingly 
+	cout << "HELLO WORLD\n";
+	SquareStateMatrix Q;
+	int row; 
+	int column;
+	for (row = 0; row < STATE_DIMS; row++) {
+		for (column = 0; column < STATE_DIMS; column++) {
+			if (row == column) {
+				Q(row, column) = 0.0000001;
+			}
+			else {
+				Q(row, column) = 0;
+			}
+		}
+	}
+	cout << F * previous_P * F.transpose() + Q << endl;
+	return F * previous_P * F.transpose() + Q;
+}
+
 
 
 int main()
 {
-  	int i, j;
-  	SquareSensorMatrix matrix1;
+  	int row, column;
+  	SquareSensorMatrix p;
   	SquareStateMatrix matrix2;
 	SensorVector *z;
-  	//Matrix<double, 100,100> matrix2;
+	SquareStateMatrix bigF;
+	SquareStateMatrix *Fptr;
+	SquareStateMatrix *ptr;
+	
+	//set up a simple P
+	for (row = 0; row < STATE_DIMS; row++) {
+		for (column = 0; column < STATE_DIMS; column++) {
+			if (row == column) {
+				p(row, column) = 1000;
+			}
+			else {
+				p(row, column) = 0;
+			}
+		}
+	}
 
-	matrix1(0, 0) = 123;
-
-	matrix2(0, 0) = 12312412;
-
-	//cout << matrix1 << endl;
+	//cout << p << endl;
 
 	SensorVector y; 
-
 	y(0, 0) = 45678910;
+	z = &y;
+
+
+	EKF e(&y, p, matrix2, matrix2);
+
+
+	e.predict();
+	//bigF = e.FCalc();
+
+	//Fptr = &bigF;
+	//ptr = &p;
+	//SquareStateMatrix Pfinal;
+	//Pfinal = e.PPredict(p, bigF);
 	
-	z = &y;
-
-	EKF e(&y, matrix1, matrix2, matrix2);
-
-	y(1, 0) = 222;
+	//cout<< bigF.transpose() << endl;
 
 
-	//cout << *z << std::endl;
-	//cout << *ekf.z << endl;
-	//y(1, 0) = 222;
-	z = &y;
-	//cout << *ekf.z << endl;
 
-	e.FCalc();
-	//FCalc();
+
 	return 0;
 }

@@ -55,8 +55,8 @@ public:
 	SensorVector y;
 	const StateToSensorMatrix h;
 	StateToSensorMatrix H;	
-
-
+//public:
+private:
 	SquareStateMatrix FCalc(); // Calculate the updated Covariance Transition Matrix (Jacobian)
 	StateVector XPredict(StateVector &previous_X);	// Predict the next State based on f (transition) and previous X
 	SquareStateMatrix PPredict(SquareStateMatrix &previous_P, SquareStateMatrix &F); // Predict the next Covariance Matrix based on F and previous P
