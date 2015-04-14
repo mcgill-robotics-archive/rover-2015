@@ -29,7 +29,7 @@ class DualJoystickReader(object):
         # rover, as we can measure the time taken from the last changed
         # settings
         self.clock = Float32()
-        self.clock.data = clock();
+        self.clock.data = clock()
         # the locked one
         self.swerve = Float32()
         self.swerve.data = 0  # start at a 0 rad heading from start
