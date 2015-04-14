@@ -13,4 +13,6 @@ int16 minute
 int16 sec
 int16 csec
 
-bool isValid
+bool locationValid
+bool dateValid
+bool timeValid

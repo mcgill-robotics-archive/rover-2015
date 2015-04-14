@@ -1,5 +1,5 @@
-#include <ArduinoHardware.h>
 #include <ros.h>
+#include <ArduinoHardware.h>
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <rover_msgs/GPS.h>
@@ -15,8 +15,8 @@ rover_msgs::GPS msg;
 ros::Publisher publisher("raw_gps", &msg);
 void setup()
 {
-  ss.begin(GPSBaud);
-  
+  Serial3.begin(GPSBaud);
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.advertise(publisher);
 }
@@ -24,8 +24,8 @@ void setup()
 void loop()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
-  while (ss.available() > 0)
-    if (gps.encode(ss.read()))
+  while (Serial3.available() > 0)
+    if (gps.encode(Serial3.read()))
       displayInfo();
 
   if (millis() > 5000 && gps.charsProcessed() < 10)
