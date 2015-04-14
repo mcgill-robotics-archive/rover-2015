@@ -1,3 +1,12 @@
+/*
+ gps reader 
+ arduino code, must run rosserial_python serial_node.py node to publish in ROS
+ uses serial 3 to communicate with gps
+ refresh rate 1Hz
+ on arduino mega uses pins 14 and 15
+ */
+
+
 #include <TinyGPS++.h>
 #include <ros.h>
 #include <rover_msgs/GPS.h>
