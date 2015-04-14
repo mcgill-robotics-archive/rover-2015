@@ -64,8 +64,11 @@ class ArmControlReader(object):
 		#If user is uploading velocity coordinates (velocity)
 		if self.settings.velocity: 
 			#add on old settings
-			msg.x,msg.y,msg.theta += self.settings.x,\
-				self.settings.y,self.settings.theta
+			verbose = rospy.get_param("~verbose", False)
+			if verbose:
+    		    msg.x += self.settings.x
+			    msg.y += self.settings.y
+			    msg.theta += self.settings.theta
 
 
 		#bounds for x and y are not necessarily a rectangle,
@@ -130,7 +133,9 @@ class ArmControlReader(object):
 		while not rospy.is_shutdown():
 			#publish to topic
 			self.pubArm.publish(self.angles)
-			rospy.loginfo(self.angles)
+			verbose = rospy.get_param("~verbose", False)
+			if verbose:
+    		    rospy.loginfo(self.angles)
 			#next iteration
 			r.sleep()
 

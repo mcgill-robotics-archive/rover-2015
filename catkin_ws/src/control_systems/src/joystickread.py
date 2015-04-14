@@ -4,7 +4,7 @@ import rospy #for reading and publishing to topics
 from mappingsteer import steer, pointTurn, translationalMotion, swerve, maxMag
 from geometry_msgs.msg import Twist #type of joystick input
 #type of wheel setting output
-from control_systems.msg import SetPoints,Moving,MotionType 
+from control_systems.msg import SetPoints,Moving,MotionType
 from std_msgs.msg import Int8,Float32,Bool,String
 from time import clock
 
@@ -60,14 +60,14 @@ class DualJoystickReader(object):
 		#Secondary joystick
 		rospy.Subscriber('/cmd_alt_vel',Twist,self.update_second_joystick,
 							queue_size=10)
-		
+
 	#update_settings depending on reading from topic
 	def update_value_settings(self,msg):
 		#read in values from twist
 		self.value[0] = msg.linear.x
 		self.value[1] = msg.angular.z
 
-                #print self.value,self.motion.SWERVE 
+                #print self.value,self.motion.SWERVE
 		#if not swerving, turn off swerving bool
                 if self.swerving.data and not self.motion.SWERVE:
 			self.swerving.data = False
@@ -76,7 +76,7 @@ class DualJoystickReader(object):
 		if self.motion.TRANSLATORY:
 			output = translationalMotion(self.value[0],self.value[1])
 		#point steering (around middle)
-		elif self.motion.POINT: 
+		elif self.motion.POINT:
 			output = pointTurn(self.value[1])
 			timePassed = clock() - self.clock.data
 			self.clock.data = clock()
@@ -91,7 +91,7 @@ class DualJoystickReader(object):
 				self.swerve.data = 0
 				self.swerving.data = True
 				self.rotation = 0
-				#do point steering to start off, which will trigger 
+				#do point steering to start off, which will trigger
 				#wheels to turn in the right direction
 				output = pointTurn(spin)
 
@@ -99,7 +99,7 @@ class DualJoystickReader(object):
 				#This may need to be moved in future versions
 				self.clock.data = clock()
 			else:
-				#find the time passed since the last cycle - 
+				#find the time passed since the last cycle -
 				#we still have these settings stored so we can predict
 				#the current position, etc.
 				#use this with the self.settings to find the change
@@ -146,7 +146,7 @@ class DualJoystickReader(object):
 			timePassed = clock() - self.clock.data
 			self.clock.data = clock()
 			self.rotation += self.value[1] * timePassed
-		
+
 		#Convert output of function to setpoint variable type
 		self.moving.move = output['movement']
 		self.settings.thetaFL = output['pfsa']
@@ -161,7 +161,7 @@ class DualJoystickReader(object):
 		self.settings.speedRR = output['srrv']
 
 
-	def update_value_motion(self,msg): 
+	def update_value_motion(self,msg):
 		#read in values from Int8
 		self.motion = msg
 
@@ -180,9 +180,11 @@ class DualJoystickReader(object):
 			#log wheel settings
 			rotOut = Float32()
 			rotOut.data = self.rotation
-			rospy.loginfo(rotOut)
-			rospy.loginfo(self.moving)
-			rospy.loginfo(self.settings)
+            verbose = rospy.get_param("~verbose", False)
+			if verbose:
+    			rospy.loginfo(rotOut)
+	    		rospy.loginfo(self.moving)
+		    	rospy.loginfo(self.settings)
 
 			#publish it
 			#tests:
@@ -201,7 +203,7 @@ if __name__ == '__main__':
 	rospy.spin()
 	#try:
 		#joystickTranslator = Node()
-		#also try to read from joystick 
+		#also try to read from joystick
 	#except rospy.ROSInterruptException: pass
 
 
