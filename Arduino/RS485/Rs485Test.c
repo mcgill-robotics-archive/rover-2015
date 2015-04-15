@@ -1,23 +1,28 @@
+#include "Rs485Test.h"
+#include "helper.h"
 #include <stdio.h>
-
-typedef unsigned int uint;
 
 int main () {
 
-    uint address = 102;
-    uint function = 200;
+    short address = 102;
+    short function = 200;
     uint argumentLo = 20;
     uint argumentMid1 = 150;
     uint argumentMid2 = 99;
     uint argumentHi = 67;
     uint argument = ((argumentLo << 24) + (argumentMid1<<16) + (argumentMid2 <<8) + argumentHi);
     uint termination = 255;
-    
+
 
     uint messageLo = (address << 24) + (function << 16) + (argument >> 16);
     uint messageHi = 0b11101111111011111111111111111111;
 
-    printf("messageLo = %d \n" , messageLo);
+    // create char buffers for printing binary representations
+    long_buffer[LONG_BUFF] = '\0';
+    int_buffer[INT_BUFF] = '\0';
+
+    toBin(messageLo, long_buffer, LONG_BUFF);
+    printf("messageLo = %d = 0b%s \n" , messageLo, long_buffer);
 
     uint intArray[] = {messageLo,messageHi};
     uint getAddress = (intArray[0] & 0b11111111000000000000000000000000) >> 24;
@@ -25,10 +30,16 @@ int main () {
     uint getArgumentLo = (intArray[0] & 0b00000000000000001111111100000000) >> 8;
     uint getArgumentMid1 = (intArray[0] & 0b00000000000000000000000011111111);
 
-    printf("getAddress = %d \n" , getAddress);
+    toBin(getAddress, int_buffer, INT_BUFF);
+    printf("getAddress = %d = 0b%s \n" , getAddress, int_buffer);
     printf("getFunction = %d \n", getFunction);
     printf("getArgumentLo = %d \n", getArgumentLo);
     printf("getArgumentMid1 = %d \n", getArgumentMid1);
 
+    printf("header: ");
+    int header = buildHeader(address,function);
+
+    toBin(header, int_buffer, INT_BUFF);
+    printf("0b%s \n", int_buffer);
     return 0;
 }
