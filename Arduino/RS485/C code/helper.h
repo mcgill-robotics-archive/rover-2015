@@ -8,5 +8,6 @@
 
 int buildHeader(short, short);
 char *toBin(int, char *, int);
+short* splitLong(long, short*, int);
 
 #endif //RS485_HELPER_H

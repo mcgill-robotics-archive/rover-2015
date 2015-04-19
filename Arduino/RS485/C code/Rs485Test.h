@@ -6,11 +6,14 @@
 #define RS485_RS485TEST_H
 
 #define INT_BUFF 16
+#define SHORT_BUFF 8
 #define LONG_BUFF 31
 
 typedef unsigned int uint;
 
 char long_buffer[LONG_BUFF+1];
 char int_buffer[INT_BUFF+1];
+char short_buffer[SHORT_BUFF+1];
+
 
 #endif //RS485_RS485TEST_H

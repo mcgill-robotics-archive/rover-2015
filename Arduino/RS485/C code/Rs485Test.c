@@ -17,12 +17,22 @@ int main () {
     uint messageLo = (address << 24) + (function << 16) + (argument >> 16);
     uint messageHi = 0b11101111111011111111111111111111;
 
+
+
     // create char buffers for printing binary representations
     long_buffer[LONG_BUFF] = '\0';
     int_buffer[INT_BUFF] = '\0';
 
     toBin(messageLo, long_buffer, LONG_BUFF);
     printf("messageLo = %d = 0b%s \n" , messageLo, long_buffer);
+
+    short array[4];
+    short_buffer[SHORT_BUFF] = '\0';
+    splitLong(messageLo, array, 4);
+    for (int i = 0; i < 4; i++){
+        toBin(array[i], short_buffer, SHORT_BUFF);
+        printf("Part %d: %d = 0b%s\n", i, array[i],short_buffer);
+    }
 
     uint intArray[] = {messageLo,messageHi};
     uint getAddress = (intArray[0] & 0b11111111000000000000000000000000) >> 24;

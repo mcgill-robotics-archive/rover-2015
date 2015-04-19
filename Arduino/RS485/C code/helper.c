@@ -28,3 +28,14 @@ char *toBin(int a, char *buffer, int buf_size) {
     }
     return buffer;
 }
+
+short* splitLong(long inputNumber, short* outputArray, int arrayLength){
+    outputArray += (arrayLength-1);
+    int i;
+    for (i = arrayLength; i > 0; i--){
+
+        *outputArray-- = (short) ((inputNumber & 255));
+        inputNumber >>= 8;
+    }
+    return  outputArray;
+}
