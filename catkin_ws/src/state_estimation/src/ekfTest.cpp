@@ -41,6 +41,9 @@ StateVector EKF::XPredict(StateVector &previous_X){
 	SquareStateMatrix small_f;
 
 
+
+
+
 	return f * previous_X;
 }
 
@@ -65,6 +68,65 @@ SquareStateMatrix EKF::PPredict(SquareStateMatrix &previous_P, SquareStateMatrix
 	return F * previous_P * F.transpose() + Q;
 }
 
+void zSetter(double x, double y, double z, double v1, double v2, double v3) {
+
+
+	SensorVector sensor; 
+
+	sensor(0, 0) = x;
+	sensor(1, 0) = y;
+	sensor(2, 0) = z;
+	sensor(3, 0) = v1;
+	sensor(4, 0) = v2;
+	sensor(5, 0) = v3;
+
+	sensorInput = &sensor;
+
+	//cout << *sensorInput << endl;
+	
+}
+
+
+
+SensorVector EKF::yUpdate(SensorVector *sensorInput, StateVector &X) {
+	
+	//cout << "Hello world\n";
+	SensorVector y;
+	SensorVector z; 
+	z = *sensorInput;
+
+	int row;
+	int column;
+	//set up a sample matrix for h
+	SquareSensorMatrix h;
+	for (row = 0; row < SENSOR_DIMS; row++) {
+		for (column = 0; column < STATE_DIMS; column++) {
+			if (row == 0 && column == 0) {
+				h(row, column) = 1;
+			}
+			else if (row == 1 && column == 1) {
+				h(row, column) = 1;
+			}
+			else if (row == 2 && column == 2) {
+				h(row, column) = 1;
+			}
+			else {
+				h(row, column) = 0;
+			}
+		}
+	}
+
+	cout << h << endl;
+
+	y =  z- h * X;
+
+
+	return y;
+
+}
+
+
+
 
 
 int main()
@@ -76,9 +138,14 @@ int main()
 	SquareStateMatrix bigF;
 	SquareStateMatrix *Fptr;
 	SquareStateMatrix *ptr;
-	
+	StateVector x;
+	SensorVector y; 
+
 	//set up a simple P
 	for (row = 0; row < STATE_DIMS; row++) {
+	//	cout << "ENTER HERE\n";
+		x (row, 0) = 10;
+		y (row, 0) = 112;
 		for (column = 0; column < STATE_DIMS; column++) {
 			if (row == column) {
 				p(row, column) = 1000;
@@ -91,25 +158,17 @@ int main()
 
 	//cout << p << endl;
 
-	SensorVector y; 
-	y(0, 0) = 45678910;
+	
+	
 	z = &y;
 
 
 	EKF e(&y, p, matrix2, matrix2);
 
-
-	e.predict();
-	//bigF = e.FCalc();
-
-	//Fptr = &bigF;
-	//ptr = &p;
-	//SquareStateMatrix Pfinal;
-	//Pfinal = e.PPredict(p, bigF);
-	
-	//cout<< bigF.transpose() << endl;
+	zSetter(100000, 2, 3, 4, 5, 6);
 
 
+	e.yUpdate(z, x);
 
 
 	return 0;
