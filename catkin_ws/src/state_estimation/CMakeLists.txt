@@ -16,9 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
+find_package(Eigen REQUIRED)
+include_directories(${Eigen_INCLUDE_DIRS})
 ## Have to put this in a separate find_package because we need to
 ## find cmake_modules first
-find_package(Eigen REQUIRED)
 
 
 ## System dependencies are found with CMake's conventions
@@ -93,7 +94,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES state_estimation
-  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf
+  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf 
 #  DEPENDS system_lib
 )
 
@@ -106,6 +107,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  /usr/inc
 )
 
 ## Declare a cpp library
@@ -114,16 +116,16 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(state_estimation_node src/state_estimation_node.cpp)
+add_executable(state_estimation_node src/ekf.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(state_estimation_node state_estimation_generate_messages_cpp)
+add_dependencies(state_estimation_node state_estimation_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(state_estimation_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(state_estimation_node
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

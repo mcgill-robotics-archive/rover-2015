@@ -45,7 +45,8 @@ public:
 		P = PUpdate();
 	};
 
-
+	// delta-t, in miliseconds
+	int dt;
 
 	const SquareStateMatrix f;
 	SquareStateMatrix F;
