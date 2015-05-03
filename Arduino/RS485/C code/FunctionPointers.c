@@ -54,6 +54,7 @@ int main(int argc, char ** argv){
     pointer1 = &print1;
     pointer2 = &print2;
     pointer3 = &print3;
+    pointer2 = parseFunctionNumber(2)(2);
 
     pointer2(123);
     parseFunctionNumber(2)(1234);

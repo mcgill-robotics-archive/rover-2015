@@ -7,5 +7,5 @@ set(SOURCE_FILES
     Rs485Test.c)
 
 add_executable(RS485 ${SOURCE_FILES} Rs485Test.h helper.h helper.c)
-
+add_subdirectory(ifdefs)
 add_executable(FunctionPointers FunctionPointers.c FunctionPointers.h)
