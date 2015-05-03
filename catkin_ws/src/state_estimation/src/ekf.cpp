@@ -9,8 +9,9 @@
 
 using namespace ekf;
 
-SquareStateMatrix EKF::Fcalc(StateVector previous_X){
-	return null;
+SquareStateMatrix EKF::FCalc(StateVector previous_X){
+	SquareSensorMatrix s;
+	return s;
 }
 
 StateVector EKF::XPredict(StateVector previous_X){
@@ -21,30 +22,29 @@ SquareStateMatrix EKF::PPredict(SquareStateMatrix previous_P, SquareStateMatrix 
 	return F * previous_P * F.transpose() + Q;
 }
 
-StateToSensorMatrix HCalc(StateVector previous_X){
-	return null;
+StateToSensorMatrix EKF::HCalc(StateVector previous_X){
+	StateToSensorMatrix s;
+	return s;
 }
 
-SensorVector yUpdate(StateVector X){
-	return z - h * X;
+SensorVector EKF::yUpdate(StateVector X){
+	SensorVector hX = (h * X);
+	return *sensorInput - hX;
 }
 
-SensorToStateMatrix KUpdate(SquareStateMatrix P, StateToSensorMatrix H){
+SensorToStateMatrix EKF::KUpdate(SquareStateMatrix P, StateToSensorMatrix H){
 	return ( P * H.transpose() * (H * P * H.transpose() + R));
 }
 
-StateVector XUpdate(StateVector X, SensorToStateMatrix K, SensorVector y){
+StateVector EKF::XUpdate(StateVector X, SensorToStateMatrix K, SensorVector y){
 	return (X + K * y);
 }
 
-SquareStateMatrix PUpdate(SquareStateMatrix P, SensorToStateMatrix K, StateToSensorMatrix H){
-	return null;
+SquareStateMatrix EKF::PUpdate(SquareStateMatrix P, SensorToStateMatrix K, StateToSensorMatrix H){
+	SquareStateMatrix s;
+	return s;
 }
 
-int main(int argc, char **argv){
-
-
-}
 int main (int argc, char **argv) {
     // ros::init(argc, argv, "ekf");								 //
     // ros::NodeHandle node;										 //
@@ -53,13 +53,12 @@ int main (int argc, char **argv) {
     // sub = node.subscribe("imu_data", 100, dataCallback);			 //
 	// 																 //
     // ros::spin();													 //
-
-	SensorVector z;
+	SensorVector *sensorInput;
 	SquareStateMatrix P;
 	SquareStateMatrix Q;
 	SquareStateMatrix R;
 
-	EKF ekf = new EKF(&z, P, Q, R);
+	EKF ekf(sensorInput, P, Q, R);
 	
     return 0;
 }

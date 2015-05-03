@@ -2,13 +2,14 @@
   Version 0.1
  */
 
-#ifndef EKF
-#define EKF
+#ifndef EKF_HEADER
+#define EKF_HEADER
 
 #include <Eigen/Dense>
-using namespace Eigen;
 
 namespace ekf{
+
+using namespace Eigen;
 
 const int SENSOR_DIMS = 6;
 const int STATE_DIMS = 6;
@@ -20,11 +21,12 @@ typedef Matrix<double, STATE_DIMS, 1> StateVector;
 typedef Matrix<double, SENSOR_DIMS, STATE_DIMS> StateToSensorMatrix;
 typedef Matrix<double, STATE_DIMS, SENSOR_DIMS> SensorToStateMatrix;
 
-class EKF
-{
+
+class EKF{
 public:
-	EKF(SensorVector *z, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareStateMatrix R){
-		this->z = z;
+
+	EKF(SensorVector *sensorInput, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareStateMatrix R){
+		this->sensorInput = sensorInput;
 		this->P = P;
 		this->Q = Q;
 		this->R = R;
@@ -84,7 +86,7 @@ private:
 	  Observation variables
 	*/
 	SensorVector y;
-	SensorVector *z;
+	SensorVector *sensorInput;
 	const StateToSensorMatrix h;
 
 	/*
@@ -96,9 +98,9 @@ private:
 	/*
 	  Noise/error variables (to be tuned)
 	*/
-	const SquareStateMatrix Q;
-	const SquareSensorMatrix R;	
+	SquareStateMatrix Q;
+	SquareSensorMatrix R;	
 };
 
-}
+};
 #endif
