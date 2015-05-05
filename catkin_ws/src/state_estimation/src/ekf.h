@@ -21,7 +21,6 @@ typedef Matrix<double, STATE_DIMS, 1> StateVector;
 typedef Matrix<double, SENSOR_DIMS, STATE_DIMS> StateToSensorMatrix;
 typedef Matrix<double, STATE_DIMS, SENSOR_DIMS> SensorToStateMatrix;
 
-
 class EKF{
 public:
 
@@ -30,12 +29,26 @@ public:
 		this->P = P;
 		this->Q = Q;
 		this->R = R;
+		t_previous = ros::Time::now().toSec();
+		dt = 0;
 	}
 
+	EKF(){
+	    *sensorInput = SensorVector::Zero();
+		P = SquareStateMatrix::Zero();
+		Q = SquareStateMatrix::Zero();
+		R = SquareSensorMatrix::Zero();
+		t_previous = ros::Time::now().toSec();
+		dt = 0;
+	}
+	
 	/*
 	  Prediction step, X_k|k-1 and P_k|k-1 are predicted based on previous updated values.
 	 */	  
 	void predict(){
+		dt = ros::Time::now().toSec() - t_previous;
+		t_previous = ros::Time::now().toSec();
+		f = fUpdate(dt);
 		F = FCalc(X);
 		X = XPredict(X);
 		P = PPredict(P, F);
@@ -52,11 +65,36 @@ public:
 		P = PUpdate(P, K, H);
 	}
 
+	SquareStateMatrix getF(){
+		return F;
+	}
+
+	StateVector getX(){
+		return X;
+	}
+
+	SquareStateMatrix getP(){
+		return P;
+	}
+
+	StateToSensorMatrix getH(){
+		return H;
+	}
+
+	SensorVector getY(){
+		return y;
+	}
+
+	SensorToStateMatrix getK(){
+		return K;
+	}
+
 private:
 
 	/*
 	  Prediction-step functions
 	 */
+	SquareStateMatrix fUpdate(double dt);
 	SquareStateMatrix FCalc(StateVector previous_X); // Calculate the updated Covariance Transition Matrix (Jacobian)
 	StateVector XPredict(StateVector previous_X);	// Predict the next State based on f (transition) and previous X
 	SquareStateMatrix PPredict(SquareStateMatrix previous_P, SquareStateMatrix F); // Predict the next Covariance Matrix based on F and previous P
@@ -76,7 +114,7 @@ private:
 	  Filter Variables
 	*/
 	StateVector X;
-	const SquareStateMatrix f;
+	SquareStateMatrix f;
 
 	SquareStateMatrix P;
 	SensorToStateMatrix K;	
@@ -87,7 +125,7 @@ private:
 	*/
 	SensorVector y;
 	SensorVector *sensorInput;
-	const StateToSensorMatrix h;
+	StateToSensorMatrix h;
 
 	/*
 	  Jacobian variables (require calculation of Jacobian)
@@ -99,7 +137,11 @@ private:
 	  Noise/error variables (to be tuned)
 	*/
 	SquareStateMatrix Q;
-	SquareSensorMatrix R;	
+	SquareSensorMatrix R;
+
+	// Time since last update, in milliseconds
+	double dt;
+	double t_previous;
 };
 
 };

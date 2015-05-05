@@ -4,10 +4,20 @@
 
 #include <ros/ros.h>
 #include <ros/time.h>
-
+#include <geometry_msgs/Twist.h>
+#include <rover_msgs/GPS.h>
 #include "ekf.h"
 
 using namespace ekf;
+
+SquareStateMatrix EKF::fUpdate(double dt){
+	SquareStateMatrix f;	
+    Matrix<double,3,3> I = Matrix<double,3,3>::Identity();
+	MatrixXd DT = I * dt;
+
+	Matrix<double,3,6> ZERO = Matrix<double,3,6>::Zero();
+	f << I, DT, ZERO;
+}
 
 SquareStateMatrix EKF::FCalc(StateVector previous_X){
 	SquareSensorMatrix s;
@@ -41,24 +51,6 @@ StateVector EKF::XUpdate(StateVector X, SensorToStateMatrix K, SensorVector y){
 }
 
 SquareStateMatrix EKF::PUpdate(SquareStateMatrix P, SensorToStateMatrix K, StateToSensorMatrix H){
-	SquareStateMatrix s;
-	return s;
-}
-
-int main (int argc, char **argv) {
-    // ros::init(argc, argv, "ekf");								 //
-    // ros::NodeHandle node;										 //
-	// 																 //
-    // pub = node.advertise<geometry_msgs::PoseStamped>("ekf", 100); //
-    // sub = node.subscribe("imu_data", 100, dataCallback);			 //
-	// 																 //
-    // ros::spin();													 //
-	SensorVector *sensorInput;
-	SquareStateMatrix P;
-	SquareStateMatrix Q;
-	SquareStateMatrix R;
-
-	EKF ekf(sensorInput, P, Q, R);
-	
-    return 0;
+	SquareStateMatrix I = SquareStateMatrix::Identity();
+	return (I - K*H) * P;
 }

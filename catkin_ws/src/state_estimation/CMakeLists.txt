@@ -111,12 +111,12 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(state_estimation
-#   src/${PROJECT_NAME}/state_estimation.cpp
-# )
+add_library(state_estimation
+  src/ekf.cpp
+)
 
 ## Declare a cpp executable
-add_executable(state_estimation_node src/ekf.cpp)
+add_executable(state_estimation_node src/publisher.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -124,7 +124,8 @@ add_dependencies(state_estimation_node state_estimation_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(state_estimation_node
-   ${catkin_LIBRARIES}
+   ${catkin_LIBRARIES} 
+   state_estimation
 )
 
 #############
