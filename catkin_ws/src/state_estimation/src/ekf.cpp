@@ -12,10 +12,9 @@ using namespace ekf;
 
 SquareStateMatrix EKF::fUpdate(double dt){
 	SquareStateMatrix f;	
-    Matrix<double,3,3> I = Matrix<double,3,3>::Identity();
+    Matrix<double,STATE_DIMS/2,STATE_DIMS/2> I = Matrix<double,STATE_DIMS/2,STATE_DIMS/2>::Identity();
 	MatrixXd DT = I * dt;
-
-	Matrix<double,3,6> ZERO = Matrix<double,3,6>::Zero();
+	Matrix<double,STATE_DIMS/2,STATE_DIMS> ZERO = Matrix<double, STATE_DIMS/2,STATE_DIMS>::Zero();
 	f << I, DT, ZERO;
 }
 

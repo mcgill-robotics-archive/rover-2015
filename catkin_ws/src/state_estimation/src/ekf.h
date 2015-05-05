@@ -29,16 +29,16 @@ public:
 		this->P = P;
 		this->Q = Q;
 		this->R = R;
-		t_previous = ros::Time::now().toSec();
+		t_previous = 0;
 		dt = 0;
 	}
 
 	EKF(){
-	    *sensorInput = SensorVector::Zero();
+		std::cout << "ekf initialized with 0-arg constructor" << std::endl;
 		P = SquareStateMatrix::Zero();
 		Q = SquareStateMatrix::Zero();
 		R = SquareSensorMatrix::Zero();
-		t_previous = ros::Time::now().toSec();
+		t_previous = 0;
 		dt = 0;
 	}
 	
