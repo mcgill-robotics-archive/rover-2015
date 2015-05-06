@@ -11,26 +11,40 @@ ros::Subscriber sub;
 EKF* filter = new EKF();
 SensorVector *sensorInput;
 
-void initialize(){
+/*
+  Re-initialize the filter with initial inputs
+ */
+void initialize(double start_time){
 	sensorInput = new SensorVector(SensorVector::Zero());
-	std::cout << "test2" << std::endl;
-	SquareStateMatrix P = SquareSensorMatrix::Zero();
-	SquareStateMatrix Q = SquareStateMatrix::Zero();
-	SquareSensorMatrix R = SquareSensorMatrix::Zero();
-	filter = new EKF(sensorInput, P, Q, R);
+	SquareStateMatrix P = generateP(1000);
+	double qVals[STATE_DIMS] = {.01,.01,.05,.05,.05,.1};
+	double rVals[SENSOR_DIMS] = {.9,.9,.9,.9,.9,.9};
+	SquareStateMatrix Q = generateQ(qVals);
+	SquareSensorMatrix R = generateR(rVals);
+	
+	filter = new EKF(sensorInput, P, Q, R, start_time);
+	std::cout << "EKF Initialized" << std::endl;	
 }
 
 void gpsCallback(const rover_msgs::GPS::ConstPtr& GPS) {
-	filter->predict();
-	std::cout << filter->getP();	
+	filter->predict(ros::Time::now().toSec());
+	filter->update();
+	std::cout << filter->getX() << std::endl;
 }
 
 int main (int argc, char **argv){
 	ros::init(argc, argv, "ekf");
-	initialize();
 	ros::NodeHandle node;
     pub = node.advertise<geometry_msgs::Twist>("ekf", 100);
     sub = node.subscribe("raw_gps", 100, gpsCallback);
+	double start_time = ros::Time::now().toSec();
+	
+	initialize(start_time);
+	
+
+
+	
     ros::spin();
+	
 	return 0;
 }

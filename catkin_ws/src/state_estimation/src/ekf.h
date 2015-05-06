@@ -24,12 +24,20 @@ typedef Matrix<double, STATE_DIMS, SENSOR_DIMS> SensorToStateMatrix;
 class EKF{
 public:
 
-	EKF(SensorVector *sensorInput, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareStateMatrix R){
+	EKF(SensorVector *sensorInput, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareStateMatrix R, double t_current){
+		std::cout << "ekf initialized with 5-arg constructor" << std::endl;
 		this->sensorInput = sensorInput;
 		this->P = P;
 		this->Q = Q;
 		this->R = R;
-		t_previous = 0;
+		X = StateVector::Zero();
+		F = SquareStateMatrix::Zero();
+		f = SquareStateMatrix::Zero();
+		H = StateToSensorMatrix::Zero();
+		y = SensorVector::Zero();
+		K = SensorToStateMatrix::Zero();
+		h = StateToSensorMatrix::Zero();
+		t_previous = t_current;
 		dt = 0;
 	}
 
@@ -45,26 +53,13 @@ public:
 	/*
 	  Prediction step, X_k|k-1 and P_k|k-1 are predicted based on previous updated values.
 	 */	  
-	void predict(){
-		dt = ros::Time::now().toSec() - t_previous;
-		t_previous = ros::Time::now().toSec();
-		f = fUpdate(dt);
-		F = FCalc(X);
-		X = XPredict(X);
-		P = PPredict(P, F);
-	}
+	void predict(double t_current);
 
 	/*
 	  Update step, X_k|k, y_k, K_k, P_k|k are all updated based on obsevation.
 	 */
-	void update(){
-		H = HCalc(X);
-		y = yUpdate(X);
-		K = KUpdate(P, H);
-		X = XUpdate(X, K, y);
-		P = PUpdate(P, K, H);
-	}
-
+	void update();
+	
 	SquareStateMatrix getF(){
 		return F;
 	}
@@ -144,5 +139,21 @@ private:
 	double t_previous;
 };
 
+
+	/*
+ 	  Generate a matrix P holding the intial estimation covariance estimate.
+	*/
+SquareStateMatrix generateP(double covariance);
+SquareStateMatrix generateP(double covariance[STATE_DIMS]);
+	
+	/*
+	  Generate a matrix Q holding the estimated process-noise covariance.
+	*/
+SquareStateMatrix generateQ(double covariance[STATE_DIMS]);
+	
+	/*
+	  Generate a matrix R holding the estimated measurement-noise covariance.
+	*/
+SquareSensorMatrix generateR(double covariance[SENSOR_DIMS]);
 };
 #endif
