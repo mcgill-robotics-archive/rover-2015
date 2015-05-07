@@ -15,16 +15,31 @@ using namespace Eigen;
 namespace ekf{
 	
 SquareStateMatrix EKF::fUpdate(double dt){
-	SquareStateMatrix f;	
+	SquareStateMatrix f;
     Matrix<double,STATE_DIMS/2,STATE_DIMS/2> I = Matrix<double,STATE_DIMS/2,STATE_DIMS/2>::Identity();
 	MatrixXd DT = I * dt;
 	Matrix<double,STATE_DIMS/2,STATE_DIMS> ZERO = Matrix<double, STATE_DIMS/2,STATE_DIMS>::Zero();
 	f << I, DT, ZERO;
 }
 
-SquareStateMatrix EKF::FCalc(StateVector previous_X){
-	SquareStateMatrix s = SquareStateMatrix::Zero();
-	return s;
+SquareStateMatrix EKF::FCalc(StateVector previous_X, SquareStateMatrix previous_f){
+	SquareStateMatrix F;
+	SquareStateMatrix df = this.f - previous_f;
+	StateVector dX = this.X - previous_X;
+
+	if(dX.matrixLU().isInvertible()){
+		F = df * dX.inverse();
+		return F;	
+	}
+
+	return SquareSensorMatrix::Identity();
+
+// 	for(int j=0; j<STATE_DIMS; j++){
+// 		for(int k=0; k<STATE_DIMS; k++){
+// 			F(j,k) = df(j,k) / dX(j,k);
+// 		}
+// 	}
+
 }
 
 StateVector EKF::XPredict(StateVector previous_X){
@@ -48,7 +63,12 @@ SensorVector EKF::yUpdate(StateVector X){
 
 SensorToStateMatrix EKF::KUpdate(SquareStateMatrix P, StateToSensorMatrix H){
 	SquareSensorMatrix S = (H * P * H.transpose() + R);
-	return (P * H.transpose() * S.inverse());
+	if(S.matrixLU().isInvertible()){
+			SesnorToStateMatrix K = (P * H.transpose() * S.inverse());
+			return K;
+	}
+
+	return SensorToStateMatrix::Identity;
 }
 
 StateVector EKF::XUpdate(StateVector X, SensorToStateMatrix K, SensorVector y){
@@ -66,9 +86,11 @@ SquareStateMatrix EKF::PUpdate(SquareStateMatrix P, SensorToStateMatrix K, State
 void EKF::predict(double t_current){
 	this->dt = t_current - t_previous;
 	t_previous = t_current;
+	previous_X = X;
+	previous_f = f;
 	f = fUpdate(dt);
-	F = FCalc(X);
 	X = XPredict(X);
+	F = FCalc(previous_X, previous_f);
 	P = PPredict(P, F);
 }
 
