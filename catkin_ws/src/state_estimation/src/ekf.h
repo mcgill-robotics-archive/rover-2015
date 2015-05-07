@@ -31,21 +31,21 @@ public:
 		this->Q = Q;
 		this->R = R;
 		X = StateVector::Zero();
-		F = SquareStateMatrix::Zero();
-		f = SquareStateMatrix::Zero();
-		H = StateToSensorMatrix::Zero();
-		y = SensorVector::Zero();
-		K = SensorToStateMatrix::Zero();
-		h = StateToSensorMatrix::Zero();
+		F = SquareStateMatrix::Identity();
+		f = SquareStateMatrix::Identity();
+		H = StateToSensorMatrix::Identity();
+		y = SensorVector::Identity();
+		K = SensorToStateMatrix::Identity();
+		h = StateToSensorMatrix::Identity();
 		t_previous = t_current;
 		dt = 0;
 	}
 
 	EKF(){
 		std::cout << "ekf initialized with 0-arg constructor" << std::endl;
-		P = SquareStateMatrix::Zero();
-		Q = SquareStateMatrix::Zero();
-		R = SquareSensorMatrix::Zero();
+		P = SquareStateMatrix::Identity();
+		Q = SquareStateMatrix::Identity();
+		R = SquareSensorMatrix::Identity();
 		t_previous = 0;
 		dt = 0;
 	}
@@ -90,7 +90,7 @@ private:
 	  Prediction-step functions
 	 */
 	SquareStateMatrix fUpdate(double dt);
-	SquareStateMatrix FCalc(StateVector previous_X); // Calculate the updated Covariance Transition Matrix (Jacobian)
+	SquareStateMatrix FCalc(StateVector previous_X, SquareStateMatrix previous_f); // Calculate the updated Covariance Transition Matrix (Jacobian)
 	StateVector XPredict(StateVector previous_X);	// Predict the next State based on f (transition) and previous X
 	SquareStateMatrix PPredict(SquareStateMatrix previous_P, SquareStateMatrix F); // Predict the next Covariance Matrix based on F and previous P
 
@@ -109,8 +109,10 @@ private:
 	  Filter Variables
 	*/
 	StateVector X;
+	StateVector previous_X;
 	SquareStateMatrix f;
-
+	SquareStateMatrix previous_f;
+	
 	SquareStateMatrix P;
 	SensorToStateMatrix K;	
 
@@ -121,7 +123,7 @@ private:
 	SensorVector y;
 	SensorVector *sensorInput;
 	StateToSensorMatrix h;
-
+	StateToSensorMatrix previous_h;
 	/*
 	  Jacobian variables (require calculation of Jacobian)
 	*/

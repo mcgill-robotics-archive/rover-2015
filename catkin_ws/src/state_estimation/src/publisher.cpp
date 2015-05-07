@@ -23,7 +23,8 @@ void initialize(double start_time){
 	SquareSensorMatrix R = generateR(rVals);
 	
 	filter = new EKF(sensorInput, P, Q, R, start_time);
-	std::cout << "EKF Initialized" << std::endl;	
+	std::cout << "EKF Initialized" << std::endl;
+	std::cout << filter->getX() << std::endl;
 }
 
 void gpsCallback(const rover_msgs::GPS::ConstPtr& GPS) {
@@ -40,9 +41,6 @@ int main (int argc, char **argv){
 	double start_time = ros::Time::now().toSec();
 	
 	initialize(start_time);
-	
-
-
 	
     ros::spin();
 	
