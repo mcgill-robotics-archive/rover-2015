@@ -86,6 +86,10 @@ class CentralUi(QtGui.QMainWindow):
         self.feed1index = 0
         self.feed2index = 0
         self.feed3index = 0
+        self.first_point = False
+        self.dx = 0
+        self.dy = 0
+
         self.sub = None
         rospy.loginfo("HCI initialization completed")
 
@@ -118,14 +122,18 @@ class CentralUi(QtGui.QMainWindow):
         self.w1.addItem(self.s1)
 
     def handle_pose(self, data):
+        if not self.first_point:
+            self.first_point = True
+            self.dy = data.position.y
+            self.dx = data.position.x
         # add (x,y) to tempPose queue
         self.tempPose.put(data)
 
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
-            self.new_x = [pose.position.x]
-            self.new_y = [pose.position.y]
+            self.new_x = [pose.position.x - self.dx]
+            self.new_y = [pose.position.y - self.dy]
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
             if self.ui.zoomGraph.isChecked():
                 self.w1.autoRange()
@@ -138,6 +146,10 @@ class CentralUi(QtGui.QMainWindow):
             self.w1.autoRange()
 
     def clear_map(self):
+        self.first_point = False
+        self.dx = 0
+        self.dy = 0
+        
         self.s1.setData([], [], size=10, symbol='o', brush='r')
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
@@ -150,8 +162,7 @@ class CentralUi(QtGui.QMainWindow):
         res = temp[-1].split(' ')
         result = res[0]
         self.ui.sig_qual.setText("%s ms"%result)
-    
-    
+
     def set_point_steer(self, boolean):
         self.publisher.setSteerMode(boolean)
 
