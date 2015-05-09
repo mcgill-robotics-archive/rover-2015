@@ -15,7 +15,7 @@ SensorVector *sensorInput;
   Re-initialize the filter with initial inputs
  */
 void initialize(double start_time){
-	sensorInput = new SensorVector(SensorVector::Zero());
+	sensorInput = new SensorVector(SensorVector::Ones());
 	SquareStateMatrix P = generateP(1000);
 	double qVals[STATE_DIMS] = {.01,.01,.05,.05,.05,.1};
 	double rVals[SENSOR_DIMS] = {.9,.9,.9,.9,.9,.9};
@@ -29,8 +29,9 @@ void initialize(double start_time){
 
 void gpsCallback(const rover_msgs::GPS::ConstPtr& GPS) {
 	filter->predict(ros::Time::now().toSec());
+	std::cout << "Predicted X: " << std::endl << filter->getX() << std::endl;
 	filter->update();
-	std::cout << filter->getX() << std::endl;
+	std::cout << "Updated X: " << std::endl << filter->getX() << std::endl;
 }
 
 int main (int argc, char **argv){
