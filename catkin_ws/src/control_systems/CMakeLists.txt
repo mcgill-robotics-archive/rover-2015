@@ -112,10 +112,15 @@ include_directories(
 
 ## Declare a cpp executable
 # add_executable(control_systems_node src/control_systems_node.cpp)
+add_executable(pi_controller src/pi.cpp)
+
+target_link_libraries(pi_controller
+    ${catkin_LIBRARIES}
+)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(control_systems_node control_systems_generate_messages_cpp)
+add_dependencies(pi_controller control_systems_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(control_systems_node

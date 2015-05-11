@@ -5,7 +5,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 
-int main()
+int main(int argc,char *argv[])
 {
 	//The two parameters for the PI loop
 	float kp = 1;
@@ -27,12 +27,14 @@ int main()
 	//The current error of the motor
 	float error;
 	//Period is time interval between refreshes
-	float period = 1/( (float)frequency )
+	float period = 1/( (float)frequency );
 
 	//initialize the node
-	ros::init(argc, argv "")
+	ros::init(argc, argv, "pi_controller");
 
-	while (ros::ok())
+	ros::NodeHandle n;
+
+	while (0)
 	{
 		error = pos - realPos;
 		intError += error*period;
