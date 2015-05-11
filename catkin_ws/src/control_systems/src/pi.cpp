@@ -3,7 +3,7 @@
 #include <time.h>
 #include <sstream>
 #include "ros/ros.h"
-#include "std_msgs/String.h"
+#include "std_msgs/Float32.h"
 
 int main(int argc,char *argv[])
 {
@@ -17,7 +17,7 @@ int main(int argc,char *argv[])
 	//The sum of all the errors:
 	float intError = 0;
 	//The voltage to output at each loop
-	float outputVoltage = 0;
+	//float outputVoltage = 0;
 	//The current position of the motor		
 	//This value would be obtained from the encoders
 	float realPos;
@@ -31,15 +31,25 @@ int main(int argc,char *argv[])
 
 	//initialize the node
 	ros::init(argc, argv, "pi_controller");
-
 	ros::NodeHandle n;
+	//number is how many messages in the buffer
+	ros:: Publisher arm_voltage = n.advertise<std_msgs::Float32>("arm_voltage",100);
 
-	while (0)
+	//current operating frequency
+	ros::Rate loop_rate(frequency);
+
+	while (ros::ok())
 	{
+		std_msgs::Float32 outVolt;
 		error = pos - realPos;
 		intError += error*period;
-		outputVoltage = kp*error + ki*intError;
+		outVolt.data = kp*error + ki*intError;
 		//output this value to another topic
+		arm_voltage.publish(outVolt)
+
+		ros::spinOnce();
+
+		loop_rate.sleep();
 	}
 	return 0;
 }
