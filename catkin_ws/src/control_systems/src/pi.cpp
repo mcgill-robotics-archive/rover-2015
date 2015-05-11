@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
-
-using namespace std;
+#include <sstream>
+#include "ros/ros.h"
+#include "std_msgs/String.h"
 
 int main()
 {
@@ -27,11 +28,16 @@ int main()
 	float error;
 	//Period is time interval between refreshes
 	float period = 1/( (float)frequency )
-	while (TRUE)
+
+	//initialize the node
+	ros::init(argc, argv "")
+
+	while (ros::ok())
 	{
 		error = pos - realPos;
 		intError += error*period;
 		outputVoltage = kp*error + ki*intError;
+		//output this value to another topic
 	}
 	return 0;
 }
