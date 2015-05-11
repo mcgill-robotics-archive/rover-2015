@@ -45,7 +45,7 @@ int main(int argc,char *argv[])
 		intError += error*period;
 		outVolt.data = kp*error + ki*intError;
 		//output this value to another topic
-		arm_voltage.publish(outVolt)
+		arm_voltage.publish(outVolt);
 
 		//done iteration, so sleep
 		ros::spinOnce();
