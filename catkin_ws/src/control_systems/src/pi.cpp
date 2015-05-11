@@ -47,8 +47,8 @@ int main(int argc,char *argv[])
 		//output this value to another topic
 		arm_voltage.publish(outVolt)
 
+		//done iteration, so sleep
 		ros::spinOnce();
-
 		loop_rate.sleep();
 	}
 	return 0;
