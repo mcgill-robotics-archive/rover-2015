@@ -13,7 +13,7 @@ double wheelBase, radiusLeft, radiusRight;
 int previousTachoMiddleLeft, previousTachoMiddleRight;
 
 long int dt;
-void callback(odometry::Tachometers tachoCounts)
+void callback(odometry::Tachometers tachoCounts);
 ros::Subscriber tachoSub;
 
 #define __ODOMETRYH__ 
