@@ -14,37 +14,47 @@
 using namespace Eigen;
 
 namespace ekf{
+
+double LAT_TO_METERS  = 0.000009044;
+double LONG_TO_METERS = 0.000008983;
 	
 SquareStateMatrix EKF::fUpdate(){
-	SquareStateMatrix f;
-    Matrix<double,STATE_DIMS/2,STATE_DIMS/2> I = Matrix<double,STATE_DIMS/2,STATE_DIMS/2>::Identity();
-	MatrixXd DT = I * dt;
-	Matrix<double,STATE_DIMS/2,STATE_DIMS> ZERO = Matrix<double, STATE_DIMS/2,STATE_DIMS>::Zero();
-	f << I, DT, ZERO;
+	SquareStateMatrix f = SquareStateMatrix::Identity();
+    // Matrix<double,STATE_DIMS/2,STATE_DIMS/2> I = Matrix<double,STATE_DIMS/2,STATE_DIMS/2>::Identity();
+	// MatrixXd DT = I * dt;
+	// Matrix<double,STATE_DIMS/2,STATE_DIMS> ZERO = Matrix<double, STATE_DIMS/2,STATE_DIMS>::Zero();
+	f(2,2) = 0;
+	f(0,2) = dt * cos(X(3));
+	f(1,2) = dt * sin(X(3));
+	std::cout << "f: " << std::endl << f << std::endl;
 }
 
-SquareStateMatrix EKF::FCalc(StateVector previous_X, SquareStateMatrix previous_f){
-	SquareStateMatrix F;
-	SquareStateMatrix df = this->f - previous_f;
-	StateVector dX = this->X - previous_X;
+// SquareStateMatrix EKF::FCalc(StateVector previous_X, SquareStateMatrix previous_f){
+// 	SquareStateMatrix F;
+// 	SquareStateMatrix df = this->f - previous_f;
+// 	StateVector dX = this->X - previous_X;
 
-	for(int j=0; j<STATE_DIMS; j++){
-		for(int k=0; k<STATE_DIMS; k++){
-			if(abs(dX(k,0)) > .000001){
-				F(j,k) = df(j,k) / dX(k,0);
-			}
-		}
-	}
+// 	for(int j=0; j<STATE_DIMS; j++){
+// 		for(int k=0; k<STATE_DIMS; k++){
+// 			if(abs(dX(k,0)) > .000001){
+// 				F(j,k) = df(j,k) / dX(k,0);
+// 			}
+// 		}
+// 	}
 
-	return F;
-}
+// 	return F;
+// }
 
 StateVector EKF::XPredict(StateVector previous_X){
-	return f * previous_X;
+	B(3,1) = dt;
+	std::cout << "B : " << std::endl << B << std::endl;	
+	StateVector X = f * previous_X + B * u;
+	std::cout << "X-predict: " << std::endl << X << std::endl;
+	return X;
 }
 
 SquareStateMatrix EKF::PPredict(SquareStateMatrix previous_P, SquareStateMatrix F){
-	return F * previous_P * F.transpose() + Q;
+	return f * previous_P * f.transpose() + Q;
 }
 
 /*
@@ -53,87 +63,96 @@ SquareStateMatrix EKF::PPredict(SquareStateMatrix previous_P, SquareStateMatrix 
   the sensor offset (y) can be calculated, as well as H (The jacobian).
 */
 StateToSensorMatrix EKF::hCalc(){
-	StateToSensorMatrix h = StateToSensorMatrix::Identity() * dt;
+	StateToSensorMatrix h;
+	SensorVector col0, col1, col2, col3;
+	col0 << 1, 0, 0, 0, 0;
+	col1 << 0, 1, 0, 0, 0;
+	col2 << SensorVector::Zero();
+	col3 << SensorVector::Zero();
+	h << col0, col1, col2, col3;
+
 	return h;
 }
 
-StateToSensorMatrix EKF::HCalc(StateVector X, StateVector previous_X, StateToSensorMatrix h, StateToSensorMatrix previous_h){
-// 	Matrix<double, STATE_DIMS, STATE_DIMS/2> bigH;
-// 	StateToSensorMatrix H;
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS> tempZero = Matrix<double, STATE_DIMS/2, STATE_DIMS>::Zero();
+// StateToSensorMatrix EKF::HCalc(StateVector X, StateVector previous_X, StateToSensorMatrix h, StateToSensorMatrix previous_h){
+// // 	Matrix<double, STATE_DIMS, STATE_DIMS/2> bigH;
+// // 	StateToSensorMatrix H;
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS> tempZero = Matrix<double, STATE_DIMS/2, STATE_DIMS>::Zero();
 
-// 	//assume the state vector is <x, y, z, Vx, Vy, Vz>
-// 	double x = previous_X(0,0);
-// 	double y = previous_X(1,0);
-// 	double z = previous_X(2,0);
-// 	double coordinate3D = (double)pow(x, 2) + (double)pow(y,2) + (double)pow(z, 2);
-// 	double coordinate2D = (double)pow(x, 2) + (double)pow(y,2);
-// 	double aBigOperation = sqrt(1 - pow(z, 2)/(coordinate3D));
+// // 	//assume the state vector is <x, y, z, Vx, Vy, Vz>
+// // 	double x = previous_X(0,0);
+// // 	double y = previous_X(1,0);
+// // 	double z = previous_X(2,0);
+// // 	double coordinate3D = (double)pow(x, 2) + (double)pow(y,2) + (double)pow(z, 2);
+// // 	double coordinate2D = (double)pow(x, 2) + (double)pow(y,2);
+// // 	double aBigOperation = sqrt(1 - pow(z, 2)/(coordinate3D));
 
-// 	//temporary vectors
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a1;
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a2 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a3;
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a4 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a5;
-// 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a6 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();;
+// // 	//temporary vectors
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a1;
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a2 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a3;
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a4 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a5;
+// // 	Matrix<double, STATE_DIMS/2, STATE_DIMS/2> a6 = Matrix<double, STATE_DIMS/2, STATE_DIMS/2>::Zero();;
 	
-// 	a1(0, 0) = x/sqrt(coordinate3D);
-// 	a1(1, 0) = -y/sqrt(coordinate2D);
-// 	a1(2, 0) = (x*y)/(pow(coordinate3D, (double)3.0/2) * aBigOperation);
+// // 	a1(0, 0) = x/sqrt(coordinate3D);
+// // 	a1(1, 0) = -y/sqrt(coordinate2D);
+// // 	a1(2, 0) = (x*y)/(pow(coordinate3D, (double)3.0/2) * aBigOperation);
 
-// 	a3(0, 2) = y/sqrt(coordinate3D);
-// 	a3(1, 2) = x/sqrt(coordinate2D);
-// 	a3(2, 2) = (y*z)/(pow(coordinate3D, (double)3.0/2) * aBigOperation);
+// // 	a3(0, 2) = y/sqrt(coordinate3D);
+// // 	a3(1, 2) = x/sqrt(coordinate2D);
+// // 	a3(2, 2) = (y*z)/(pow(coordinate3D, (double)3.0/2) * aBigOperation);
 
-// 	a5(0, 4) = z/sqrt(coordinate3D);
-// 	a5(1, 4) = 0;
-// 	a5(2, 4) = ((-1/coordinate3D) + pow(z, 2)/pow(coordinate3D, (double)(3.0/2) ))/(aBigOperation);
+// // 	a5(0, 4) = z/sqrt(coordinate3D);
+// // 	a5(1, 4) = 0;
+// // 	a5(2, 4) = ((-1/coordinate3D) + pow(z, 2)/pow(coordinate3D, (double)(3.0/2) ))/(aBigOperation);
 
-// 	bigH << a1, a2, a3, a4, a5, a6;
+// // 	bigH << a1, a2, a3, a4, a5, a6;
 
-// 	H << bigH.transpose(), tempZero;
-	StateToSensorMatrix H;
-	StateToSensorMatrix dh = h - previous_h;
-	StateVector dX = X - previous_X;
+// // 	H << bigH.transpose(), tempZero;
+// 	StateToSensorMatrix H;
+// 	StateToSensorMatrix dh = h - previous_h;
+// 	StateVector dX = X - previous_X;
 
-	for(int j=0; j<SENSOR_DIMS; j++){
-		for(int k=0; k<STATE_DIMS; k++){
-			if(abs(dX(k,0)) > .000001){
-				H(j,k) = dh(j,k) / dX(k,0);
-			}
-		}
-	}
+// 	for(int j=0; j<SENSOR_DIMS; j++){
+// 		for(int k=0; k<STATE_DIMS; k++){
+// 			if(abs(dX(k,0)) > .000001){
+// 				H(j,k) = dh(j,k) / dX(k,0);
+// 			}
+// 		}
+// 	}
 
-	return H;
+// 	return H;
 
-}
+// }
 
 SensorVector EKF::yUpdate(StateVector X){
 	SensorVector hX = (h * X);
-	std::cout << "h: " << std::endl << h << std::endl << "hX: " << std::endl << hX << std::endl;
 	return *sensorInput - hX;
 }
 
-SensorToStateMatrix EKF::KUpdate(SquareStateMatrix P, StateToSensorMatrix H){
-	SquareSensorMatrix S = (H * P * H.transpose() + R);
-	if(abs(S.determinant()) > .000001){
-		SensorToStateMatrix K = (P * H.transpose() * S.inverse());
+SensorToStateMatrix EKF::KUpdate(SquareStateMatrix P, StateToSensorMatrix h){
+	SquareSensorMatrix S = (h * P * h.transpose() + R);
+
+	if(S.determinant() != 0.0){
+		SensorToStateMatrix K = (P * h.transpose() * S.inverse());
 		return K;
 	}
 
-	SensorToStateMatrix I = SensorToStateMatrix::Identity();
+	SensorToStateMatrix I = SensorToStateMatrix::Zero();
 	return I;
 }
 
 StateVector EKF::XUpdate(StateVector X, SensorToStateMatrix K, SensorVector y){
-	std::cout << "K: " << std::endl << K << std::endl << "sensorInput: " << *sensorInput << std::endl << "y: " << std::endl << y << std::endl;
-	return (X + K * y);
+	StateVector XUpdate = (X + K * y);
+	std::cout << "X-update: " << std::endl << XUpdate << std::endl;
+
+	return XUpdate;
 }
 
 SquareStateMatrix EKF::PUpdate(SquareStateMatrix P, SensorToStateMatrix K, StateToSensorMatrix H){
 	SquareStateMatrix I = SquareStateMatrix::Identity();
-	return (I - K*H) * P;
+	return (I - K*h) * P;
 }
 
 /*
@@ -142,13 +161,14 @@ SquareStateMatrix EKF::PUpdate(SquareStateMatrix P, SensorToStateMatrix K, State
 void EKF::predict(double t_current){
 	dt = t_current - t_previous;
 	t_previous = t_current;
-	previous_XUpdate = X;
-	previous_f = f;
-	previous_h = h;
+	// previous_XUpdate = X;
+	// previous_f = f;
+	// previous_h = h;
 	f = fUpdate();
 	X = XPredict(previous_XUpdate);
-	F = FCalc(previous_XUpdate, previous_f);
-	P = PPredict(P, F);
+	// F = FCalc(previous_XUpdate, previous_f);
+	// P = PPredict(P, F);
+	P = PPredict(P, f);
 }
 
 /*
@@ -156,12 +176,16 @@ void EKF::predict(double t_current){
 */
 void EKF::update(){
 	h = hCalc();
-	H = HCalc(X, previous_XPredict, h, previous_h);
-	previous_XPredict = X;
+	// H = HCalc(X, previous_XPredict, h, previous_h);
+	// previous_XPredict = X;
 	y = yUpdate(X);
-	K = KUpdate(P, H);
+	K = KUpdate(P, h);
 	X = XUpdate(X, K, y);
-	P = PUpdate(P, K, H);
+	P = PUpdate(P, K, h);
+	previous_XUpdate = X;
+	// K = KUpdate(P, H);
+	// X = XUpdate(X, K, y);
+	// P = PUpdate(P, K, H);
 }
 
 SquareStateMatrix generateP(double covariance){

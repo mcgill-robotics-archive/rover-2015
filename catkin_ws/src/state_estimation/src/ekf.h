@@ -11,8 +11,9 @@ namespace ekf{
 
 using namespace Eigen;
 
-const int SENSOR_DIMS = 6;
-const int STATE_DIMS = 6;
+const int SENSOR_DIMS = 5;
+const int STATE_DIMS = 4;
+const int INPUT_DIMS = 2;
 
 typedef Matrix<double, SENSOR_DIMS, SENSOR_DIMS> SquareSensorMatrix;
 typedef Matrix<double, STATE_DIMS, STATE_DIMS> SquareStateMatrix;
@@ -20,11 +21,13 @@ typedef Matrix<double, SENSOR_DIMS, 1> SensorVector;
 typedef Matrix<double, STATE_DIMS, 1> StateVector;
 typedef Matrix<double, SENSOR_DIMS, STATE_DIMS> StateToSensorMatrix;
 typedef Matrix<double, STATE_DIMS, SENSOR_DIMS> SensorToStateMatrix;
+typedef Matrix<double, INPUT_DIMS, 1> InputVector;
+typedef Matrix<double, STATE_DIMS, INPUT_DIMS> InputToStateMatrix;
 
 class EKF{
 public:
 
-	EKF(SensorVector *sensorInput, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareStateMatrix R, double t_current){
+	EKF(SensorVector *sensorInput, const SquareStateMatrix P, const SquareStateMatrix Q, const SquareSensorMatrix R, double t_current){
 		std::cout << "ekf initialized with 5-arg constructor" << std::endl;
 		this->sensorInput = sensorInput;
 		this->P = P;
@@ -35,14 +38,14 @@ public:
 		f = SquareStateMatrix::Identity();
 		H = StateToSensorMatrix::Identity();
 		y = SensorVector::Ones();
-		K = SensorToStateMatrix::Identity();
-		h = StateToSensorMatrix::bIdentity();
+		K = SensorToStateMatrix::Zero();
+		h = StateToSensorMatrix::Identity();
+		B = InputToStateMatrix::Zero(); B(2,0) = 1;
 		t_previous = t_current;
 		dt = 0;
 	}
 
 	EKF(){
-		std::cout << "ekf initialized with 0-arg constructor" << std::endl;
 		P = SquareStateMatrix::Identity();
 		Q = SquareStateMatrix::Identity();
 		R = SquareSensorMatrix::Identity();
@@ -83,7 +86,10 @@ public:
 	SensorToStateMatrix getK(){
 		return K;
 	}
-
+	
+	void setu(double linearSpd, double angularSpd){
+		u << linearSpd, angularSpd;
+	}
 private:
 
 	/*
@@ -112,12 +118,14 @@ private:
 	StateVector X;
 	StateVector previous_XUpdate;
 	StateVector previous_XPredict;
+	
+	InputVector u;
+	InputToStateMatrix B;
 	SquareStateMatrix f;
 	SquareStateMatrix previous_f;
 	
 	SquareStateMatrix P;
 	SensorToStateMatrix K;	
-
 
 	/*
 	  Observation variables
