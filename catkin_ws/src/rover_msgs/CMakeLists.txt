@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(rover_msgs)
 
+
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -48,7 +50,10 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    GPS.msg
-#   Message2.msg
+   GPS2.msg
+   Imu.msg
+   RoverSpeed.msg
+   Tachometers.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -85,6 +90,7 @@ catkin_package(
 #  LIBRARIES rover_msgs
 #  CATKIN_DEPENDS geometry_msgs sensor_msgs std_msgs
 #  DEPENDS system_lib
+CATKIN_DEPENDS message_runtime
 )
 
 ###########
