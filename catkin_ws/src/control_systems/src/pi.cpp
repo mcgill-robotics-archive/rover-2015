@@ -4,6 +4,8 @@
 #include <sstream>
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include <ros/console.h>
+
 
 int main(int argc,char *argv[])
 {
@@ -37,6 +39,7 @@ int main(int argc,char *argv[])
 
 	//current operating frequency
 	ros::Rate loop_rate(frequency);
+
 
 	while (ros::ok())
 	{
