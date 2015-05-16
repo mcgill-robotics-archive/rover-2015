@@ -10,12 +10,12 @@ a1 = rospy.get_param('control/ln_upperarm', 1)
 a2 = rospy.get_param('control/ln_forearm', 1)
 
 # bounds on forearm and upperarm angles
-forearmLowerBound = -pi  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forearmUpperBound = pi  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
-upperarmLowerBound = -pi  # rospy.get_param('control/bound_lower_upperarm',pi/18)
-upperarmUpperBound = pi  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-orientationLowerBound = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-orientationUpperBound = pi  # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+forearmLowerBound = -2*pi/3  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forearmUpperBound = 0  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+upperarmLowerBound = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
+upperarmUpperBound = pi/2  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+orientationLowerBound = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+orientationUpperBound = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
 # max is not truely the max, but forms a box for ease of comprehension
 maxExtension = sqrt(a1 ** 2 + a2 ** 2)
