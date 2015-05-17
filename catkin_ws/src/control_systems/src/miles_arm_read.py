@@ -10,15 +10,12 @@ a1 = rospy.get_param('control/ln_upperarm', 1)
 a2 = rospy.get_param('control/ln_forearm', 1)
 
 # bounds on forearm and upperarm angles
-forearmLowerBound = 0#-pi/2  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forearmUpperBound = pi#-pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
-upperarmLowerBound = -pi  # rospy.get_param('control/bound_lower_upperarm',pi/18)
-upperarmUpperBound = pi  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-orientationLowerBound = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-orientationUpperBound = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
-
-# max is not truely the max, but forms a box for ease of comprehension
-maxExtension = sqrt(a1 ** 2 + a2 ** 2)
+foreMin = 0#-pi/2  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+foreMax = pi#-pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+uppMin = -pi  # rospy.get_param('control/bound_lower_upperarm',pi/18)
+uppMax = pi  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+rotMin = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+rotMax = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
 
 class ArmControlReader(object):
@@ -46,9 +43,10 @@ class ArmControlReader(object):
         self.angles.elbow = 0
         self.angles.wristOrientation = 0
         self.angles.wristElevation = 0
-
         rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
                          queue_size=10)
+
+        self.topCorner = (a1*cos())
 
     def update_settings(self, msg):
         # import readings into object
@@ -98,7 +96,7 @@ class ArmControlReader(object):
         # 
         # #########################################################
         
-        if orientationLowerBound <= msg.theta <= orientationUpperBound:
+        if rotMin <= msg.theta <= rotMax:
             self.settings.theta = msg.theta
             self.settings.on = msg.on
     
@@ -262,13 +260,13 @@ def nextAngle(initialAngles, x, y):
     set1good, set2good = False, False
 
     # test if angles are in fact out of bounds
-    if upperarmLowerBound <= angleset1[0] <= upperarmUpperBound:
-        if forearmLowerBound <= angleset1[1] <= forearmUpperBound:
+    if uppMin <= angleset1[0] <= uppMax:
+        if foreMin <= angleset1[1] <= foreMax:
             # if all angles in set are fine, declare the set okay
             set1good = True
 
-    if upperarmLowerBound <= angleset2[0] <= upperarmUpperBound:
-        if forearmLowerBound <= angleset2[1] <= forearmUpperBound:
+    if uppMin <= angleset2[0] <= uppMax:
+        if foreMin <= angleset2[1] <= foreMax:
             set2good = True
 
         # if both sets are out of bounds,
