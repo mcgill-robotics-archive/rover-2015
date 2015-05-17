@@ -3,11 +3,12 @@
 from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
+from numpy import random
 
 # a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm', 1)
+a1 = rospy.get_param('control/ln_upperarm', 0.5)
 # a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm', 1)
+a2 = rospy.get_param('control/ln_forearm', 0.5)
 
 # bounds on forearm and upperarm angles
 forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
@@ -16,9 +17,6 @@ uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
 uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
-
-
-
 
 class ArmControlReader(object):
     def __init__(self):
@@ -95,6 +93,7 @@ class ArmControlReader(object):
         if self.withinBounds((msg.x,msg.y)):
             self.settings.x=msg.x
             self.settings.y=msg.y
+            print "Actual points", (self.settings.x,self.settings.y)
         else:
             #If not within bounds, we will
             #find the closest point within bounds!
@@ -114,7 +113,9 @@ class ArmControlReader(object):
             #This is the closest valid point to the requested
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
-            print "Closest point", (self.settings.x,self.settings.y)
+            if random.random() > 0.99:
+                print "Closest point", (self.settings.x,self.settings.y),\
+                    len(points), (msg.x,msg.y)
 
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
@@ -130,7 +131,6 @@ class ArmControlReader(object):
         self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
-
 
     def circlePoints(self,(x,y)):
         #function gives the closest viable points on circles
