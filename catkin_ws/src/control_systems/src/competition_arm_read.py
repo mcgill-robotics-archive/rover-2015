@@ -70,7 +70,7 @@ class ArmControlReader(object):
         #from ot.
         self.ot = [(0,0), distance(self.topCorner)]
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
-        self.it = [(a1*cos(uppMax),a1*sin(uppMax), a2]
+        self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(self.bottomCorner)]
 
 
@@ -113,7 +113,8 @@ class ArmControlReader(object):
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
 
-        if msg.theta
+        if rotMin<=msg.theta<=rotMax:
+            self.settings.theta = msg.theta
 
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
@@ -143,7 +144,7 @@ class ArmControlReader(object):
     def closePoint((a,b),r,(x,y)):
         #of equation (x-a)^2+(y-b)^2=r^2 to the point (x,y)
         y2 = b+r*(y-b)/ddistance((a,b),(x,y))
-        x2= a+sqrt(r^2-(y2-b)^2
+        x2= a+sqrt(r^2-(y2-b)^2)
         return (x2,y2)
 
 
@@ -160,13 +161,13 @@ class ArmControlReader(object):
         #check if outside largest circle (validity is inside)
         #or inside circle ib (validity is outside)
         if not (self.ot[1]>=distance(x,y)>=self.ib[1]):
-            return False:
+            return False
         #check if inside circle it (validity is outside)
         if not (ddistance(self.it[0],(x,y))>=self.it[1]):
             return False
         #If below right corner, must be within circle ob.
         if y < self.rightCorner[1] \
-            and not (ddistance(self.ob[0],(x,y)))>=self.ob[1]):
+            and not ((ddistance(self.ob[0],(x,y)))>=self.ob[1]):
             return False
 
         #Concludes geometry tests!
