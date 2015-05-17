@@ -10,8 +10,8 @@ a1 = rospy.get_param('control/ln_upperarm', 1)
 a2 = rospy.get_param('control/ln_forearm', 1)
 
 # bounds on forearm and upperarm angles
-forearmLowerBound = -2*pi/3  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forearmUpperBound = pi  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+forearmLowerBound = 0#-pi/2  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forearmUpperBound = pi#-pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
 upperarmLowerBound = -pi  # rospy.get_param('control/bound_lower_upperarm',pi/18)
 upperarmUpperBound = pi  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 orientationLowerBound = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
@@ -70,18 +70,18 @@ class ArmControlReader(object):
         # bounds for x and y are not necessarily a rectangle,
         # so are hardcoded as functions of eachother
         # test if in bounds
-        if msg.y >= 0 and msg.x >= 0 and distance(msg.x, msg.y) <= a1 + a2:
+        if msg.x >= 0 and distance(msg.x, msg.y) <= a1 + a2:
             self.settings.x = msg.x
             self.settings.y = msg.y
-        elif msg.y < 0 <= msg.x <= a1 + a2:
-            self.settings.x = msg.x
-            self.settings.y = 0
-        elif msg.x < 0 <= msg.y <= a1 + a2:
-            self.settings.x = 0
-            self.settings.y = msg.y
-        # both below bounds
-        elif msg.x < 0 and msg.y < 0:
-            (self.settings.x, self.settings.y) = (0, 0)
+        #elif msg.y < 0 <= msg.x <= a1 + a2:
+        #    self.settings.x = msg.x
+        #    self.settings.y = 0
+        #elif msg.x < 0 <= msg.y <= a1 + a2:
+        #    self.settings.x = 0
+        #    self.settings.y = msg.y
+        ## both below bounds
+        #elif msg.x < 0 and msg.y < 0:
+        #    (self.settings.x, self.settings.y) = (0, 0)
         # out of bounds lengthwise
         elif distance(msg.x, msg.y) > a1 + a2:
             # adjust for correct angle, but max boundary

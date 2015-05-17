@@ -32,8 +32,8 @@ def publish_arm_motion_continuous(simulation):
 			else:
 				motionFloat += 0.01
 			#x and y move slowly in a circle	
-			armSettings.x = 0.5*math.cos(motionFloat)+0.5
-			armSettings.y = 0.5*math.sin(motionFloat)+0.5
+			armSettings.x = 0.3*math.cos(motionFloat)+1.6
+			armSettings.y = 0.5*math.sin(motionFloat)-0.25
 			#theta just moves back and forth
 			if motionFloat < math.pi:
 				armSettings.theta = (motionFloat-math.pi/2.)/4.
@@ -67,7 +67,7 @@ def publish_arm_motion_continuous(simulation):
 if __name__ == '__main__':
 	try:
 		#decide which simulation to run
-		publish_arm_motion_continuous(1)
+		publish_arm_motion_continuous(0)
 	except KeyboardInterrupt:
 		print "Exit"
 
