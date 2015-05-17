@@ -57,6 +57,29 @@ class ArmControlReader(object):
                             a1*sin(uppMin)+a2*sin(uppMin-forMax))
         self.leftCorner  = (a1*cos(uppMax)+a2*cos(uppMax-forMax),
                             a1*sin(uppMax)+a2*sin(uppMax-forMax))
+
+        #Circles used to speed up boundary detection
+        #Defined as (centre), radius, miny, maxy
+        #o-outer,i-inner, t-top,b-bottom circle
+
+        #for our situation, the ot circle
+        #completely encloses all region, and
+        #the it and ib circles do not contain
+        #any of the moveable distance.
+        self.ot = ((0,0),
+            distance(self.topCorner),
+            self.rightCorner[1],self.topCorner[1])
+        self.ob = ((a1*cos(uppMin),a1*sin(uppMin)),
+            a2,
+            self.bottomCorner[1],self.rightCorner[1])
+        self.it = ((a1*cos(uppMax),a1*sin(uppMax),
+            a2,
+            self.leftCorner[1],self.topCorner[1])
+        self.ib = ((0,0),
+            distance(self.bottomCorner),
+            self.bottomCorner[1],self.leftCorner[1])
+
+
     def update_settings(self, msg):
         # import readings into object
         # self.settings.x = msg.x
