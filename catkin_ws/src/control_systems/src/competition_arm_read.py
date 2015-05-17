@@ -115,6 +115,7 @@ class ArmControlReader(object):
             #This is the closest valid point to the requested
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
+            cout << "Closest Point" << endl;
 
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
@@ -191,7 +192,6 @@ class ArmControlReader(object):
         # continue until quit
         while not rospy.is_shutdown():
             # publish to topic
-            rospy.loginfo(self.angles)
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
             if verbose:

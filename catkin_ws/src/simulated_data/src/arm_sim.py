@@ -55,8 +55,7 @@ def publish_arm_motion_continuous(simulation):
 			#move the arm along a line in front of the robot,
 			#cycling over time
 			armSettings.theta = math.sin(time.clock())
-
-			rospy.loginfo(armSettings)
+			#rospy.loginfo(armSettings)
 
 			armPublisher.publish(armSettings)
 			#60 Hz processing cycle
