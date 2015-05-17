@@ -105,7 +105,8 @@ class ArmControlReader(object):
             self.settings.x=msg.x
             self.settings.y=msg.y
         else:
-
+            self.settings.x = msg.x
+            self.settings.y = msg.y
 
         if msg.theta
 
@@ -113,14 +114,30 @@ class ArmControlReader(object):
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
 
-    #Checks if value is inside curved region
+    #Checks if value is inside curved region (see images)
     def withinBounds((x,y)):
         #initial dummy checks:
+        #check if outside rectangle boundary
         if not (self.topCorner[1]>=y>=self.bottomCorner[1]):
             return False
-        if not (max(self.topCorner[0],self.leftCorner[0])<=x and\
+        if not (min(self.topCorner[0],self.leftCorner[0])<=x and\
                 max(self.rightCorner[0],self.rightCorner[0])>=0):
             return False
+        #circle checks - all of these observed using the Monte Carlo Method
+        #check if outside largest circle (validity is inside)
+        #or inside circle ib (validity is outside)
+        if not (self.ot[1]>=distance(x,y)>=self.ib[1]):
+            return False:
+        #check if inside circle it (validity is outside)
+        if not (ddistance(self.it[0],(x,y))>=self.it[1]):
+            return False
+        #If below right corner, must be within circle ob.
+        if y < self.rightCorner[1] \
+            and not (ddistance(self.ob[0],(x,y))>=self.ob[1]):
+            return False
+
+        #Concludes geometry tests!
+        return True
 
 
     def run(self):
@@ -135,6 +152,8 @@ class ArmControlReader(object):
                 rospy.loginfo(self.angles)  # next iteration
         r.sleep()
 
+def ddistance((x1,y1),(x2,y2)):
+    return distance((x2-x1),(y2-y1))
 
 # makes angle between -pi and pi
 def modAngle(x):
