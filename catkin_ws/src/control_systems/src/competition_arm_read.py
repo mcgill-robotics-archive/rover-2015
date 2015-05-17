@@ -68,18 +68,10 @@ class ArmControlReader(object):
         #any of the moveable distance.
         #half of ob excludes any other region
         #from ot.
-        self.ot = ((0,0),
-            distance(self.topCorner),
-            self.rightCorner[1],self.topCorner[1])
-        self.ob = ((a1*cos(uppMin),a1*sin(uppMin)),
-            a2,
-            self.bottomCorner[1],self.rightCorner[1])
-        self.it = ((a1*cos(uppMax),a1*sin(uppMax),
-            a2,
-            self.leftCorner[1],self.topCorner[1])
-        self.ib = ((0,0),
-            distance(self.bottomCorner),
-            self.bottomCorner[1],self.leftCorner[1])
+        self.ot = [(0,0), distance(self.topCorner)]
+        self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
+        self.it = [(a1*cos(uppMax),a1*sin(uppMax), a2]
+        self.ib = [(0,0), distance(self.bottomCorner)]
 
 
     def update_settings(self, msg):
@@ -105,14 +97,55 @@ class ArmControlReader(object):
             self.settings.x=msg.x
             self.settings.y=msg.y
         else:
-            self.settings.x = msg.x
-            self.settings.y = msg.y
+            #If not within bounds, we will
+            #find the closest point within bounds!
+            #This has been optimized using Mathematica.
+            points = circlePoints((msg.x,msg.y))
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            points.append(self.leftCorner)
+            s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
+            for i in points[1:]:
+                tmp = ddistance(i,(msg.x,msg.y))
+                if tmp < s[1]:
+                    s = [tmp,i]
+            self.settings.x = s[1][0]
+            self.settings.y = s[1][1]
 
         if msg.theta
 
-
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
+
+    def circlePoints((x,y)):
+        #function gives the closest viable points on circles
+        points = []
+        #get closest point on circle to user's point
+        testPoint = closePoint(self.ot[0],self.ot[1],(x,y))
+        #check if within region
+        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
+            #append to viable points
+            points.append(testPoint)
+        #repeat
+        testPoint = closePoints(self.ob[0],self.ob[1],(x,y))
+        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+            points.append(testPoint)
+        testPoint = closePoints(self.it[0],self.it[1],(x,y))
+        if self.topCorner[1]>=testPoint[1]>=self.left[1]:
+            points.append(testPoint)
+        testPoint = closePoints(self.ib[0],self.ib[1],(x,y))
+        if self.left[1]>=testPoint[1]>=self.bottomCorner[1]:
+            points.append(testPoint)
+
+        return points
+
+    def closePoint((a,b),r,(x,y)):
+        #of equation (x-a)^2+(y-b)^2=r^2 to the point (x,y)
+        y2 = b+r*(y-b)/ddistance((a,b),(x,y))
+        x2= a+sqrt(r^2-(y2-b)^2
+        return (x2,y2)
+
 
     #Checks if value is inside curved region (see images)
     def withinBounds((x,y)):
@@ -133,7 +166,7 @@ class ArmControlReader(object):
             return False
         #If below right corner, must be within circle ob.
         if y < self.rightCorner[1] \
-            and not (ddistance(self.ob[0],(x,y))>=self.ob[1]):
+            and not (ddistance(self.ob[0],(x,y)))>=self.ob[1]):
             return False
 
         #Concludes geometry tests!
@@ -152,6 +185,7 @@ class ArmControlReader(object):
                 rospy.loginfo(self.angles)  # next iteration
         r.sleep()
 
+#distance between points
 def ddistance((x1,y1),(x2,y2)):
     return distance((x2-x1),(y2-y1))
 
@@ -236,11 +270,7 @@ def convertCartesian(x, y, z):
 # function will give two sets of angles for the robotic arm (both valid)
 # , when told which point in the xy plane needs to be reached
 def possibleAngles(x, y):
-    # out of reach
     angles = [[0., 0.], [0., 0.]]
-    if distance(x, y) > a1 + a2:
-        return angles
-    # else, compute normally...
 
     # the following are the equations for each angle, computed by mathematica
 
