@@ -101,21 +101,33 @@ class ArmControlReader(object):
             #find the closest point within bounds!
             #This has been optimized using Mathematica.
             points = circlePoints((msg.x,msg.y))
+            #Corners may also be extremum
             points.append(self.topCorner)
             points.append(self.rightCorner)
             points.append(self.bottomCorner)
             points.append(self.leftCorner)
+            #Find the nearest valid point
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
             for i in points[1:]:
                 tmp = ddistance(i,(msg.x,msg.y))
                 if tmp < s[1]:
                     s = [tmp,i]
+            #This is the closest valid point to the requested
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
 
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
 
+        getAngles = possibleAngles(self.settings.x,self.settings.y)
+        finalAngles = (0,0)
+        #If not in range, pick other
+        if not (forMin<=getAngles[0][1]<=forMax):
+            finalAngles = getAngles[1]
+        else:
+            finalAngles = getAngles[0]
+        self.angles.elbow = finalAngles[1]
+        self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
 
