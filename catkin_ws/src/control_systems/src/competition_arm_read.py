@@ -114,7 +114,7 @@ class ArmControlReader(object):
             #This is the closest valid point to the requested
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
-            cout << "Closest Point" << endl;
+            print "Closest point", (self.settings.x,self.settings.y)
 
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
@@ -132,7 +132,7 @@ class ArmControlReader(object):
         # function will publish at 60Hz
 
 
-    def circlePoints((x,y)):
+    def circlePoints(self,(x,y)):
         #function gives the closest viable points on circles
         points = []
         #get closest point on circle to user's point
@@ -142,27 +142,27 @@ class ArmControlReader(object):
             #append to viable points
             points.append(testPoint)
         #repeat
-        testPoint = self.closePoints(self.ob[0],self.ob[1],(x,y))
+        testPoint = self.closePoint(self.ob[0],self.ob[1],(x,y))
         if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
-        testPoint = self.closePoints(self.it[0],self.it[1],(x,y))
-        if self.topCorner[1]>=testPoint[1]>=self.left[1]:
+        testPoint = self.closePoint(self.it[0],self.it[1],(x,y))
+        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1]:
             points.append(testPoint)
-        testPoint = self.closePoints(self.ib[0],self.ib[1],(x,y))
-        if self.left[1]>=testPoint[1]>=self.bottomCorner[1]:
+        testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
+        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
 
         return points
 
-    def closePoint((a,b),r,(x,y)):
+    def closePoint(self, (a,b),r,(x,y)):
         #of equation (x-a)^2+(y-b)^2=r^2 to the point (x,y)
         y2 = b+r*(y-b)/ddistance((a,b),(x,y))
-        x2= a+sqrt(r^2-(y2-b)^2)
+        x2= a+sqrt(r**2-(y2-b)**2)
         return (x2,y2)
 
 
     #Checks if value is inside curved region (see images)
-    def withinBounds((x,y)):
+    def withinBounds(self,(x,y)):
         #initial dummy checks:
         #check if outside rectangle boundary
         if not (self.topCorner[1]>=y>=self.bottomCorner[1]):
