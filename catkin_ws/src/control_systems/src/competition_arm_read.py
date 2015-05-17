@@ -59,13 +59,15 @@ class ArmControlReader(object):
                             a1*sin(uppMax)+a2*sin(uppMax-forMax))
 
         #Circles used to speed up boundary detection
-        #Defined as (centre), radius, miny, maxy
+        #Defined as (centre)=(a,b), radius=r, miny, maxy
         #o-outer,i-inner, t-top,b-bottom circle
 
         #for our situation, the ot circle
         #completely encloses all region, and
         #the it and ib circles do not contain
         #any of the moveable distance.
+        #half of ob excludes any other region
+        #from ot.
         self.ot = ((0,0),
             distance(self.topCorner),
             self.rightCorner[1],self.topCorner[1])
@@ -96,58 +98,30 @@ class ArmControlReader(object):
             msg.x += self.settings.x
             msg.y += self.settings.y
             msg.theta += self.settings.theta
-    
-        # bounds for x and y are not necessarily a rectangle,
-        # so are hardcoded as functions of eachother
-        # test if in bounds
-        if msg.x >= 0 and distance(msg.x, msg.y) <= a1 + a2:
-            self.settings.x = msg.x
-            self.settings.y = msg.y
-        #elif msg.y < 0 <= msg.x <= a1 + a2:
-        #    self.settings.x = msg.x
-        #    self.settings.y = 0
-        #elif msg.x < 0 <= msg.y <= a1 + a2:
-        #    self.settings.x = 0
-        #    self.settings.y = msg.y
-        ## both below bounds
-        #elif msg.x < 0 and msg.y < 0:
-        #    (self.settings.x, self.settings.y) = (0, 0)
-        # out of bounds lengthwise
-        elif distance(msg.x, msg.y) > a1 + a2:
-            # adjust for correct angle, but max boundary
-            angle = ArcTan(msg.x, msg.y)
-            # new settings are at boundary
-            self.settings.x = (a1 + a2) * cos(angle)
-            self.settings.y = (a1 + a2) * sin(angle)
+        
 
-        # #########################################################
-        # 
-        # Eventually this part will have to predict the bounds based
-        # on the angle bounds of the arm joints
-        # 
-        # 
-        # #########################################################
-        
-        if rotMin <= msg.theta <= rotMax:
-            self.settings.theta = msg.theta
-            self.settings.on = msg.on
-    
-            # calculate new angles for robotic arm
-            # these are the angles for movement in the x-y plane
-            newSetting = nextAngle(
-                (self.angles.shoulderElevation, self.angles.elbow),
-                self.settings.x, self.settings.y)
+        #Do a check if inside bounds.
+        if withinBounds((msg.x,msg.y)):
+            self.settings.x=msg.x
+            self.settings.y=msg.y
+        else:
 
-            # if new angle is good, update
-            if newSetting[1]:
-                self.angles.shoulderElevation = newSetting[0][0]
-                self.angles.elbow = newSetting[0][1]
-        
-            # this is the angle of the x-y plane relative to the forward direction
-            # of the robot
-            self.angles.shoulderOrientation = self.settings.theta
-        
-            # function will publish at 60Hz
+
+        if msg.theta
+
+
+        self.angles.shoulderOrientation = self.settings.theta
+        # function will publish at 60Hz
+
+    #Checks if value is inside curved region
+    def withinBounds((x,y)):
+        #initial dummy checks:
+        if not (self.topCorner[1]>=y>=self.bottomCorner[1]):
+            return False
+        if not (max(self.topCorner[0],self.leftCorner[0])<=x and\
+                max(self.rightCorner[0],self.rightCorner[0])>=0):
+            return False
+
 
     def run(self):
         r = rospy.Rate(60)
