@@ -68,11 +68,10 @@ class ArmControlReader(object):
         #any of the moveable distance.
         #half of ob excludes any other region
         #from ot.
-        self.ot = [(0,0), distance(self.topCorner)]
+        self.ot = [(0,0), distance(*self.topCorner)]
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
-        self.ib = [(0,0), distance(self.bottomCorner)]
-
+        self.ib = [(0,0), distance(*self.bottomCorner)]
 
     def update_settings(self, msg):
         # import readings into object
@@ -93,14 +92,14 @@ class ArmControlReader(object):
         
 
         #Do a check if inside bounds.
-        if withinBounds((msg.x,msg.y)):
+        if self.withinBounds((msg.x,msg.y)):
             self.settings.x=msg.x
             self.settings.y=msg.y
         else:
             #If not within bounds, we will
             #find the closest point within bounds!
             #This has been optimized using Mathematica.
-            points = circlePoints((msg.x,msg.y))
+            points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
             points.append(self.topCorner)
             points.append(self.rightCorner)
@@ -132,23 +131,24 @@ class ArmControlReader(object):
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
 
+
     def circlePoints((x,y)):
         #function gives the closest viable points on circles
         points = []
         #get closest point on circle to user's point
-        testPoint = closePoint(self.ot[0],self.ot[1],(x,y))
+        testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
         #check if within region
         if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
             #append to viable points
             points.append(testPoint)
         #repeat
-        testPoint = closePoints(self.ob[0],self.ob[1],(x,y))
+        testPoint = self.closePoints(self.ob[0],self.ob[1],(x,y))
         if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
-        testPoint = closePoints(self.it[0],self.it[1],(x,y))
+        testPoint = self.closePoints(self.it[0],self.it[1],(x,y))
         if self.topCorner[1]>=testPoint[1]>=self.left[1]:
             points.append(testPoint)
-        testPoint = closePoints(self.ib[0],self.ib[1],(x,y))
+        testPoint = self.closePoints(self.ib[0],self.ib[1],(x,y))
         if self.left[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
 
@@ -185,8 +185,7 @@ class ArmControlReader(object):
 
         #Concludes geometry tests!
         return True
-
-
+   
     def run(self):
         r = rospy.Rate(60)
         # continue until quit
