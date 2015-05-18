@@ -11,10 +11,10 @@ a1 = rospy.get_param('control/ln_upperarm', 0.5)
 a2 = rospy.get_param('control/ln_forearm', 0.5)
 
 # bounds on forearm and upperarm angles
-forMin = 0#pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forMax = pi/2#7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
-uppMin = 0#pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
-uppMax = pi/2#7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
+uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
@@ -101,10 +101,10 @@ class ArmControlReader(object):
             #This has been optimized using Mathematica.
             points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
-            #points.append(self.topCorner)
-            #points.append(self.rightCorner)
-            #points.append(self.bottomCorner)
-            #points.append(self.leftCorner)
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            points.append(self.leftCorner)
             #print points[:2]
             #Find the nearest valid point
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
