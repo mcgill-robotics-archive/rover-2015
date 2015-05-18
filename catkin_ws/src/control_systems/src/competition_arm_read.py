@@ -34,7 +34,7 @@ class ArmControlReader(object):
         self.settings.theta = 0
         self.settings.on = False
         self.settings.cartesian = False
-        # velocity of the arm
+        #velocity of the arm
         self.settings.velocity = False
         # angles:
         # angle at base
@@ -118,8 +118,6 @@ class ArmControlReader(object):
             self.settings.y = s[1][1]
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
-
-
         getAngles = possibleAngles(self.settings.x,self.settings.y)
         #If not in range, pick other
         if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
@@ -157,15 +155,19 @@ class ArmControlReader(object):
         testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
         if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
-
         return points
 
     def closePoint(self, (a,b),r,(x,y)):
         #of equation (x-a)^2+(y-b)^2=r^2 to the point (x,y)
-        y2 = b+r*(y-b)/ddistance((a,b),(x,y))
-        x2= a+sqrt(r**2-(y2-b)**2)
-        return (x2,y2)
+        #y2 = b+r*(y-b)/ddistance((a,b),(x,y))
+        #x2= a+sqrt(r**2-(y2-b)**2)
+        #return (x2,y2)
 
+        #new test code
+        v = (x-a,y-b)
+        #normalize
+        av = distance(v)
+        return (a+r*v[0]/av,b+r*v[1]/av)
 
     #Checks if value is inside curved region (see images)
     def withinBounds(self,(x,y)):
@@ -215,7 +217,6 @@ def modAngle(x):
     # if not, modulate x value
     return x - 2 * pi * round(x / 2. / pi)
 
-
 def sgn(x):
     if x == 0:
         return 1
@@ -226,13 +227,11 @@ def sgn(x):
 def distance(x, y, z=0):
     return sqrt(x ** 2 + y ** 2 + z ** 2)
 
-
 # arctangent function that adjusts based on
 # what quadrant it should be in
 
 # function will not return an angle 
 # greater in magnitude than pi
-
 # models ArcTan(y/x)
 def ArcTan(x, y):
     if x == 0:
@@ -364,7 +363,6 @@ def nextAngle(initialAngles, x, y):
         return [angleset1, True]
     return [angleset2, True]
 
-
 if __name__ == '__main__':
     print "Initializing Node"
     reader1 = ArmControlReader()
@@ -374,3 +372,4 @@ if __name__ == '__main__':
     f = open('data.csv','w')
     for x in masterPoints:
         f.write(str(x))
+
