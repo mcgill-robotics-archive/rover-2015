@@ -122,10 +122,12 @@ class ArmControlReader(object):
 
         getAngles = possibleAngles(self.settings.x,self.settings.y)
         #If not in range, pick other
-        finalAngles=getAngles[0]
         if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
             #Select final angle set
             finalAngles = getAngles[1]
+        elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+            finalAngles=getAngles[0]
+        else: finalAngles=(uppMax,forMax)
         self.angles.elbow = finalAngles[1]
         self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta

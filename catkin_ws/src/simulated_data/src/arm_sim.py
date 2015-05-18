@@ -73,9 +73,9 @@ def publish_arm_motion_continuous(simulation):
 			#get system time
 			t = time.clock()
 			#make figure eight figure in cartiesian space
-			s = math.sin(t)
+			s = math.sin(t*2)
 			armSettings.x = (s*math.sqrt(1**2-s**2)+1.5)/2.
-			armSettings.y = s/2.
+			armSettings.y = math.sin(t*8)/2.
 			if motionFloat < math.pi:
 				armSettings.theta = (motionFloat-math.pi/2.)/4.
 			else:
