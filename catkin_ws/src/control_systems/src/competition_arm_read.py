@@ -89,7 +89,6 @@ class ArmControlReader(object):
             msg.x += self.settings.x
             msg.y += self.settings.y
             msg.theta += self.settings.theta
-        
 
         #Do a check if inside bounds.
         if self.withinBounds((msg.x,msg.y)):
@@ -112,7 +111,7 @@ class ArmControlReader(object):
                 if tmp < s[1]:
                     s = [tmp,i]
             #This is the closest valid point to the requested
-            masterPoints.append(points)
+            #masterPoints.append(points)
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
         if rotMin<=msg.theta<=rotMax:
