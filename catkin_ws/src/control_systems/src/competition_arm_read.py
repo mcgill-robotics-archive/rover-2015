@@ -18,6 +18,8 @@ uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
+masterPoints = []
+
 class ArmControlReader(object):
     def __init__(self):
         # initiate node
@@ -93,7 +95,6 @@ class ArmControlReader(object):
         if self.withinBounds((msg.x,msg.y)):
             self.settings.x=msg.x
             self.settings.y=msg.y
-            print "Actual points", (self.settings.x,self.settings.y)
         else:
             #If not within bounds, we will
             #find the closest point within bounds!
@@ -111,12 +112,9 @@ class ArmControlReader(object):
                 if tmp < s[1]:
                     s = [tmp,i]
             #This is the closest valid point to the requested
+            masterPoints.append(points)
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
-            if random.random() > 0.99:
-                print "Closest point", (self.settings.x,self.settings.y),\
-                    len(points), (msg.x,msg.y)
-
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
 
@@ -365,3 +363,6 @@ if __name__ == '__main__':
     print "Running Node"
     reader1.run()
     rospy.spin()
+    f = open('data.csv','w')
+    for x in masterPoints:
+        f.write(str(x))
