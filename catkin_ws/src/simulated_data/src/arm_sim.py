@@ -73,8 +73,8 @@ def publish_arm_motion_continuous(simulation):
 			#get system time
 			t = time.clock()
 			#make figure eight figure in cartiesian space
-			s = math.sin(t/10.)
-			armSettings.x = s*math.sqrt(1**2-s**2)+1
+			s = math.sin(t)
+			armSettings.x = s*math.sqrt(1**2-s**2)+1.5
 			armSettings.y = s
 			if motionFloat < math.pi:
 				armSettings.theta = (motionFloat-math.pi/2.)/4.
@@ -91,7 +91,7 @@ def publish_arm_motion_continuous(simulation):
 if __name__ == '__main__':
 	try:
 		#decide which simulation to run
-		publish_arm_motion_continuous(0)
+		publish_arm_motion_continuous(2)
 	except KeyboardInterrupt:
 		print "Exit"
 
