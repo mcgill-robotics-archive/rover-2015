@@ -63,6 +63,7 @@ def publish_arm_motion_continuous(simulation):
 			r = rospy.Rate(60)
 			r.sleep()
 	elif simulation == 2:
+		#Figure eight!
 		armSettings.cartesian = True
 		while not rospy.is_shutdown():
 			#cycle through
@@ -85,13 +86,25 @@ def publish_arm_motion_continuous(simulation):
 			#60 Hz processing cycle
 			r = rospy.Rate(60)
 			r.sleep()
-
-
+	elif simulation == 3:
+		#Straight line forward and back
+		armSettings.cartesian = False
+		armSettings.y = 0.25
+		armSettings.theta = 0
+		while not rospy.is_shutdown():
+			t = time.clock()
+			s = math.sin(t*4)
+			armSettings.x = 0.5 + s/2
+			rospy.loginfo(armSettings)
+			armPublisher.publish(armSettings)
+			#60 Hz processing cycle
+			r = rospy.Rate(60)
+			r.sleep()
 
 if __name__ == '__main__':
 	try:
 		#decide which simulation to run
-		publish_arm_motion_continuous(2)
+		publish_arm_motion_continuous(3)
 	except KeyboardInterrupt:
 		print "Exit"
 
