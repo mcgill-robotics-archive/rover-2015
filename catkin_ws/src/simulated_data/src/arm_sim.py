@@ -4,6 +4,7 @@
 
 import rospy, math, time
 from control_systems.msg import ArmMotion
+import time
 
 def publish_arm_motion_continuous(simulation):
 	#declare type of node
@@ -61,6 +62,30 @@ def publish_arm_motion_continuous(simulation):
 			#60 Hz processing cycle
 			r = rospy.Rate(60)
 			r.sleep()
+	elif simulation == 2:
+		armSettings.cartesian = True
+		while not rospy.is_shutdown():
+			#cycle through
+			if motionFloat > 2*math.pi:
+				motionFloat = 0.
+			else:
+				motionFloat += 0.01
+			#get system time
+			t = time.clock()
+			#make figure eight figure in cartiesian space
+			s = math.sin(t/10.)
+			armSettings.x = s*math.sqrt(1**2-s**2)+1
+			armSettings.y = s
+			if motionFloat < math.pi:
+				armSettings.theta = (motionFloat-math.pi/2.)/4.
+			else:
+				armSettings.theta = (3*math.pi/2-motionFloat)/4.
+			rospy.loginfo(armSettings)
+			armPublisher.publish(armSettings)
+			#60 Hz processing cycle
+			r = rospy.Rate(60)
+			r.sleep()
+
 
 
 if __name__ == '__main__':
