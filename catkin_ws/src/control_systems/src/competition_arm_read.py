@@ -11,10 +11,10 @@ a1 = rospy.get_param('control/ln_upperarm', 0.5)
 a2 = rospy.get_param('control/ln_forearm', 0.5)
 
 # bounds on forearm and upperarm angles
-forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
-uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
-uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+forMin = 0#pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forMax = pi/2#7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+uppMin = 0#pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
+uppMax = pi/2#7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
 
@@ -72,6 +72,7 @@ class ArmControlReader(object):
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(*self.bottomCorner)]
+        print self.ot[1]
 
     def update_settings(self, msg):
         # import readings into object
@@ -100,10 +101,11 @@ class ArmControlReader(object):
             #This has been optimized using Mathematica.
             points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
-            points.append(self.topCorner)
-            points.append(self.rightCorner)
-            points.append(self.bottomCorner)
-            points.append(self.leftCorner)
+            #points.append(self.topCorner)
+            #points.append(self.rightCorner)
+            #points.append(self.bottomCorner)
+            #points.append(self.leftCorner)
+            #print points[:2]
             #Find the nearest valid point
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
             for i in points[1:]:
@@ -117,17 +119,22 @@ class ArmControlReader(object):
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
 
+
         getAngles = possibleAngles(self.settings.x,self.settings.y)
-        finalAngles = (0,0)
         #If not in range, pick other
-        if not (forMin<=getAngles[0][1]<=forMax):
+        finalAngles=getAngles[0]
+        if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+            #Select final angle set
             finalAngles = getAngles[1]
-        else:
-            finalAngles = getAngles[0]
         self.angles.elbow = finalAngles[1]
         self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
+
+    def anglesOkay(self, uppAng, forAng):
+        if forMin<=forAng<=forMax and uppMin<=uppAng<=uppMax:
+            return True
+        return False
 
     def circlePoints(self,(x,y)):
         #function gives the closest viable points on circles
