@@ -184,10 +184,15 @@ class ArmControlReader(object):
     def withinBounds(self,(x,y)):
         #initial dummy checks:
         #check if outside rectangle boundary
-        if not (self.topCorner[1]>=y>=self.bottomCorner[1]):
+        if not (max(self.topCorner[1], self.leftCorner[1],
+            self.rightCorner[1])>=y and\
+            min(self.bottomCorner[1], self.leftCorner[1],
+                self.rightCorner[1]) <= y):
             return False
-        if not (min(self.topCorner[0],self.leftCorner[0])<=x and\
-                max(self.rightCorner[0],self.rightCorner[0])>=0):
+        if not (min(self.topCorner[0],
+                    self.rightCorner[0],self.bottomCorner[0])<=x and\
+                max(self.topCorner[0],self.leftCorner[0],
+                    self.bottomCorner[0])>=x):
             return False
         #circle checks - all of these observed using the Monte Carlo Method
         #check if outside largest circle (validity is inside)
@@ -198,8 +203,8 @@ class ArmControlReader(object):
         if not (ddistance(self.it[0],(x,y))>=self.it[1]):
             return False
         #If below right corner, must be within circle ob.
-        if y < self.rightCorner[1] \
-            and not ((ddistance(self.ob[0],(x,y)))>=self.ob[1]):
+        if (y < self.rightCorner[1] and\
+            ((ddistance(self.ob[0],(x,y)))<=self.ob[1])):
             return False
 
         #Concludes geometry tests!
