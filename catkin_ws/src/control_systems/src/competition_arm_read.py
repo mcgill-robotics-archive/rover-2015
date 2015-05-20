@@ -101,10 +101,10 @@ class ArmControlReader(object):
             #This has been optimized using Mathematica.
             points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
-            #points.append(self.topCorner)
-            #points.append(self.rightCorner)
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
             points.append(self.bottomCorner)
-            #points.append(self.leftCorner)
+            points.append(self.leftCorner)
             #print points[:2]
             #Find the nearest valid point
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
@@ -123,9 +123,11 @@ class ArmControlReader(object):
         if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
             #Select final angle set
             finalAngles = getAngles[1]
-        elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+        else:#self.anglesOkay(getAngles[0][0],getAngles[0][1]):
             finalAngles=getAngles[0]
-        else: finalAngles=(uppMax,forMax)
+        else: 
+            print "Error"
+            finalAngles=(uppMax,forMin)
         self.angles.elbow = finalAngles[1]
         self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta
@@ -142,9 +144,9 @@ class ArmControlReader(object):
         #get closest point on circle to user's point
         testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
         #check if within region
-        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
+        #if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
             #append to viable points
-            points.append(testPoint)
+        points.append(testPoint)
         #repeat
         testPoint = self.closePoint(self.ob[0],self.ob[1],(x,y))
         if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
@@ -155,6 +157,7 @@ class ArmControlReader(object):
         testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
         if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
             points.append(testPoint)
+        print points
         return points
 
     def closePoint(self, (a,b),r,(x,y)):
