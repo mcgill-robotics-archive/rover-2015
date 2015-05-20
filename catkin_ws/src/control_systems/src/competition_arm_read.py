@@ -132,13 +132,15 @@ class ArmControlReader(object):
         if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
             #Select final angle set
             finalAngles = getAngles[1]
+            self.angles.elbow = finalAngles[1]
+            self.angles.shoulderElevation = finalAngles[0]
         elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
             finalAngles=getAngles[0]
+            
+            self.angles.elbow = finalAngles[1]
+            self.angles.shoulderElevation = finalAngles[0]
         else: 
             print "Error"
-            finalAngles=(uppMax,forMin)
-        self.angles.elbow = finalAngles[1]
-        self.angles.shoulderElevation = finalAngles[0]
         self.angles.shoulderOrientation = self.settings.theta
         # function will publish at 60Hz
 
