@@ -98,7 +98,7 @@ class ArmControlReader(object):
         else:
             #If not within bounds, we will
             #find the closest point within bounds!
-            #This has been optimized using Mathematica.
+            #This has been optimized using Mathematica and monte carlo
             points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
             points.append(self.topCorner)
@@ -110,20 +110,29 @@ class ArmControlReader(object):
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
             for i in points[1:]:
                 tmp = ddistance(i,(msg.x,msg.y))
-                if tmp < s[1]:
+                if tmp < s[0]:
                     s = [tmp,i]
             #This is the closest valid point to the requested
             #masterPoints.append(points)
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
+
+        #go to closest orientation value
         if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
+        #else, go to closest
+        elif abs(msg.theta-rotMax)<=abs(msg.theta-rotMin):
+            self.settings.theta = rotMax
+        else:
+            self.settings.theta = rotMin
+
+        #get arm angles
         getAngles = possibleAngles(self.settings.x,self.settings.y)
         #If not in range, pick other
         if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
             #Select final angle set
             finalAngles = getAngles[1]
-        else:#self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+        elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
             finalAngles=getAngles[0]
         else: 
             print "Error"
