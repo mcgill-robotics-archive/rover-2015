@@ -104,7 +104,7 @@ def publish_arm_motion_continuous(simulation):
 if __name__ == '__main__':
 	try:
 		#decide which simulation to run
-		publish_arm_motion_continuous(3)
+		publish_arm_motion_continuous(2)
 	except KeyboardInterrupt:
 		print "Exit"
 

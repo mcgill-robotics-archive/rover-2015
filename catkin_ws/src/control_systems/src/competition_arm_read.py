@@ -152,7 +152,7 @@ class ArmControlReader(object):
         points = []
         #get closest point on circle to user's point
         testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
-        #check if within region
+        #check y-coords if within region
         if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
             #append to viable points
             points.append(testPoint)
