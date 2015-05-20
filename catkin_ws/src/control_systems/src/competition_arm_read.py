@@ -101,10 +101,10 @@ class ArmControlReader(object):
             #This has been optimized using Mathematica.
             points = self.circlePoints((msg.x,msg.y))
             #Corners may also be extremum
-           # points.append(self.topCorner)
-           # points.append(self.rightCorner)
-           # points.append(self.bottomCorner)
-           # points.append(self.leftCorner)
+            #points.append(self.topCorner)
+            #points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            #points.append(self.leftCorner)
             #print points[:2]
             #Find the nearest valid point
             s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
