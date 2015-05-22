@@ -1,3 +1,5 @@
+#include <ros.h>
+#include <ArduinoHardware.h>
 #include <SPI.h>
 #include <PID_v1.h>
 
@@ -44,7 +46,13 @@ void loop()
   if (Serial.available()>0)
   {
 //    setSpeedAB(Serial.parseInt());
-      setpoint = Serial.parseInt();
+      //Load in position from ROS
+      double tmp = Serial.parseInt()/512;
+      //Check bounds on angle, then pass it in
+      if (1)
+      {
+        setpoint = tmp;
+      }
   }
 //  Serial.println(readEncoderAB(), 3);
 //  delay(10);
