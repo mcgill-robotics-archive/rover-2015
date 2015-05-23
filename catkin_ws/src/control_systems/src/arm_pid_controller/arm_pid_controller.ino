@@ -1,3 +1,5 @@
+//This is a general PID controller for the arm
+//specific programs will have to select the correct data
 #include <ros.h>
 #include <control_systems/ArmAngles.h>
 #include <ArduinoHardware.h>
@@ -9,17 +11,32 @@ int RESET_AB = 8;
 int DTE = 7;
 int DRE = 9;
 
+//Declare ros node
+ros::NodeHandle nh;
+
 // Setup for PID
 double input;
 double setpoint;
 double output;  
 PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
 
+//Function gets the angle
+void get_angle(const control_systems::ArmAngles& msg)
+{
+  setpoint = msg.shoulderElevation;
+}
+
+ros::Subscriber<control_systems::ArmAngles> sub("/arm", &get_angle);
+
 void setup()
 {
   Serial.begin(9600);
   Serial.setTimeout(50);
   while (!Serial){}
+  
+  //Set up ros node
+  nh.initNode();
+  nh.subscribe(sub);
 
   // Setup for motor output (AB)
   pinMode(RESET_AB, OUTPUT);
@@ -44,20 +61,10 @@ void setup()
 
 void loop()
 {    
-  if (Serial.available()>0)
-  {
-//    setSpeedAB(Serial.parseInt());
-      //Load in position from ROS
-      double tmp = Serial.parseInt()/512;
-      //Check bounds on angle, then pass it in
-      if (1)
-      {
-        setpoint = tmp;
-      }
-  }
+nh.spinOnce();
 //  Serial.println(readEncoderAB(), 3);
 //  delay(10);
-//
+Serial.println(setpoint);
 input = readEncoderAB();
 controller.Compute();
 Serial.println(output, 3);
