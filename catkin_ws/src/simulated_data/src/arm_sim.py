@@ -18,6 +18,8 @@ def publish_arm_motion_continuous(simulation):
 	armSettings.x = 0.
 	armSettings.y = 0.
 	#angle of x-y plane
+	#Constant wrist
+	armSettings.phi = 0
 	armSettings.theta = 0.
 	armSettings.on = True
 	armSettings.cartesian = False

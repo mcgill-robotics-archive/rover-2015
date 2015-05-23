@@ -9,14 +9,19 @@ from numpy import random
 a1 = rospy.get_param('control/ln_upperarm', 0.5)
 # a2 is the length of the forearm (attached to hand)
 a2 = rospy.get_param('control/ln_forearm', 0.5)
+# a3 is the length of the wrist (attached to glove)
+a3 = rospy.get_param('control/ln_wrist', 0.1)
 
 # bounds on forearm and upperarm angles
 forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
 forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
 uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
 uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+rotMin = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+rotMax = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+#wrist!
+wriMin = -pi/2 
+wriMax = pi/2
 
 masterPoints = []
 
@@ -32,6 +37,7 @@ class ArmControlReader(object):
         self.settings.x = 0
         self.settings.y = 0
         self.settings.theta = 0
+        self.settings.phi = 0
         self.settings.on = False
         self.settings.cartesian = False
         #velocity of the arm
@@ -44,6 +50,7 @@ class ArmControlReader(object):
         self.angles.shoulderElevation = 0
         self.angles.elbow = 0
         self.angles.wristOrientation = 0
+        #wrist angle!!
         self.angles.wristElevation = 0
         rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
                          queue_size=10)
@@ -142,7 +149,13 @@ class ArmControlReader(object):
         else: 
             print "Error"
         self.angles.shoulderOrientation = self.settings.theta
-        # function will publish at 60Hz
+
+        #Calculate wrist angle after testing
+        testAngle = self.settings.phi - self.angles.shoulderElevation + self.angles.elbow
+        if wriMax>=testAngle>=wriMin:
+            self.angles.wristElevation = testAngle
+
+        #function will publish at 60Hz
 
     def anglesOkay(self, uppAng, forAng):
         if forMin<=forAng<=forMax and uppMin<=uppAng<=uppMax:
