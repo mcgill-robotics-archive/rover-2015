@@ -5,6 +5,7 @@
 #include <ArduinoHardware.h>
 #include <SPI.h>
 #include <PID_v1.h>
+#define toDeg 57.2957795
 
 int PWM_A = 10;
 int RESET_AB = 8;
@@ -23,7 +24,7 @@ PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
 //Function gets the angle
 void get_angle(const control_systems::ArmAngles& msg)
 {
-  setpoint = msg.shoulderElevation;
+  setpoint = toDeg * msg.shoulderElevation;
 }
 
 ros::Subscriber<control_systems::ArmAngles> sub("/arm", &get_angle);
@@ -33,7 +34,7 @@ void setup()
   Serial.begin(9600);
   Serial.setTimeout(50);
   while (!Serial){}
-  
+  /*
   //Set up ros node
   nh.initNode();
   nh.subscribe(sub);
@@ -56,7 +57,7 @@ void setup()
   // Setup for PID
   input = readEncoderAB();
   controller.SetMode(AUTOMATIC);
-  controller.SetOutputLimits(-100, 100);
+  controller.SetOutputLimits(-100, 100);*/
 }
 
 void loop()
@@ -64,7 +65,10 @@ void loop()
 nh.spinOnce();
 //  Serial.println(readEncoderAB(), 3);
 //  delay(10);
-Serial.println(setpoint);
+
+//Test - try to see if angle is correct
+Serial.println("OREONO");
+//Serial.println(setpoint);
 input = readEncoderAB();
 controller.Compute();
 Serial.println(output, 3);
