@@ -16,15 +16,23 @@ int DRE = 9;
 ros::NodeHandle nh;
 
 // Setup for PID
-double input;
-double setpoint;
-double output;  
-PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
+//upper/elbow motor
+double inputU;
+double setpointU;
+double outputU; 
+PID controllerU(&inputU, &outputU, &setpointU, 1, 0, 0, DIRECT);
+//lower/shoulder/base motor
+double inputL;
+double setpointL;
+double outputL;
+PID controllerL(&inputL, &outputL, &setpointL, 1, 0, 0, DIRECT);
+
 
 //Function gets the angle
 void get_angle(const control_systems::ArmAngles& msg)
 {
-  setpoint = toDeg * msg.shoulderElevation;
+  setpointL = toDeg * msg.shoulderElevation;
+  setpointU = toDeg * msg.elbow;
   //Do an angle check!!!
 }
 
@@ -73,7 +81,6 @@ input = readEncoderAB();
 controller.Compute();
 //Serial.println(output, 3);
 setSpeedAB(output);
-Serial.println(setpoint);
 delay(10);
 
 }
