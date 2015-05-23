@@ -19,12 +19,13 @@ ros::NodeHandle nh;
 double input;
 double setpoint;
 double output;  
-//PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
+PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
 
 //Function gets the angle
 void get_angle(const control_systems::ArmAngles& msg)
 {
   setpoint = toDeg * msg.shoulderElevation;
+  //Do an angle check!!!
 }
 
 ros::Subscriber<control_systems::ArmAngles> sub("/arm", &get_angle);
@@ -38,17 +39,18 @@ void setup()
   //Set up ros node
   nh.initNode();
   nh.subscribe(sub);
-/*
+
   // Setup for motor output (AB)
   pinMode(RESET_AB, OUTPUT);
   pinMode(PWM_A, OUTPUT);
   digitalWrite(RESET_AB, HIGH);
-  
+
   // Setup for encoder input (AB)
   pinMode(DRE, OUTPUT);
   pinMode(DTE, OUTPUT);
   digitalWrite(DRE, LOW);
   digitalWrite(DTE, HIGH);
+  
   SPI.begin(); 
   SPI.setClockDivider(SPI_CLOCK_DIV8);
   SPI.setBitOrder(MSBFIRST); 
@@ -57,7 +59,7 @@ void setup()
   // Setup for PID
   input = readEncoderAB();
   controller.SetMode(AUTOMATIC);
-  controller.SetOutputLimits(-100, 100);*/
+  controller.SetOutputLimits(-100, 100);
 }
 
 void loop()
@@ -67,17 +69,15 @@ nh.spinOnce();
 //  delay(10);
 
 //Test - try to see if angle is correct
-//Serial.println("OREONO");
-//Serial.println(setpoint);
-//input = readEncoderAB();
-//controller.Compute();
+input = readEncoderAB();
+controller.Compute();
 //Serial.println(output, 3);
-//setSpeedAB(output);
+setSpeedAB(output);
 Serial.println(setpoint);
 delay(10);
 
 }
-/*
+
 void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
 {
   //  16000000 / (1 * 200 * 2 ) = 40 KHz
@@ -98,4 +98,4 @@ float readEncoderAB() // Returns encoder position in degrees.
   float ax = x*359.956/8191.000;
   return ax;
 }
-*/
+
