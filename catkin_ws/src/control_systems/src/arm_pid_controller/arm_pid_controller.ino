@@ -1,4 +1,5 @@
 #include <ros.h>
+#include <control_systems/ArmAngles.h>
 #include <ArduinoHardware.h>
 #include <SPI.h>
 #include <PID_v1.h>
