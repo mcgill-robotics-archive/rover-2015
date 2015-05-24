@@ -35,7 +35,7 @@ class IMUReader(object):
         self.arduino = 0
         try:
             #initialize arduino at port and specified baud rate
-            self.arduino = serial.Serial('/dev/ttyACM0',115200)
+            self.arduino = serial.Serial('/dev/ttyUSB0',115200)
         except serial.serialutil.SerialException:
             print("Connection could not be established")
             quit()

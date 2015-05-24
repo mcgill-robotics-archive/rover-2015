@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 #  convert linear,angular speed to wheel settings
 import rospy  # for reading and publishing to topics
 from mappingsteer import steer, pointTurn, translationalMotion, swerve, maxMag

@@ -15,9 +15,7 @@ from std_msgs.msg import *
 from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
 from rover_camera.srv import ChangeFeed
-
-# TODO: create service
-# from hci import Switch_Feeds
+from sensor_msgs.msg import Image
 
 
 class CentralUi(QtGui.QMainWindow):
@@ -66,6 +64,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.set_mode1)
         QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.set_mode2)
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.set_mode3)
+        QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         
         # camera feed selection signal connects
@@ -80,15 +79,33 @@ class CentralUi(QtGui.QMainWindow):
 
         rospy.init_node('listener', anonymous=False)
 
-        rospy.Subscriber('pose', Pose, self.handle_pose)
+        rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
 
         self.switch_feed = rospy.ServiceProxy('/changeFeed', ChangeFeed)
 
         self.feed1index = 0
         self.feed2index = 0
         self.feed3index = 0
+        self.first_point = False
+        self.dx = 0
+        self.dy = 0
 
+        self.sub = None
         rospy.loginfo("HCI initialization completed")
+
+    def take_screenshot(self):
+        self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)
+        rospy.loginfo("created screenshot subscriber")
+
+    def screenshot_callback(self, msg):
+        rospy.loginfo("shot callback")
+        self.sub.unregister()
+        image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
+        save = image.save("screen.jpeg")  # TODO: give right topic for arm camera
+        if save:
+            rospy.loginfo("save successfull")
+        else:
+            rospy.logwarn("fail save")
 
     def setup_minimap(self):
 
@@ -105,14 +122,18 @@ class CentralUi(QtGui.QMainWindow):
         self.w1.addItem(self.s1)
 
     def handle_pose(self, data):
+        if not self.first_point:
+            self.first_point = True
+            self.dy = data.position.y
+            self.dx = data.position.x
         # add (x,y) to tempPose queue
         self.tempPose.put(data)
 
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
-            self.new_x = [pose.position.x]
-            self.new_y = [pose.position.y]
+            self.new_x = [pose.position.x - self.dx]
+            self.new_y = [pose.position.y - self.dy]
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
             if self.ui.zoomGraph.isChecked():
                 self.w1.autoRange()
@@ -125,6 +146,10 @@ class CentralUi(QtGui.QMainWindow):
             self.w1.autoRange()
 
     def clear_map(self):
+        self.first_point = False
+        self.dx = 0
+        self.dy = 0
+        
         self.s1.setData([], [], size=10, symbol='o', brush='r')
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
@@ -137,8 +162,7 @@ class CentralUi(QtGui.QMainWindow):
         res = temp[-1].split(' ')
         result = res[0]
         self.ui.sig_qual.setText("%s ms"%result)
-    
-    
+
     def set_point_steer(self, boolean):
         self.publisher.setSteerMode(boolean)
 

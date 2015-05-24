@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #This program will simulate the rover using pyglet
 
 #fixes scaling

@@ -2,6 +2,6 @@
 	<rosparam command="load" file="$(find odometry)/config/radius.yaml"/>
 	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
 	<node name="arm_simulator" pkg="simulated_data" type="arm_sim.py" 	respawn="false" output="screen"/>
-	<node name="arm_reader" pkg="control_systems" type="miles_arm_read.py" 	respawn="false" output="screen"/>
+	<node name="arm_reader" pkg="control_systems" type="competition_arm_read.py" 	respawn="false" output="screen"/>
 	<node name="arm_visual" pkg="control_systems" type="arm_simulation.py" respawn="false" output="screen"/>
 </launch>

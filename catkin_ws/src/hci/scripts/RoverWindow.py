@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_files/MainWindow_V4.ui'
+# Form implementation generated from reading ui file 'MainWindow_V4.ui'
 #
-# Created: Tue Mar 24 17:34:58 2015
+# Created: Sun May  3 16:38:36 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -223,19 +223,10 @@ class Ui_MainWindow(object):
         self.coordinateSystem.addItem(_fromUtf8(""))
         self.horizontalLayout_4.addWidget(self.coordinateSystem)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
-        self.horizontalLayout_5 = QtGui.QHBoxLayout()
-        self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
-        self.label = QtGui.QLabel(self.centralwidget)
-        self.label.setMaximumSize(QtCore.QSize(65, 16777215))
-        self.label.setObjectName(_fromUtf8("label"))
-        self.horizontalLayout_5.addWidget(self.label)
-        self.HandTypeChoice = QtGui.QComboBox(self.centralwidget)
-        self.HandTypeChoice.setObjectName(_fromUtf8("HandTypeChoice"))
-        self.HandTypeChoice.addItem(_fromUtf8(""))
-        self.HandTypeChoice.addItem(_fromUtf8(""))
-        self.horizontalLayout_5.addWidget(self.HandTypeChoice)
-        self.verticalLayout.addLayout(self.horizontalLayout_5)
         self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.screenshot = QtGui.QPushButton(self.centralwidget)
+        self.screenshot.setObjectName(_fromUtf8("screenshot"))
+        self.verticalLayout_2.addWidget(self.screenshot)
         self.horizontalLayout_7.addLayout(self.verticalLayout_2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -297,8 +288,6 @@ class Ui_MainWindow(object):
         self.label_8.setText(_translate("MainWindow", "Coordinate", None))
         self.coordinateSystem.setItemText(0, _translate("MainWindow", "Cylindrical", None))
         self.coordinateSystem.setItemText(1, _translate("MainWindow", "Cartesian", None))
-        self.label.setText(_translate("MainWindow", "Hand type", None))
-        self.HandTypeChoice.setItemText(0, _translate("MainWindow", "Manipulator", None))
-        self.HandTypeChoice.setItemText(1, _translate("MainWindow", "Sampling", None))
+        self.screenshot.setText(_translate("MainWindow", "Capture Arm cam", None))
 
 from pyqtgraph import GraphicsLayoutWidget

@@ -3,14 +3,11 @@
 #include "newEKF.h"
 //#include "ekf.h"
 #include <ros/ros.h>
+#include<ros/time.h>
 
 using namespace std;
 //using namespace ekf;
 using Eigen::MatrixXd;
-
-//typedef Matrix<double, SENSOR_DIMS, SENSOR_DIMS> SquareSensorMatrix;
-
-
 
 SquareStateMatrix EKF::FCalc(){
 	int row, column;
@@ -71,6 +68,9 @@ int main()
 {
   	int row, column;
   	SquareSensorMatrix p;
+
+  	int i, j;
+  	SquareSensorMatrix matrix1;
   	SquareStateMatrix matrix2;
 	SensorVector *z;
 	SquareStateMatrix bigF;
@@ -108,9 +108,36 @@ int main()
 	//Pfinal = e.PPredict(p, bigF);
 	
 	//cout<< bigF.transpose() << endl;
+	//cout << *z << std::endl;
+	//cout << *ekf.z << endl;
+	//y(1, 0) = 222;
+	z = &y;
+	//cout << *ekf.z << endl;
 
 
+	ros::Publisher pub;
+	ros::Subscriber sub;
+    ros::init(argc, argv, "linear_ekf");
+    ros::NodeHandle node;
 
+    pub = node.advertise<geometry_msgs::PoseStamped>("ukf", 100);
+    sub = node.subscribe("imu_data", 100, dataCallback);
 
+    ros::spin();
+
+	double currentTime = ros::Time::now().toSec();
 	return 0;
 }
+
+void dataCallback(const sensor_msgs::Imu::ConstPtr& imu) {
+}
+//     geometry_msgs::Quaternion quat = geometry_msgs::Quaternion();		 //
+//     poseToQuaternion(quat, pose);										 //
+// 																			 //
+//     geometry_msgs::PoseStamped posStamped = geometry_msgs::PoseStamped(); //
+//     posStamped.header = imu->header;										 //
+//     posStamped.header.frame_id = "base_footprint";						 //
+//     posStamped.pose.orientation = quat;									 //
+// 																			 //
+//     pub.publish(posStamped);												 //
+// }																		 //

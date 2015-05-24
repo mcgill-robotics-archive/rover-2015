@@ -53,7 +53,6 @@ find_package(Boost REQUIRED COMPONENTS date_time)
    FILES
    Tachometers.msg
    RoverSpeed.msg
-#   Message2.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -112,6 +111,7 @@ add_executable(odometry src/odometry.cpp)
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 add_dependencies(mw_odo odometry_generate_messages_cpp)
+add_dependencies(odometry odometry_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(mw_odo ${catkin_LIBRARIES})

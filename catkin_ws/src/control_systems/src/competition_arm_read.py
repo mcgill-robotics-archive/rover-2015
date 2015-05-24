@@ -3,22 +3,27 @@
 from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
+from numpy import random
 
 # a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm', 1)
+a1 = rospy.get_param('control/ln_upperarm', 0.5)
 # a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm', 1)
+a2 = rospy.get_param('control/ln_forearm', 0.5)
+# a3 is the length of the wrist (attached to glove)
+a3 = rospy.get_param('control/ln_wrist', 0.1)
 
 # bounds on forearm and upperarm angles
 forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
 forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
 uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
 uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
-rotMin = -pi/2  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
-rotMax = pi/2 # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+rotMin = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
+rotMax = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+#wrist!
+wriMin = -pi/2 
+wriMax = pi/2
 
-
-
+masterPoints = []
 
 class ArmControlReader(object):
     def __init__(self):
@@ -32,9 +37,10 @@ class ArmControlReader(object):
         self.settings.x = 0
         self.settings.y = 0
         self.settings.theta = 0
+        self.settings.phi = 0
         self.settings.on = False
         self.settings.cartesian = False
-        # velocity of the arm
+        #velocity of the arm
         self.settings.velocity = False
         # angles:
         # angle at base
@@ -44,6 +50,7 @@ class ArmControlReader(object):
         self.angles.shoulderElevation = 0
         self.angles.elbow = 0
         self.angles.wristOrientation = 0
+        #wrist angle!!
         self.angles.wristElevation = 0
         rospy.Subscriber('/cmd_arm', ArmMotion, self.update_settings,
                          queue_size=10)
@@ -57,6 +64,23 @@ class ArmControlReader(object):
                             a1*sin(uppMin)+a2*sin(uppMin-forMax))
         self.leftCorner  = (a1*cos(uppMax)+a2*cos(uppMax-forMax),
                             a1*sin(uppMax)+a2*sin(uppMax-forMax))
+
+        #Circles used to speed up boundary detection
+        #Defined as (centre)=(a,b), radius=r, miny, maxy
+        #o-outer,i-inner, t-top,b-bottom circle
+
+        #for our situation, the ot circle
+        #completely encloses all region, and
+        #the it and ib circles do not contain
+        #any of the moveable distance.
+        #half of ob excludes any other region
+        #from ot.
+        self.ot = [(0,0), distance(*self.topCorner)]
+        self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
+        self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
+        self.ib = [(0,0), distance(*self.bottomCorner)]
+        print self.ot[1]
+
     def update_settings(self, msg):
         # import readings into object
         # self.settings.x = msg.x
@@ -73,71 +97,148 @@ class ArmControlReader(object):
             msg.x += self.settings.x
             msg.y += self.settings.y
             msg.theta += self.settings.theta
-    
-        # bounds for x and y are not necessarily a rectangle,
-        # so are hardcoded as functions of eachother
-        # test if in bounds
-        if msg.x >= 0 and distance(msg.x, msg.y) <= a1 + a2:
-            self.settings.x = msg.x
-            self.settings.y = msg.y
-        #elif msg.y < 0 <= msg.x <= a1 + a2:
-        #    self.settings.x = msg.x
-        #    self.settings.y = 0
-        #elif msg.x < 0 <= msg.y <= a1 + a2:
-        #    self.settings.x = 0
-        #    self.settings.y = msg.y
-        ## both below bounds
-        #elif msg.x < 0 and msg.y < 0:
-        #    (self.settings.x, self.settings.y) = (0, 0)
-        # out of bounds lengthwise
-        elif distance(msg.x, msg.y) > a1 + a2:
-            # adjust for correct angle, but max boundary
-            angle = ArcTan(msg.x, msg.y)
-            # new settings are at boundary
-            self.settings.x = (a1 + a2) * cos(angle)
-            self.settings.y = (a1 + a2) * sin(angle)
 
-        # #########################################################
-        # 
-        # Eventually this part will have to predict the bounds based
-        # on the angle bounds of the arm joints
-        # 
-        # 
-        # #########################################################
-        
-        if rotMin <= msg.theta <= rotMax:
+        #Do a check if inside bounds.
+        if self.withinBounds((msg.x,msg.y)):
+            self.settings.x=msg.x
+            self.settings.y=msg.y
+        else:
+            #If not within bounds, we will
+            #find the closest point within bounds!
+            #This has been optimized using Mathematica and monte carlo
+            points = self.circlePoints((msg.x,msg.y))
+            #Corners may also be extremum
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            points.append(self.leftCorner)
+            #print points[:2]
+            #Find the nearest valid point
+            s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
+            for i in points[1:]:
+                tmp = ddistance(i,(msg.x,msg.y))
+                if tmp < s[0]:
+                    s = [tmp,i]
+            #This is the closest valid point to the requested
+            #masterPoints.append(points)
+            self.settings.x = s[1][0]
+            self.settings.y = s[1][1]
+
+        #go to closest orientation value
+        if rotMin<=msg.theta<=rotMax:
             self.settings.theta = msg.theta
-            self.settings.on = msg.on
-    
-            # calculate new angles for robotic arm
-            # these are the angles for movement in the x-y plane
-            newSetting = nextAngle(
-                (self.angles.shoulderElevation, self.angles.elbow),
-                self.settings.x, self.settings.y)
+        #else, go to closest
+        elif abs(msg.theta-rotMax)<=abs(msg.theta-rotMin):
+            self.settings.theta = rotMax
+        else:
+            self.settings.theta = rotMin
 
-            # if new angle is good, update
-            if newSetting[1]:
-                self.angles.shoulderElevation = newSetting[0][0]
-                self.angles.elbow = newSetting[0][1]
-        
-            # this is the angle of the x-y plane relative to the forward direction
-            # of the robot
-            self.angles.shoulderOrientation = self.settings.theta
-        
-            # function will publish at 60Hz
+        #get arm angles
+        getAngles = possibleAngles(self.settings.x,self.settings.y)
+        #If not in range, pick other
+        if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+            #Select final angle set
+            finalAngles = getAngles[1]
+            self.angles.elbow = finalAngles[1]
+            self.angles.shoulderElevation = finalAngles[0]
+        elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+            finalAngles=getAngles[0]
+            
+            self.angles.elbow = finalAngles[1]
+            self.angles.shoulderElevation = finalAngles[0]
+        else: 
+            print "Error"
+        self.angles.shoulderOrientation = self.settings.theta
 
+        #Calculate wrist angle after testing
+        testAngle = self.settings.phi - self.angles.shoulderElevation + self.angles.elbow
+        if wriMax>=testAngle>=wriMin:
+            self.angles.wristElevation = testAngle
+
+        #function will publish at 60Hz
+
+    def anglesOkay(self, uppAng, forAng):
+        if forMin<=forAng<=forMax and uppMin<=uppAng<=uppMax:
+            return True
+        return False
+
+    def circlePoints(self,(x,y)):
+        #function gives the closest viable points on circles
+        points = []
+        #get closest point on circle to user's point
+        testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
+        #check y-coords if within region
+        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
+            #append to viable points
+            points.append(testPoint)
+        #repeat
+        testPoint = self.closePoint(self.ob[0],self.ob[1],(x,y))
+        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+            points.append(testPoint)
+        testPoint = self.closePoint(self.it[0],self.it[1],(x,y))
+        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1]:
+            points.append(testPoint)
+        testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
+        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+            points.append(testPoint)
+        return points
+
+    def closePoint(self, (a,b),r,(x,y)):
+        #of equation (x-a)^2+(y-b)^2=r^2 to the point (x,y)
+        #y2 = b+r*(y-b)/ddistance((a,b),(x,y))
+        #x2= a+sqrt(r**2-(y2-b)**2)
+        #return (x2,y2)
+
+        #new test code
+        v = (x-a,y-b)
+        #normalize
+        av = distance(v[0],v[1])
+        return (a+r*v[0]/av,b+r*v[1]/av)
+
+    #Checks if value is inside curved region (see images)
+    def withinBounds(self,(x,y)):
+        #initial dummy checks:
+        #check if outside rectangle boundary
+        if not (max(self.topCorner[1], self.leftCorner[1],
+            self.rightCorner[1])>=y and\
+            min(self.bottomCorner[1], self.leftCorner[1],
+                self.rightCorner[1]) <= y):
+            return False
+        if not (min(self.topCorner[0],
+                    self.rightCorner[0],self.bottomCorner[0])<=x and\
+                max(self.topCorner[0],self.leftCorner[0],
+                    self.bottomCorner[0])>=x):
+            return False
+        #circle checks - all of these observed using the Monte Carlo Method
+        #check if outside largest circle (validity is inside)
+        #or inside circle ib (validity is outside)
+        if not (self.ot[1]>=distance(x,y)>=self.ib[1]):
+            return False
+        #check if inside circle it (validity is outside)
+        if not (ddistance(self.it[0],(x,y))>=self.it[1]):
+            return False
+        #If below right corner, must be within circle ob.
+        if (y < self.rightCorner[1] and\
+            ((ddistance(self.ob[0],(x,y)))<=self.ob[1])):
+            return False
+
+        #Concludes geometry tests!
+        return True
+   
     def run(self):
         r = rospy.Rate(60)
         # continue until quit
         while not rospy.is_shutdown():
             # publish to topic
-            rospy.loginfo(self.angles)
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
             if verbose:
                 rospy.loginfo(self.angles)  # next iteration
         r.sleep()
 
+#distance between points
+def ddistance((x1,y1),(x2,y2)):
+    return distance((x2-x1),(y2-y1))
 
 # makes angle between -pi and pi
 def modAngle(x):
@@ -146,7 +247,6 @@ def modAngle(x):
         return x
     # if not, modulate x value
     return x - 2 * pi * round(x / 2. / pi)
-
 
 def sgn(x):
     if x == 0:
@@ -158,13 +258,11 @@ def sgn(x):
 def distance(x, y, z=0):
     return sqrt(x ** 2 + y ** 2 + z ** 2)
 
-
 # arctangent function that adjusts based on
 # what quadrant it should be in
 
 # function will not return an angle 
 # greater in magnitude than pi
-
 # models ArcTan(y/x)
 def ArcTan(x, y):
     if x == 0:
@@ -220,11 +318,7 @@ def convertCartesian(x, y, z):
 # function will give two sets of angles for the robotic arm (both valid)
 # , when told which point in the xy plane needs to be reached
 def possibleAngles(x, y):
-    # out of reach
     angles = [[0., 0.], [0., 0.]]
-    if distance(x, y) > a1 + a2:
-        return angles
-    # else, compute normally...
 
     # the following are the equations for each angle, computed by mathematica
 
@@ -300,10 +394,13 @@ def nextAngle(initialAngles, x, y):
         return [angleset1, True]
     return [angleset2, True]
 
-
 if __name__ == '__main__':
     print "Initializing Node"
     reader1 = ArmControlReader()
     print "Running Node"
     reader1.run()
     rospy.spin()
+    f = open('data.csv','w')
+    for x in masterPoints:
+        f.write(str(x))
+
