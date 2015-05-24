@@ -2,7 +2,8 @@
 
 float64 longitude
 float64 latitude
-float64 altitude
+float64 speed
+float64 heading
 
 int16 month
 int16 day 
