@@ -1,5 +1,5 @@
 #include <Servo.h>
-byte driveBoardAddress = 3;
+byte driveBoardAddress = 1;
 byte j;
 byte message[7];
 
@@ -47,10 +47,6 @@ void readMessage(){
 }
 
 void processMessage(){
-  decodeFunction();
-}
-
-void decodeFunction(){
   if ((message[1] = 1) && (message[0] = driveBoardAddress))
     enableLeftMotor();
     
