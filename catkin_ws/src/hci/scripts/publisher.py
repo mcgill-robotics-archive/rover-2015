@@ -60,16 +60,21 @@ class Publisher(object):
         self.cam_pub.publish(msg)
 
     # publish steering mode
-    def setSteerMode(self, boolean):
+    def setSteerMode(self, type):
         motionType = MotionType()
-        
-        motionType.TRANSLATORY = 0
+
         motionType.SWERVE = 0
-        if boolean:
+        if type == 0:
             motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 0
             motionType.POINT = 1
-        else:
+        elif type == 1:
             motionType.ACKERMANN = 1
+            motionType.TRANSLATORY = 0
+            motionType.POINT = 0
+        elif type == 2:
+            motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 1
             motionType.POINT = 0
 
         self.motionTypePublisher.publish(motionType)
