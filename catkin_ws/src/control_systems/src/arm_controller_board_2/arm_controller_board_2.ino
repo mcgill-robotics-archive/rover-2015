@@ -5,8 +5,13 @@
 
 int PWM_A = 10;
 int RESET_AB = 8;
-int DTE = 7;
-int DRE = 9;
+int DTE_A = 7;
+int DRE_A = 9;
+//For CD PID
+int PWM_C = 14;
+int RESET_CD = 12;
+int DTE_C = 11;
+int DRE_C = 13;
 
 // Setup for PID
 //motor controller
@@ -47,12 +52,25 @@ void setup()
   pinMode(RESET_AB, OUTPUT);
   pinMode(PWM_A, OUTPUT);
   digitalWrite(RESET_AB, HIGH);
+  
+  // Setup for motor output (CD)
+  pinMode(RESET_CD, OUTPUT);
+  pinMode(PWM_C, OUTPUT);
+  digitalWrite(RESET_CD, HIGH);
+  
 
-  // Setup for encoder input (AB)
-  pinMode(DRE, OUTPUT);
-  pinMode(DTE, OUTPUT);
-  digitalWrite(DRE, LOW);
-  digitalWrite(DTE, HIGH);
+  // Setup for encoder input
+  // (AB)
+  pinMode(DRE_A, OUTPUT);
+  pinMode(DTE_A, OUTPUT);
+  digitalWrite(DRE_A, LOW);
+  digitalWrite(DTE_A, HIGH);
+  
+  // (CD)
+  pinMode(DRE_C, OUTPUT);
+  pinMode(DTE_C, OUTPUT);
+  digitalWrite(DRE_C, LOW);
+  digitalWrite(DTE_C, HIGH);
   
   SPI.begin(); 
   SPI.setClockDivider(SPI_CLOCK_DIV8);
@@ -60,9 +78,10 @@ void setup()
   SPI.setDataMode(SPI_MODE2);
   
   // Setup for PID
-  input = readEncoderAB();
-  controller.SetMode(AUTOMATIC);
-  controller.SetOutputLimits(-100, 100);
+  input3 = readEncoderAB();
+  input4 = readEncoderCD();
+  controller3.SetMode(AUTOMATIC);
+  controller4.SetOutputLimits(-100, 100);
 }
 
 void loop()
@@ -75,6 +94,10 @@ void loop()
     {
       //Once message is started, read in all bytes
       char message[6];
+      ///////////
+      //May be a source of error in the future
+      //once the 
+      ///////////
       message[0] = Serial.read();
       message[1] = Serial.read();
       message[2] = Serial.read();
@@ -97,28 +120,63 @@ void loop()
            //bound check
            double angle = 10*(double)result;
            //final bound check
-           if (angle <= top && angle >= bottom)
+           if (angle <= top3 && angle >= bottom3)
            {
-             setpoint = angle;
+             setpoint3 = angle;
            }
            break;
         }
         //Perform some calculation to calculate angle from the message
         //Check bounds
       }
+      else if (message[0] == 14)
+      {
+        //Switch for the functions 
+        switch(message[1])
+        {
+         case  5: //set angle function
+           int result = 0;
+           for (int n = 0; n < 4 ;n++)
+           {
+             result = (result << 8) + message[2+n];
+           }
+           //bound check
+           double angle = 10*(double)result;
+           //final bound check
+           if (angle <= top4 && angle >= bottom4)
+           {
+             setpoint4 = angle;
+           }
+           break;
+        }
+      }
+      
     }
   }
   //Arm Specific
   //Test - try to see if angle is correct
-  input = readEncoderAB();
+  input3 = readEncoderAB();
+  input4 = readEncoderAB();
   //PID compututations
-  controller.Compute();
-  //Serial.println(output, 3);
-  setSpeedAB(output);
+  controller3.Compute();
+  controller4.Compute();
+  
+  setSpeedAB(output3);
+  setSpeedCD(output4);
   delay(10);
 }
 
 void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
+{
+  //  16000000 / (1 * 200 * 2 ) = 40 KHz
+  int duty_cycle = 2 * floor((99 * spd) / 201 + 50);  // Scaling from [-100, 100] to [1, 99] (i.e. converts speed to duty cycle)
+  TCCR1A = _BV (WGM10) | _BV (WGM11) | _BV (COM1B1);  // Phase Correct
+  TCCR1B = _BV (WGM13) | _BV (CS10);                  // Phase Correct / Prescale 1
+  OCR1A = 200;                                        // Sets Top to correspond to frequency 
+  OCR1B = duty_cycle;                                 // Sets duty cycle (duty cycle = 0CR1B/OCR1A)
+}
+
+void setSpeedCD(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
 {
   //  16000000 / (1 * 200 * 2 ) = 40 KHz
   int duty_cycle = 2 * floor((99 * spd) / 201 + 50);  // Scaling from [-100, 100] to [1, 99] (i.e. converts speed to duty cycle)
@@ -137,3 +195,11 @@ float readEncoderAB() // Returns encoder position in degrees.
   return ax;
 }
 
+float readEncoderCD() // Returns encoder position in degrees.
+{
+  byte dC = SPI.transfer(0x00);
+  byte dD = SPI.transfer(0x00);
+  int x= ((dC & 0x7F)<<6) | (dD>>2);
+  float ax = x*359.956/8191.000;
+  return ax;
+}
