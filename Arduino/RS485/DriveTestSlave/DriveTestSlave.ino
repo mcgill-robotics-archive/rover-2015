@@ -1,7 +1,7 @@
 #include <Servo.h>
 byte driveBoardAddress = 1;
 byte j;
-byte message[7];
+byte message[8];
 
 void setup() {
   pinMode(A5, OUTPUT);
@@ -20,10 +20,10 @@ void loop() {
   readMessage();
   
   //if this Board is the chosen one
-  if((message[0] = driveBoardAddress) || (message[0] = driveBoardAddress + 1)){
+  if((message[1] = driveBoardAddress) || (message[1] = driveBoardAddress + 1)){
     
     //If the message was correctly terminated
-    if (message[6] != 255){
+    if (message[7] != 255){
       processMessage(); 
     }
     
@@ -35,7 +35,7 @@ void loop() {
 }
 
 void readMessage(){
- for (int i=0;i<7;i++){         //read in data for each element of a
+ for (int i=0;i<8;i++){         //read in data for each element of a
      if(Serial1.available()==2) {  //wait until the buffer contains two bytes
      Serial.println("inside the if statement");
      j = Serial1.read();      //read the first byte (index)
@@ -47,28 +47,28 @@ void readMessage(){
 }
 
 void processMessage(){
-  if ((message[1] = 1) && (message[0] = driveBoardAddress))
+  if ((message[2] = 1) && (message[1] = driveBoardAddress))
     enableLeftMotor();
     
-  else if ((message[1] = 1) && (message[0] = driveBoardAddress + 1))
+  else if ((message[2] = 1) && (message[1] = driveBoardAddress + 1))
     enableRightMotor();
     
-  else if ((message[1] = 2) && (message[0] = driveBoardAddress))
+  else if ((message[2] = 2) && (message[1] = driveBoardAddress))
     disableLeftMotor();
     
-  else if ((message[1] = 2) && (message[0] = driveBoardAddress + 1))
+  else if ((message[2] = 2) && (message[1] = driveBoardAddress + 1))
     disableRightMotor();
     
-  else if ((message[1] = 3) && (message[0] = driveBoardAddress))
+  else if ((message[2] = 3) && (message[1] = driveBoardAddress))
     setLeftMotorSpeed();
     
-  else if ((message[1] = 3) && (message[0] = driveBoardAddress + 1))
+  else if ((message[2] = 3) && (message[1] = driveBoardAddress + 1))
     setRightMotorSpeed();
     
-  else if ((message[1] = 4) && (message[0] = driveBoardAddress))
+  else if ((message[2] = 4) && (message[1] = driveBoardAddress))
     leftMotorBrake();
     
-  else if ((message[1] = 4) && (message[0] = driveBoardAddress + 1))
+  else if ((message[2] = 4) && (message[1] = driveBoardAddress + 1))
     rightMotorBrake();  
     
   else{}
@@ -110,11 +110,11 @@ void rightMotorBrake(){
 }
 
 int decodeLongArgument(){
-  return message[5] + (message[4] << 8) + (message[3] << 16) + (message[2] << 24);
+  return message[6] + (message[5] << 8) + (message[4] << 16) + (message[3] << 24);
 }
 
 void waitForTermination(){
-  while (message[6] != 255){}
+  while (message[7] != 255){}
 }
 
 

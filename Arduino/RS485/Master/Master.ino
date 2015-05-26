@@ -1,14 +1,15 @@
-byte address = 1;
+byte initiation = 167;
+byte address = 0;
 byte function = 0;
 byte argumentLo = 0;
 byte argumentMid1 = 20;
 byte argumentMid2 = 0;
 byte argumentHi = 67;
 byte termination = 255;
-int messageComponents = 7;
+int messageComponents = 8;
 int state = 2;
 int last;
-byte message[]= {address, function, argumentLo, argumentMid1, argumentMid2, argumentHi, termination};     //Constructing the message
+byte message[]= {initiation, address, function, argumentLo, argumentMid1, argumentMid2, argumentHi, termination};     //Constructing the message
 
 /*
  * The main idea here is to encode/decode the messages we're going to be sending over 
@@ -86,13 +87,12 @@ void setRelayOff(byte address){
 
 //Construct Message
 void constructMessage (byte message[]){
-  setAddress(message[0]);
-  setFunction(message[1]);
-  setArgumentLo(message[2]);
-  setArgumentMid1(message[3]);
-  setArgumentMid2(message[4]);
-  setArgumentHi(message[5]);
-  setTermination();  
+  setAddress(message[1]);
+  setFunction(message[2]);
+  setArgumentLo(message[3]);
+  setArgumentMid1(message[4]);
+  setArgumentMid2(message[5]);
+  setArgumentHi(message[6]);
 }
 
 void setAddress (byte address){
@@ -117,10 +117,6 @@ void setArgumentMid2 (byte argumentMid2){
 
 void setArgumentHi (byte argumentHi){
   ::argumentHi = argumentHi;
-}
-
-void setTermination(){
-  ::termination = 255;
 }
 
 void sendLongArgument(int argument){
