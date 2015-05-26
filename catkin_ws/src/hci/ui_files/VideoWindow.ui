@@ -16,43 +16,40 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
+     <widget class="QLabel" name="camera2">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>camLeft</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="camera1">
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
       <property name="text">
-       <string>cam1</string>
+       <string>camMain</string>
       </property>
      </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="camera2">
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
-        </property>
-        <property name="text">
-         <string>cam2</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="camera3">
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
         <property name="text">
-         <string>cam3</string>
+         <string>camRight</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
    </layout>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>camera3</zorder>
-   <zorder>camera1</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
