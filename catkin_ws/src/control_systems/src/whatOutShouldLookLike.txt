@@ -1,0 +1,4 @@
+[INFO] [WallTime: 1432350040.666252] ROS Serial Python Node
+[INFO] [WallTime: 1432350040.676518] Connecting to /dev/ttyACM2 at 57600 baud
+[INFO] [WallTime: 1432350043.265163] Note: subscribe buffer size is 512 bytes
+[INFO] [WallTime: 1432350043.265802] Setup subscriber on toggle_led [std_msgs/Empty]
