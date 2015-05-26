@@ -66,6 +66,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.set_mode3)
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
+        QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
         
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
@@ -74,7 +75,7 @@ class CentralUi(QtGui.QMainWindow):
 
         self.ui.pushButton.clicked.connect(self.add_way_point)
         self.ui.pushButton_2.clicked.connect(self.clear_map)
-        self.ui.addMarkedWaypoint.clicked().connect(self.add_way_point_specfic)
+
 
         self.setup_minimap()
 
@@ -149,7 +150,7 @@ class CentralUi(QtGui.QMainWindow):
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
-    def add_way_point_specfic(self):
+    def addCoord(self):
         x = self.ui.x.value() - self.dx
         y = self.ui.y.value() - self.dy
         self.x_waypoints.append(x)
