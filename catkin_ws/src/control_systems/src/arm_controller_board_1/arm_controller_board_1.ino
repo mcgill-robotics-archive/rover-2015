@@ -14,6 +14,8 @@ double input;
 double setpoint;
 double output;
 
+double motorSpeed = 0;
+
 //Bounds on motor
 double top = 180;
 double bottom = 0;
@@ -62,27 +64,39 @@ void loop()
     if(Serial.read()==167)
     {
       //Once message is started, read in all bytes
-      char message[6];
+      char message[13];
       message[0] = Serial.read();
       message[1] = Serial.read();
       message[2] = Serial.read();
       message[3] = Serial.read();
       message[4] = Serial.read();
       message[5] = Serial.read();
+      message[6] = Serial.read();
+      message[7] = Serial.read();
+      message[8] = Serial.read();
+      message[9] = Serial.read();
+      message[10] = Serial.read();
+      message[11] = Serial.read();
+      message[12] = Serial.read();
       
+      
+      if (message[0] == 0 && message[2] == 1 &&
+          message[4] == 2 && message[6] == 3 &&
+          message[8] == 4 && message[10]== 5)
+      {
       //Check if address is for motor
-      if (message[0] == 12)
+      if (message[1] == 12)
       {
         //Switch for the functions 
-        switch(message[1])
+        switch(message[3])
         {
          case  5: //set angle function
            int result = 0;
            for (int n = 0; n < 4 ;n++)
            {
-             result = (result << 8) + message[2+n];
+             result = (result << 8) + message[5+2*n];
            }
-           //bound check
+           //Angle is 10 times the one passed in the message
            double angle = 10*(double)result;
            //final bound check
            if (angle <= top && angle >= bottom)
@@ -94,7 +108,22 @@ void loop()
         //Perform some calculation to calculate angle from the message
         //Check bounds
       }
-      else if 
+      else if (message[1] == 11)
+      {
+        switch(message[3])
+        {
+         case  3: //set speed function
+           int result = 0;
+           for (int n = 0; n < 4; n++)
+           {
+             result = (result << 8) + message[5+2*n];
+           }
+           //put
+           double motorSpeed = ((double)result - 5000.)/40.;
+           break;
+        }
+      }
+      }
     }
   }
   //Arm Specific
@@ -102,8 +131,8 @@ void loop()
   input = readEncoderAB();
   //PID compututations
   controller.Compute();
-  //Serial.println(output, 3);
   setSpeedAB(output);
+  setSpeedCD(motorSpeed);
   delay(10);
 }
 
@@ -117,6 +146,7 @@ void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (fu
   OCR1B = duty_cycle;                                 // Sets duty cycle (duty cycle = 0CR1B/OCR1A)
 }
 
+//Make sure 
 void setSpeedCD(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
 {
   //  16000000 / (1 * 200 * 2 ) = 40 KHz
