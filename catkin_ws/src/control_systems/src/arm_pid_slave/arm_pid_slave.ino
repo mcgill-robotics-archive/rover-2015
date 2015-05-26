@@ -2,38 +2,23 @@
 #include <ArduinoHardware.h>
 #include <SPI.h>
 #include <PID_v1.h>
-#define toDeg 57.2957795
 
 int PWM_A = 10;
 int RESET_AB = 8;
 int DTE = 7;
 int DRE = 9;
 
-//Declare ros node
-ros::NodeHandle nh;
-
 // Setup for PID
-//upper/elbow motor
-double inputU;
-double setpointU;
-double outputU; 
-PID controllerU(&inputU, &outputU, &setpointU, 1, 0, 0, DIRECT);
-//lower/shoulder/base motor
-double inputL;
-double setpointL;
-double outputL;
-PID controllerL(&inputL, &outputL, &setpointL, 1, 0, 0, DIRECT);
+//motor controller
+double input;
+double setpoint;
+double output;
 
+//Bounds on motor
+double top = 180;
+double bottom = 0;
 
-//Function gets the angle
-void get_angle(const control_systems::ArmAngles& msg)
-{
-  setpointL = toDeg * msg.shoulderElevation;
-  setpointU = toDeg * msg.elbow;
-  //Do an angle check!!!
-}
-
-ros::Subscriber<control_systems::ArmAngles> sub("/arm", &get_angle);
+PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
 
 void setup()
 {
@@ -41,6 +26,9 @@ void setup()
   Serial.begin(9600);
   Serial.setTimeout(50);
   while (!Serial){}
+  
+  //Set to zero
+  setpoint = 0;
 
   // Setup for motor output (AB)
   pinMode(RESET_AB, OUTPUT);
@@ -65,18 +53,51 @@ void setup()
 }
 
 void loop()
-{    
-nh.spinOnce();
-//  Serial.println(readEncoderAB(), 3);
-//  delay(10);
-
-//Test - try to see if angle is correct
-input = readEncoderAB();
-controller.Compute();
-//Serial.println(output, 3);
-setSpeedAB(output);
-delay(10);
-
+{
+  //Listen until message is passed
+  if (Serial.available())
+  {
+  if(Serial.read()==167)
+  {
+    //Once message is started, read bytes
+    char message[6];
+    Serial.readBytes(message,6);
+  /////
+  //NEED FINAL BOUND CHECK!!!!
+  /////
+  //Check if address is for motor
+  if (message[0] == 12)
+  {
+    //Switch for the functions 
+    switch(message[1])
+    {
+     case  5: //set angle
+       int result = 0;
+       for (int n = 0; n < 4;n++)
+       {
+         result = (result << 8) + message[2+n];
+       }
+       //bound check
+       
+       setpoint = (double)result;
+       break;
+       
+    }
+    //Perform some calculation to calculate angle from the message
+    
+    //Check bounds
+    
+  }
+  }
+  }
+  //Arm Specific
+  //Test - try to see if angle is correct
+  input = readEncoderAB();
+  //PID compututations
+  controller.Compute();
+  //Serial.println(output, 3);
+  setSpeedAB(output);
+  delay(10);
 }
 
 void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
@@ -88,8 +109,6 @@ void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (fu
   OCR1A = 200;                                        // Sets Top to correspond to frequency 
   OCR1B = duty_cycle;                                 // Sets duty cycle (duty cycle = 0CR1B/OCR1A)
 }
-
-void setSpeedCD(int spd){}
 
 float readEncoderAB() // Returns encoder position in degrees.
 {
