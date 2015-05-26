@@ -119,6 +119,7 @@ void setArgumentHi (byte argumentHiByte){
   argumentHi = argumentHiByte;
 }
 
+//puts a big argument in the 4 argument bytes
 void sendLongArgument(int argument){
   argumentHi = argument & 0b00000000000000000000000011111111;
   argumentMid2 = (argument & 0b00000000000000001111111100000000) >> 8;
