@@ -233,6 +233,9 @@ def translationalMotion(y, x):
     if abs(x) < zero and abs(y) < zero:
         # no velocity
         return stop()
+    elif abs(x) < zero:
+        # just forward/zero motion, so can use middle wheels as well
+        return steer(y, 0)
     # determines which side should get the diagonal
 
     sgnx = sign(x)
