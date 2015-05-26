@@ -12,6 +12,9 @@ a2 = rospy.get_param('control/ln_forearm', 0.5)
 # a3 is the length of the wrist (attached to glove)
 a3 = rospy.get_param('control/ln_wrist', 0.1)
 
+#To help avoid divisions by close to zero
+zero = 1e-10
+
 # bounds on forearm and upperarm angles
 forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
 forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
@@ -193,6 +196,10 @@ class ArmControlReader(object):
         v = (x-a,y-b)
         #normalize
         av = distance(v[0],v[1])
+        if abs(av) < zero:
+            #return nonsensical (working) value
+            #corner values will catch this
+            return (a,b)
         return (a+r*v[0]/av,b+r*v[1]/av)
 
     #Checks if value is inside curved region (see images)
