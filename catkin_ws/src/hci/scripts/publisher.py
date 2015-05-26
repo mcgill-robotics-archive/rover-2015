@@ -35,12 +35,16 @@ class Publisher(object):
         Publish base arm position
         """
         msg = ArmMotion()
-        msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
-        msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
-        msg.theta = angle
+        msg.theta = angle * 0.01
         msg.cartesian = cartesian
         msg.on = True
         msg.velocity = velocity
+        if velocity:
+            msg.y = armLength*0.05  # y axis on joystick moves the target point forward and back
+            msg.x = armHeight*0.05  # rotation of the joystick moves the target point up and down
+        else:
+            msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
+            msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
         self.arm_movement_pub.publish(msg)
     
     # publish end effector position
