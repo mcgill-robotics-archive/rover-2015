@@ -97,7 +97,7 @@ void loop()
              result = (result << 8) + message[5+2*n];
            }
            //Angle is 10 times the one passed in the message
-           double angle = 10*(double)result;
+           double angle = (double)result/10.;
            //final bound check
            if (angle <= top && angle >= bottom)
            {

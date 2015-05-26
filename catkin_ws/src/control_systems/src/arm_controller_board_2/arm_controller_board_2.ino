@@ -129,7 +129,7 @@ void loop()
              result = (result << 8) + message[5+2*n];
            }
            //bound check
-           double angle = 10*(double)result;
+           double angle = (double)result/10.;
            //final bound check
            if (angle <= top3 && angle >= bottom3)
            {
@@ -152,7 +152,7 @@ void loop()
              result = (result << 8) + message[5+2*n];
            }
            //bound check
-           double angle = 10*(double)result;
+           double angle = (double)result/10.;
            //final bound check
            if (angle <= top4 && angle >= bottom4)
            {
