@@ -1,7 +1,8 @@
 #!/usr/bin/python
-
+import rospy
 import pygame
 from pygame.locals import *
+from numpy import pi
 
 # a1 is the length of the upper arm (touches base)
 a1 = rospy.get_param('control/ln_upperarm', 0.5)
@@ -15,7 +16,7 @@ uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
 uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
 rotMin = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
-#wrist!
+#wrist
 wriMin = -pi/2 
 wriMax = pi/2
 
