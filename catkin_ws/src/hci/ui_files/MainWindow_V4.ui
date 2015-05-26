@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>907</width>
-    <height>659</height>
+    <height>669</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -219,7 +219,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <widget class="QFrame" name="OtherData">
         <property name="minimumSize">
@@ -325,11 +325,32 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="pointSteer">
-          <property name="text">
-           <string>Point steer ?</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="ackreman">
+            <property name="text">
+             <string>Ackreman</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="pointSteer">
+            <property name="text">
+             <string>Point steer ?</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="translatory">
+            <property name="text">
+             <string>Translatory</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -540,6 +561,8 @@
    </layout>
    <zorder></zorder>
    <zorder></zorder>
+   <zorder>translatory</zorder>
+   <zorder>ackreman</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
