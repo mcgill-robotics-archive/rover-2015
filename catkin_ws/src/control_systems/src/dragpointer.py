@@ -36,9 +36,10 @@ def main():
 			(msgx,msgy) = pygame.mouse.get_pos()
 			(x,y) = (2*(float(msgx)-20.)/maxX,2.-4*msgy/float(maxY))
 			print (x,y)
-		screen.fill((250,250,250))
+		background.fill((255,255,255,0))
 		pygame.draw.rect(background,(0,0,0),
 			pygame.Rect(msgx-5,msgy-5,10,10))
+		#screen.blit(background,(0,0),special_flags=(pygame.BLEND_RGBA_ADD))
 
 if __name__ == '__main__': 
 	main()
