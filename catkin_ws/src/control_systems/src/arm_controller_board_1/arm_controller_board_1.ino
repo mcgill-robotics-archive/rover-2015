@@ -18,6 +18,7 @@ double output;
 double top = 180;
 double bottom = 0;
 
+//PID is only for motor 2
 PID controller(&input, &output, &setpoint, 1, 0, 0, DIRECT);
 
 void setup()
@@ -93,6 +94,7 @@ void loop()
         //Perform some calculation to calculate angle from the message
         //Check bounds
       }
+      else if 
     }
   }
   //Arm Specific
@@ -106,6 +108,16 @@ void loop()
 }
 
 void setSpeedAB(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
+{
+  //  16000000 / (1 * 200 * 2 ) = 40 KHz
+  int duty_cycle = 2 * floor((99 * spd) / 201 + 50);  // Scaling from [-100, 100] to [1, 99] (i.e. converts speed to duty cycle)
+  TCCR1A = _BV (WGM10) | _BV (WGM11) | _BV (COM1B1);  // Phase Correct
+  TCCR1B = _BV (WGM13) | _BV (CS10);                  // Phase Correct / Prescale 1
+  OCR1A = 200;                                        // Sets Top to correspond to frequency 
+  OCR1B = duty_cycle;                                 // Sets duty cycle (duty cycle = 0CR1B/OCR1A)
+}
+
+void setSpeedCD(int spd) // Sets speed from -100 (full speed reverse) to 100 (full speed forward). 0 stops the motor.
 {
   //  16000000 / (1 * 200 * 2 ) = 40 KHz
   int duty_cycle = 2 * floor((99 * spd) / 201 + 50);  // Scaling from [-100, 100] to [1, 99] (i.e. converts speed to duty cycle)
