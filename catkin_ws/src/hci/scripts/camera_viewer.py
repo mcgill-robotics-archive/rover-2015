@@ -73,7 +73,7 @@ class CentralUi(QtGui.QMainWindow):
                 qimageBottom = QtGui.QImage.fromData(self.imageBottom.data)
                 imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
                 rotated = imageTop.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
-           finally:
+            finally:
                 pass
             self.ui.camera3.setPixmap(rotated)
         else:
