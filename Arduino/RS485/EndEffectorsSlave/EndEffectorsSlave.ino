@@ -1,8 +1,7 @@
 #include <Servo.h>
 byte boardAddress = 21;
 byte j;
-byte message[8];
-byte initiation;
+byte message[7];
 byte address;
 byte function;
 byte argumentLo;
@@ -25,7 +24,8 @@ void setup() {
 }
 
 void loop() {
-  readMessage();
+  if(Serial1.read() == 167)
+    readMessage();
   
   //if this Board is the chosen one
   if((address = boardAddress) || (address = boardAddress + 1)){
@@ -38,7 +38,7 @@ void loop() {
 }
 
 void readMessage(){
- for (int i=0;i<8;i++){         //read in data for each element of a
+ for (int i=0;i<messageComponents;i++){         //read in data for each element of a
      if(Serial1.available()==2) {  //wait until the buffer contains two bytes
      Serial.println("inside the if statement");
      j = Serial1.read();      //read the first byte (index)
@@ -47,15 +47,14 @@ void readMessage(){
      Serial.println(message[j]);  //tell arduino that item j was received
      }
    }
-  
-  ::initiation = message[0];
-  ::address = message[1];
-  ::function = message[2];
-  ::argumentLo = message[3];
-  ::argumentMid1 = message[4];
-  ::argumentMid2 = message[5];
-  ::argumentHi = message[6];
-  ::termination = message[7];
+   
+  address = message[0];
+  function = message[1];
+  argumentLo = message[2];
+  argumentMid1 = message[3];
+  argumentMid2 = message[4];
+  argumentHi = message[5];
+  termination = message[6];
 }
 
 void processMessage(){

@@ -6,10 +6,10 @@ byte argumentMid1 = 20;
 byte argumentMid2 = 0;
 byte argumentHi = 67;
 byte termination = 255;
-int messageComponents = 8;
+int messageComponents = 7;
 int state = 2;
 int last;
-byte message[]= {initiation, address, function, argumentLo, argumentMid1, argumentMid2, argumentHi, termination};     //Constructing the message
+byte message[]= {address, function, argumentLo, argumentMid1, argumentMid2, argumentHi, termination};     //Constructing the message
 
 /*
  * The main idea here is to encode/decode the messages we're going to be sending over 
@@ -32,11 +32,10 @@ void setup(){
 void loop(){
     Serial.println("System ON");
     Serial1.flush();
-    Serial1.write(byte(0));
-    Serial1.write(message[0]);
+    Serial1.write(initiation);
     delay(40);
     
-    for (int i=1; i<messageComponents; i++){
+    for (int i=0; i<messageComponents; i++){
      //while (Serial1.available()<2){
        Serial1.flush();
        Serial1.write(byte(i));
@@ -68,10 +67,11 @@ void motorBrake(byte address){
   setFunction(4);
 }
 
+//Sends the angle*10 for increased precision
 void setAngle(byte address, int angle){
   setAddress(address);
   setFunction(5);
-  sendLongArgument(angle);
+  sendLongArgument(angle*10);
 }
 
 void setRelayOn(byte address){
@@ -87,36 +87,36 @@ void setRelayOff(byte address){
 
 //Construct Message
 void constructMessage (byte message[]){
-  setAddress(message[1]);
-  setFunction(message[2]);
-  setArgumentLo(message[3]);
-  setArgumentMid1(message[4]);
-  setArgumentMid2(message[5]);
-  setArgumentHi(message[6]);
+  setAddress(message[0]);
+  setFunction(message[1]);
+  setArgumentLo(message[2]);
+  setArgumentMid1(message[3]);
+  setArgumentMid2(message[4]);
+  setArgumentHi(message[5]);
 }
 
-void setAddress (byte address){
-  ::address = address;
+void setAddress (byte addressByte){
+  address = addressByte;
 }
 
-void setFunction (byte function){
-  ::function = function;
+void setFunction (byte functionByte){
+  function = functionByte;
 }
 
-void setArgumentLo (byte argumentLo){
-  ::argumentLo = argumentLo;
+void setArgumentLo (byte argumentLoByte){
+  argumentLo = argumentLoByte;
 }
 
-void setArgumentMid1 (byte argumentMid1){
-  ::argumentMid1 = argumentMid1;
+void setArgumentMid1 (byte argumentMid1Byte){
+  argumentMid1 = argumentMid1Byte;
 }
 
-void setArgumentMid2 (byte argumentMid2){
-  ::argumentMid2 = argumentMid2;
+void setArgumentMid2 (byte argumentMid2Byte){
+  argumentMid2 = argumentMid2Byte;
 }
 
-void setArgumentHi (byte argumentHi){
-  ::argumentHi = argumentHi;
+void setArgumentHi (byte argumentHiByte){
+  argumentHi = argumentHiByte;
 }
 
 void sendLongArgument(int argument){
