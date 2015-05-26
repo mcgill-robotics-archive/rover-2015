@@ -149,8 +149,8 @@ class ArmControlReader(object):
             
             self.angles.elbow = finalAngles[1]
             self.angles.shoulderElevation = finalAngles[0]
-        else: 
-            print "Error"
+
+        
         self.angles.shoulderOrientation = self.settings.theta
 
         #Calculate wrist angle after testing
