@@ -30,11 +30,12 @@ class CentralUi(QtGui.QMainWindow):
         self.publisher = Publisher()
         self.modeId = 0
         self.grip = 0
+        self.ui.arm_mode.setCurrentIndex(1)
 
         # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []
 
-        #signal quality timer
+        # signal quality timer
         self.quality_timer = QtCore.QTimer()
         QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"),self.get_signal_quality)
         self.quality_timer.start(1000)
