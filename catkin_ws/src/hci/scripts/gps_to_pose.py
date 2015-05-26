@@ -9,7 +9,7 @@ def handle_pose(msg):
     pose = Pose()
     pose.position.x = msg.latitude
     pose.position.y = msg.longitude
-
+    pose.orientation.z = msg.heading
     pub.publish(pose)
 
 rospy.init_node('gpsToPose', anonymous=True)

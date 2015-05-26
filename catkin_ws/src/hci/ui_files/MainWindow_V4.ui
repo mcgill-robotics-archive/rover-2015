@@ -14,9 +14,9 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_7">
+   <layout class="QHBoxLayout" name="horizontalLayout_8">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_5">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QLabel" name="MinimapLabel">
         <property name="text">
@@ -43,7 +43,77 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QSpinBox" name="x"/>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="y"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addMarkedWaypoint">
+          <property name="text">
+           <string>Add Waypoint</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="GraphicsLayoutWidget" name="graphicsView"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Current position</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>X</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="xActual">
+          <property name="text">
+           <string>0.00</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="yActual">
+          <property name="text">
+           <string>0.00</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>Heading</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="headingActual">
+          <property name="text">
+           <string>0.00</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
@@ -514,6 +584,16 @@
    </layout>
    <zorder></zorder>
    <zorder></zorder>
+   <zorder>x</zorder>
+   <zorder>y</zorder>
+   <zorder>addMarkedWaypoint</zorder>
+   <zorder>label</zorder>
+   <zorder>label_12</zorder>
+   <zorder>xActual</zorder>
+   <zorder>yActual</zorder>
+   <zorder>label_15</zorder>
+   <zorder>headingActual</zorder>
+   <zorder>label_17</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -521,7 +601,7 @@
      <x>0</x>
      <y>0</y>
      <width>907</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

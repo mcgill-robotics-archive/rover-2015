@@ -74,6 +74,7 @@ class CentralUi(QtGui.QMainWindow):
 
         self.ui.pushButton.clicked.connect(self.add_way_point)
         self.ui.pushButton_2.clicked.connect(self.clear_map)
+        self.ui.addMarkedWaypoint.clicked().connect(self.add_way_point_specfic)
 
         self.setup_minimap()
 
@@ -132,6 +133,9 @@ class CentralUi(QtGui.QMainWindow):
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
+            self.ui.xActual.setValue(pose.position.x)
+            self.ui.yActual.setValue(pose.position.y)
+            self.ui.headingActual.setValue(pose.orientation.z)
             self.new_x = [pose.position.x - self.dx]
             self.new_y = [pose.position.y - self.dy]
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
@@ -140,8 +144,17 @@ class CentralUi(QtGui.QMainWindow):
 
     def add_way_point(self):
         self.x_waypoints.append(self.new_x[0])
-        self.y_waypoints.append(self.new_x[0])
+        self.y_waypoints.append(self.new_y[0])
         self.s1.addPoints([self.new_x[0]], [self.new_y[0]], size=10, symbol='t', brush='b')
+        if self.ui.zoomGraph.isChecked():
+            self.w1.autoRange()
+
+    def add_way_point_specfic(self):
+        x = self.ui.x.value() - self.dx
+        y = self.ui.y.value() - self.dy
+        self.x_waypoints.append(x)
+        self.y_waypoints.append(y)
+        self.s1.addPoints([x], [y], size=10, symbol='t', brush='b')
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 

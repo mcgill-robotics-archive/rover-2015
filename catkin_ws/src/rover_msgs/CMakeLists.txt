@@ -50,7 +50,6 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    GPS.msg
-   GPS2.msg
    Imu.msg
    RoverSpeed.msg
    Tachometers.msg
