@@ -57,38 +57,43 @@ void loop()
   //Listen until message is passed
   if (Serial.available())
   {
-  if(Serial.read()==167)
-  {
-    //Once message is started, read bytes
-    char message[6];
-    Serial.readBytes(message,6);
-  /////
-  //NEED FINAL BOUND CHECK!!!!
-  /////
-  //Check if address is for motor
-  if (message[0] == 12)
-  {
-    //Switch for the functions 
-    switch(message[1])
+    //Check a message
+    if(Serial.read()==167)
     {
-     case  5: //set angle
-       int result = 0;
-       for (int n = 0; n < 4;n++)
-       {
-         result = (result << 8) + message[2+n];
-       }
-       //bound check
-       
-       setpoint = (double)result;
-       break;
-       
+      //Once message is started, read in all bytes
+      char message[6];
+      message[0] = Serial.read();
+      message[1] = Serial.read();
+      message[2] = Serial.read();
+      message[3] = Serial.read();
+      message[4] = Serial.read();
+      message[5] = Serial.read();
+      
+      //Check if address is for motor
+      if (message[0] == 12)
+      {
+        //Switch for the functions 
+        switch(message[1])
+        {
+         case  5: //set angle function
+           int result = 0;
+           for (int n = 0; n < 4 ;n++)
+           {
+             result = (result << 8) + message[2+n];
+           }
+           //bound check
+           double angle = 10*(double)result;
+           //final bound check
+           if (angle <= top && angle >= bottom)
+           {
+             setpoint = angle;
+           }
+           break;
+        }
+        //Perform some calculation to calculate angle from the message
+        //Check bounds
+      }
     }
-    //Perform some calculation to calculate angle from the message
-    
-    //Check bounds
-    
-  }
-  }
   }
   //Arm Specific
   //Test - try to see if angle is correct
