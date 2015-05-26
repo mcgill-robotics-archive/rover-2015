@@ -70,9 +70,6 @@ class CentralUi(QtGui.QMainWindow):
         
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
-        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
-
         self.ui.pushButton.clicked.connect(self.add_way_point)
         self.ui.pushButton_2.clicked.connect(self.clear_map)
 
