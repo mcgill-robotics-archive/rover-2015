@@ -52,20 +52,20 @@ class CentralUi(QtGui.QMainWindow):
                 qimageMain = QtGui.QImage.fromData(self.imageMain.data)
                 imageMain = QtGui.QPixmap.fromImage(qimageMain)
 
+                if self.ui.rot0.isChecked():
+                    self.ui.camera1.setPixmap(imageMain)
+                elif self.ui.rot90.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+                elif self.ui.rot180.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+                elif self.ui.rot270.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+
             finally:
                 pass
-            if self.ui.rot0.isChecked():
-                self.ui.camera1.setPixmap(imageMain)
-            elif self.ui.rot90.isChecked():
-                rotated = imageMain.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
-                self.ui.camera2.setPixmap(rotated)
-            elif self.ui.rot180.isChecked():
-                rotated = imageMain.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
-                self.ui.camera2.setPixmap(rotated)
-            elif self.ui.rot270.isChecked():
-                rotated = imageMain.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
-                self.ui.camera2.setPixmap(rotated)
-
         else:
             self.ui.camera1.setText("no video feed")
 
@@ -94,7 +94,7 @@ class CentralUi(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         self.getimageTopic()
-        rospy.Subscriber("/main/compressed", CompressedImage, self.receiveimageMain)
+        rospy.Subscriber("/left/image_mono/compressed", CompressedImage, self.receiveimageMain)
         rospy.Subscriber("/left/image_mono/compressed", CompressedImage, self.receiveimageTop)
         rospy.Subscriber("/right/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
