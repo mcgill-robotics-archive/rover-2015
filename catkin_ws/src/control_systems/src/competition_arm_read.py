@@ -271,29 +271,42 @@ class ArmControlReader(object):
         if (y < self.rightCorner[1] and\
             ((ddistance(self.ob[0],(x,y)))<=self.ob[1])):
             return False
-
+        
         #Concludes geometry tests!
         return True
+
+    def convToWindow(self,(x,y)):
+        newx = self.winMaxX*x/1.
+        newy = self.winMaxY*(1.-y)/2.
+        return (int(newx),int(newy))
  
     def run(self):
         r = rospy.Rate(400)
         # continue until quit
+        radiusConversion = distance(self.winMaxX,self.winMaxY)/distance(a1,a2)
         while not rospy.is_shutdown():
             self.update_window_control()
             self.background.fill((255,255,255,0))
             #Print actual point
             #(x,y) = (1.*(float(self.winX))/self.winMaxX,
             #    1.-2*self.winY/float(self.winMaxY))
-            x = self.winMaxX*self.settings.x/1.
-            y = self.winMaxY*(1.-self.settings.y)/2.
+            (x,y) = self.convToWindow((self.settings.x,self.settings.y))
             pygame.draw.rect(self.background,(0,0,0),
-            pygame.Rect(int(x),int(y),10,10))
+            pygame.Rect(x,y,10,10))
+            #Draw circle bounds
+            #circle(Surface, color, pos, radius)
+            #[(0,0), distance(*self.topCorner)]
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.it[0]),int(radiusConversion * self.it[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ib[0]),int(radiusConversion * self.ib[1])/5,2)
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
             if verbose:
                 rospy.loginfo(self.angles)  # next iteration
         r.sleep()
+
 
 #distance between points
 def ddistance((x1,y1),(x2,y2)):
