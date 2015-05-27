@@ -16,10 +16,13 @@ import rospy  # to export parameters
 # prrv: port rear wheel rotation velocity
 # srrv: starboard rear wheel rotation velocity
 
+diff_offset = rospy.get_param("control/differential_offset", 0)
+
 # distance between wheels of: front and middle/middle and rear[m]
 D = rospy.get_param('control/wh_distance_fr', 0.5)
 # distance between longitudinal axis and port/startboard wheels[m]
-B = rospy.get_param('control/wh_base', 0.4)
+B = rospy.get_param('control/wh_base', 0.4) + diff_offset
+mid_wh_offset = rospy.get_param('control/middle_wh_offset', 0.1)
 
 R = rospy.get_param('control/wh_radius', 0.165)  # wheel radius [m]
 W = rospy.get_param('control/wh_width', 0.15)  # wheel width [m]
@@ -34,11 +37,11 @@ zero = 1e-10  # Offers protection against numbers very close to zero
 rhoMin = B + W / 2
 
 
-def angleMod(n):
+def angle_mod(n):
     return divmod(n, 2 * math.pi)[1]
 
 
-def maxMag(numbers):
+def max_mag(numbers):
     greatest = 0
     for x in numbers:
         if abs(x) > abs(greatest):
@@ -119,7 +122,6 @@ def steer(vBody, wBody):
         prrv = pfrv
         srrv = pfrv
 
-
     else:  # moving forward at an angle
         # impose a limit on this
         movement = True
@@ -136,10 +138,12 @@ def steer(vBody, wBody):
         # distance from ICR to side changes depending on side of ICR
         rp = rho + sgnw * B
         rs = rho - sgnw * B
+        dist_mid_port = rho + sgnw * (B + mid_wh_offset)
+        dist_mid_star = rho - sgnw * (B + mid_wh_offset)
 
         # Simple trig to get angle to each wheel
-        pfsa = math.atan(D / (rp))
-        sfsa = math.atan(D / (rs))
+        pfsa = math.atan(D / rp)
+        sfsa = math.atan(D / rs)
 
         # incorporate the correct direction of the angular
         # displacement of the wheels
@@ -163,9 +167,10 @@ def steer(vBody, wBody):
         # the individual velocities of each of the wheels
         pfrv = vpLin / R
         sfrv = vsLin / R
-        # notice the middle wheels have different distance to ICR
-        pmrv = sgnv * rp * wBody / R
-        smrv = sgnv * rs * wBody / R
+        # notice the middle wheels have different distance to ICR center of rotation
+        pmrv = sgnv * dist_mid_port * wBody / R
+        smrv = sgnv * dist_mid_star * wBody / R
+
         prrv = pfrv
         srrv = sfrv
 
@@ -292,7 +297,7 @@ def swerve(settings, time, wBody, vBody, heading, rotation):
     # rotation is the cumulative angle of rotation of the rover from the start
 
     # Safety:
-    heading = angleMod(heading)
+    heading = angle_mod(heading)
 
     # first, calculate the previous wBody (can be found from any wheel)
     # easiest from middle wheels (requires them to be spinning)
@@ -304,7 +309,7 @@ def swerve(settings, time, wBody, vBody, heading, rotation):
     wBodyOld = settings.speedML * R / B
 
     # find the new rotation of the rover - also get the modulus of it
-    newRotation = angleMod(rotation + wBodyOld * time)
+    newRotation = angle_mod(rotation + wBodyOld * time)
 
     if abs(vBody) < zero and abs(wBody) < zero:
         return (stop(), newRotation)
@@ -317,7 +322,7 @@ def swerve(settings, time, wBody, vBody, heading, rotation):
     vry = B * wBody
     # beta is angle between axis perpindicular to forward direction of
     # rover, and heading
-    psi = angleMod(newRotation + math.pi / 2)
+    psi = angle_mod(newRotation + math.pi / 2)
     beta = 0
     if psi > heading:
         beta = psi - heading
@@ -335,10 +340,10 @@ def swerve(settings, time, wBody, vBody, heading, rotation):
     vFL = math.sqrt(vFLx ** 2 + vFLy ** 2) / R
 
     ##########################################
-    ##The following would seem to also block
-    ##the rover wheels from turning a full 360
-    ##although this may need to be updated
-    ##later for smoother travel
+    # The following would seem to also block
+    # the rover wheels from turning a full 360
+    # although this may need to be updated
+    # later for smoother travel
     ##########################################
     thetaFL = math.atan(vFLx / vFLy)
     # FR wheel

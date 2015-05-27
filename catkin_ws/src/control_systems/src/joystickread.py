@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  convert linear,angular speed to wheel settings
 import rospy  # for reading and publishing to topics
-from mappingsteer import steer, pointTurn, translationalMotion, swerve, maxMag
+from mappingsteer import steer, pointTurn, translationalMotion, swerve, max_mag
 from geometry_msgs.msg import Twist  # type of joystick input
 # type of wheel setting output
 from control_systems.msg import SetPoints, Moving, MotionType
@@ -137,7 +137,7 @@ class DualJoystickReader(object):
                 time_passed = clock() - self.clock.data
                 self.clock.data = clock()
                 (output, self.rotation) = swerve(self.settings, time_passed, spin,
-                                                 maxMag(self.altValue), heading, self.rotation)
+                                                 max_mag(self.altValue), heading, self.rotation)
 
         #  [a-z]ckermann steering
         else:
