@@ -122,7 +122,6 @@ class ArmControlReader(object):
             (self.winX,self.winY) = pygame.mouse.get_pos()
             (x,y) = (1.*(float(self.winX))/self.winMaxX,
                 1.-2*self.winY/float(self.winMaxY))
-            print (x,y)
             self.winMessage.x = x
             self.winMessage.y = y
             #try to update settings
@@ -202,11 +201,12 @@ class ArmControlReader(object):
             self.settings.theta = rotMax
         else:
             self.settings.theta = rotMin
-        #whether need to snap to bounds or not
-        getAngles=(0,0)
-        try: #If points are reachable
-            if (distance(ot[1])<distance(msg.x,msg.y)):
-                getAngles = possibleAngles(msg.x,msg.y)
+        
+        #make sure point can be reached
+        if zero >= a1+a2 >= distance(msg.x,msg.y) and\
+           msg.x > 0:#quick bound check
+            #Following function should not throw an error in this case.
+            getAngles = possibleAngles(self.settings.x,self.settings.y)
             if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
                 #Select final angle set
                 finalAngles = getAngles[1]
@@ -217,6 +217,7 @@ class ArmControlReader(object):
                 self.angles.elbow = finalAngles[1]
                 self.angles.shoulderElevation = finalAngles[0]
             else:
+                #Need to find closest point...
                 #If not within bounds, we will
                 #find the closest point within bounds!
                 #This has been optimized using Mathematica and monte carlo
@@ -237,21 +238,7 @@ class ArmControlReader(object):
                 #masterPoints.append(points)
                 self.settings.x = s[1][0]
                 self.settings.y = s[1][1]
-                #get arm angles
 
-                getAngles = possibleAngles(self.settings.x,self.settings.y)
-                #If not in range, pick other
-                if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
-                    #Select final angle set
-                    finalAngles = getAngles[1]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-                elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
-                    finalAngles=getAngles[0]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-        finally: pass
-            
 
         self.angles.shoulderOrientation = self.settings.theta
 
