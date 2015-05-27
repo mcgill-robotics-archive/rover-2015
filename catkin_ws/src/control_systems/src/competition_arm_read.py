@@ -96,6 +96,12 @@ class ArmControlReader(object):
         self.leftCorner  = (a1*cos(uppMax)+a2*cos(uppMax-forMax),
                             a1*sin(uppMax)+a2*sin(uppMax-forMax))
 
+        #safe value to start
+        self.settings.x = self.topCorner[0]
+        self.settings.y = self.topCorner[1]
+        self.winMessage.x = self.topCorner[0]
+        self.winMessage.y = self.topCorner[1]
+
         #Circles used to speed up boundary detection
         #Defined as (centre)=(a,b), radius=r, miny, maxy
         #o-outer,i-inner, t-top,b-bottom circle
@@ -110,6 +116,10 @@ class ArmControlReader(object):
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(*self.bottomCorner)]
+
+        
+        #update to safe
+        self.update_settings(self.winMessage)
 
     def update_window_control(self):
         for event in pygame.event.get():
@@ -316,11 +326,6 @@ class ArmControlReader(object):
             pygame.draw.rect(self.background,(0,0,0),
             pygame.Rect(x-5,y-5,10,10))
             #Draw circle bounds
-            #circle(Surface, color, pos, radius)
-            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2)
-            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
-            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.it[0]),int(radiusConversion * self.it[1])/5,2)
-            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ib[0]),int(radiusConversion * self.ib[1])/5,2)
             pygame.draw.ellipse(self.background,(0,0,0),
                 pygame.Rect(otx-1*int(self.winMaxX*self.ot[1]/2.),
                             oty-1*int(self.winMaxY*self.ot[1]/2.),
