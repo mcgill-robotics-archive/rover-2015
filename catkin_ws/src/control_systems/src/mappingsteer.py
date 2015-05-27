@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 import math  # for trig functions
-from control_systems.msg import SetPoints
+
 import rospy  # to export parameters
+
 # rho:  radius of the rover around ICR
 # sfsa: starboard front wheel steering angle
 # pfsa: port front wheel steering angle
-# pmsa: starboard middle wheel steering angle 
+# pmsa: starboard middle wheel steering angle
 # smsa: port middle wheel steering angle
 # srsa: starboard rear wheel steering angle
 # prsa: port rear wheel steering angle
