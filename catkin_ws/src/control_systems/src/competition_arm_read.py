@@ -36,8 +36,8 @@ class ArmControlReader(object):
         # initiate node
         rospy.init_node('arm_reader')
         #Start pygame module
-        self.winMaxX = 500
-        self.winMaxY = 500
+        self.winMaxX = 1000
+        self.winMaxY = 1000
         self.winX = 0
         self.winY = 0
         self.winMessage = ArmMotion()
@@ -49,7 +49,7 @@ class ArmControlReader(object):
         self.winMessage.cartesian = False
         pygame.init()
         #initialize the screen
-        self.screen = pygame.display.set_mode((self.winMaxX,self.winMaxY))
+        self.screen = pygame.display.set_mode((self.winMaxX/2,self.winMaxY))
         pygame.display.set_caption('Arm Control')
         #fill the background
         self.background = pygame.Surface(self.screen.get_size())
@@ -120,12 +120,13 @@ class ArmControlReader(object):
         #update position of box
         if pygame.mouse.get_pressed()[0]:
             (self.winX,self.winY) = pygame.mouse.get_pos()
-            (x,y) = (1.*(float(self.winX))/self.winMaxX,
+            (x,y) = (2.*(float(self.winX))/self.winMaxX,
                 1.-2*self.winY/float(self.winMaxY))
             self.winMessage.x = x
             self.winMessage.y = y
             #try to update settings
             self.update_settings(self.winMessage)
+            print (x,y)
 
     def update_settings(self, msg):
         # import readings into object
@@ -294,7 +295,7 @@ class ArmControlReader(object):
         return True
 
     def convToWindow(self,(x,y)):
-        newx = self.winMaxX*x/1.
+        newx = self.winMaxX*x/2.
         newy = self.winMaxY*(1.-y)/2.
         return (int(newx),int(newy))
  
@@ -313,11 +314,11 @@ class ArmControlReader(object):
             pygame.Rect(x,y,10,10))
             #Draw circle bounds
             #circle(Surface, color, pos, radius)
-            #[(0,0), distance(*self.topCorner)]
-            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.it[0]),int(radiusConversion * self.it[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ib[0]),int(radiusConversion * self.ib[1])/5,2)
+            pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2) 
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
