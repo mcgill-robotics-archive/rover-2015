@@ -202,9 +202,27 @@ class ArmControlReader(object):
         else:
             self.settings.theta = rotMin
         
+        outOfBounds = True
         #make sure point can be reached
         if zero >= a1+a2 >= distance(msg.x,msg.y) and\
-           msg.x > 0:#quick bound check
+           msg.x > 0:
+           #Following function should not throw an error in this case.
+            getAngles = possibleAngles(self.settings.x,self.settings.y)
+            if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+                #Select final angle set
+                finalAngles = getAngles[1]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+            elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+                finalAngles=getAngles[0]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+
+        if outOfBounds:
+            #quick bound check
+           print "Out of bounds" 
             #Following function should not throw an error in this case.
             getAngles = possibleAngles(self.settings.x,self.settings.y)
             if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
