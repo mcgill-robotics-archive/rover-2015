@@ -244,6 +244,9 @@ class ArmControlReader(object):
             #masterPoints.append(points)
             self.settings.x = s[1][0]
             self.settings.y = s[1][1]
+        else:
+            self.settings.x = msg.x
+            self.settings.y = msg.y
 
 
         self.angles.shoulderOrientation = self.settings.theta
