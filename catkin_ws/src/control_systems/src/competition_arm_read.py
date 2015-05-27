@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import rospy
+import pygame
+from pygame.locals import *
 from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
@@ -32,8 +35,21 @@ class ArmControlReader(object):
     def __init__(self):
         # initiate node
         rospy.init_node('arm_reader')
+        #Start pygame module
+        self.winMaxX = 500
+        self.winMaxY = 500
+        self.winX = 0
+        self.winY = 0
+        pygame.init()
+        #initialize the screen
+        self.screen = pygame.display.set_mode((maxX,maxY))
+        pygame.display.set_caption('Arm Control')
+        #fill the background
+        self.background = pygame.Surface(self.screen.get_size())
+
         # publish arm settings to this topic
-        self.pubArm = rospy.Publisher('/arm', ArmAngles, queue_size=10, latch=10)
+        self.pubArm = rospy.Publisher('/arm', ArmAngles, queue_size=10, 
+                                      latch=10)
         # settings to be read in
         self.settings = ArmMotion()
         # set values to off
@@ -150,7 +166,7 @@ class ArmControlReader(object):
             self.angles.elbow = finalAngles[1]
             self.angles.shoulderElevation = finalAngles[0]
 
-        
+
         self.angles.shoulderOrientation = self.settings.theta
 
         #Calculate wrist angle after testing
