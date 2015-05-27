@@ -122,7 +122,6 @@ class ArmControlReader(object):
             (self.winX,self.winY) = pygame.mouse.get_pos()
             (x,y) = (1.*(float(self.winX))/self.winMaxX,
                 1.-2*self.winY/float(self.winMaxY))
-            print (x,y)
             self.winMessage.x = x
             self.winMessage.y = y
             #try to update settings
@@ -146,6 +145,7 @@ class ArmControlReader(object):
             msg.theta += self.settings.theta
 
         #Do a check if inside bounds.
+        """
         if self.withinBounds((msg.x,msg.y)):
             self.settings.x=msg.x
             self.settings.y=msg.y
@@ -192,6 +192,61 @@ class ArmControlReader(object):
             
             self.angles.elbow = finalAngles[1]
             self.angles.shoulderElevation = finalAngles[0]
+        """
+        #go to closest orientation value
+        if rotMin<=msg.theta<=rotMax:
+            self.settings.theta = msg.theta
+        #else, go to closest
+        elif abs(msg.theta-rotMax)<=abs(msg.theta-rotMin):
+            self.settings.theta = rotMax
+        else:
+            self.settings.theta = rotMin
+        
+        outOfBounds = True
+        #make sure point can be reached
+        if a1+a2 >= distance(msg.x,msg.y) >= zero and\
+           msg.x > 0:
+           #Following function should not throw an error in this case.
+            getAngles = possibleAngles(self.settings.x,self.settings.y)
+            if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+                #Select final angle set
+                finalAngles = getAngles[1]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+            elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+                finalAngles=getAngles[0]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+
+        if outOfBounds:
+            #quick bound check
+            print "Out of bounds" 
+            #Need to find closest point...
+            #If not within bounds, we will
+            #find the closest point within bounds!
+            #This has been optimized using Mathematica and monte carlo
+            points = self.circlePoints((msg.x,msg.y))
+            #Corners may also be extremum
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            points.append(self.leftCorner)
+            #print points[:2]
+            #Find the nearest valid point
+            s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
+            for i in points[1:]:
+                tmp = ddistance(i,(msg.x,msg.y))
+                if tmp < s[0]:
+                    s = [tmp,i]
+            #This is the closest valid point to the requested
+            #masterPoints.append(points)
+            self.settings.x = s[1][0]
+            self.settings.y = s[1][1]
+        else:
+            self.settings.x = msg.x
+            self.settings.y = msg.y
 
 
         self.angles.shoulderOrientation = self.settings.theta
