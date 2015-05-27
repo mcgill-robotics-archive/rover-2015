@@ -40,12 +40,24 @@ class ArmControlReader(object):
         self.winMaxY = 500
         self.winX = 0
         self.winY = 0
+        self.winMessage = ArmMotion()
+        self.winMessage.x = 0
+        self.winMessage.y = 0
+        self.winMessage.theta = 0
+        self.winMessage.phi = 0
+        self.winMessage.on = False
+        self.winMessage.cartesian = False
         pygame.init()
         #initialize the screen
-        self.screen = pygame.display.set_mode((maxX,maxY))
+        self.screen = pygame.display.set_mode((self.winMaxX,self.winMaxY))
         pygame.display.set_caption('Arm Control')
         #fill the background
         self.background = pygame.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((250,250,250))
+        # Blit everything to the screen
+        self.screen.blit(self.background,(0, 0))
+        pygame.display.flip()
 
         # publish arm settings to this topic
         self.pubArm = rospy.Publisher('/arm', ArmAngles, queue_size=10, 
@@ -99,6 +111,23 @@ class ArmControlReader(object):
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(*self.bottomCorner)]
         print self.ot[1]
+
+    def update_window_control(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return
+        self.screen.blit(self.background, (0, 0))
+        pygame.display.flip()
+        #update position of box
+        if pygame.mouse.get_pressed()[0]:
+            (self.winX,self.winY) = pygame.mouse.get_pos()
+            (x,y) = (2*(float(self.winX)-20.)/self.winMaxX,
+                2.-4*self.winY/float(self.winMaxY))
+            print (x,y)
+            self.winMessage.x = x
+            self.winMessage.y = y
+            #try to update settings
+            self.update_settings(self.winMessage)
 
     def update_settings(self, msg):
         # import readings into object
@@ -249,9 +278,14 @@ class ArmControlReader(object):
         return True
    
     def run(self):
-        r = rospy.Rate(60)
+        r = rospy.Rate(400)
         # continue until quit
         while not rospy.is_shutdown():
+            self.update_window_control()
+            self.background.fill((255,255,255,0))
+            #Print actual point
+            pygame.draw.rect(self.background,(0,0,0),
+            pygame.Rect(self.settings.x-5,self.settings.y-5,10,10))
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
