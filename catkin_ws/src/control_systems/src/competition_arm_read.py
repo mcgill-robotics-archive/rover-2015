@@ -299,7 +299,7 @@ class ArmControlReader(object):
         return (int(newx),int(newy))
  
     def run(self):
-        r = rospy.Rate(60)
+        r = rospy.Rate(10)
         # continue until quit
         radiusConversion = distance(self.winMaxX,self.winMaxY)/distance(a1,a2)
         while not rospy.is_shutdown():
