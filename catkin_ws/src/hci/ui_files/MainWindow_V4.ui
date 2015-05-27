@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>907</width>
-    <height>659</height>
+    <height>669</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,21 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>X</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QSpinBox" name="x"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QSpinBox" name="y"/>
@@ -73,6 +87,13 @@
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="label_12">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>X</string>
           </property>
@@ -80,6 +101,11 @@
         </item>
         <item>
          <widget class="QLabel" name="xActual">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0.00</string>
           </property>
@@ -87,6 +113,13 @@
         </item>
         <item>
          <widget class="QLabel" name="label_15">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Y</string>
           </property>
@@ -94,6 +127,11 @@
         </item>
         <item>
          <widget class="QLabel" name="yActual">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0.00</string>
           </property>
@@ -101,6 +139,13 @@
         </item>
         <item>
          <widget class="QLabel" name="label_17">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Heading</string>
           </property>
@@ -108,162 +153,73 @@
         </item>
         <item>
          <widget class="QLabel" name="headingActual">
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0.00</string>
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Main Screen</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QComboBox" name="Camera1Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Main Screen</string>
+            </property>
+           </widget>
           </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
+          <item row="1" column="0">
+           <widget class="QComboBox" name="Camera1Feed">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>26</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Front Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Left Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Right Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back Hazcam</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Arm</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Pan/Tilt</string>
+             </property>
+            </item>
+           </widget>
           </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="Camera2Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QComboBox" name="Camera3Feed">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>26</height>
-           </size>
-          </property>
-          <item>
-           <property name="text">
-            <string>Front Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Back Hazcam</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Arm</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pan/Tilt</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Top Screen</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Bottom Screen</string>
-          </property>
-         </widget>
+         </layout>
         </item>
        </layout>
       </item>
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <widget class="QFrame" name="OtherData">
         <property name="minimumSize">
@@ -369,11 +325,32 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="pointSteer">
-          <property name="text">
-           <string>Point steer ?</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="ackreman">
+            <property name="text">
+             <string>Ackreman</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="pointSteer">
+            <property name="text">
+             <string>Point steer ?</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="translatory">
+            <property name="text">
+             <string>Translatory</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -584,16 +561,8 @@
    </layout>
    <zorder></zorder>
    <zorder></zorder>
-   <zorder>x</zorder>
-   <zorder>y</zorder>
-   <zorder>addMarkedWaypoint</zorder>
-   <zorder>label</zorder>
-   <zorder>label_12</zorder>
-   <zorder>xActual</zorder>
-   <zorder>yActual</zorder>
-   <zorder>label_15</zorder>
-   <zorder>headingActual</zorder>
-   <zorder>label_17</zorder>
+   <zorder>translatory</zorder>
+   <zorder>ackreman</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -601,7 +570,7 @@
      <x>0</x>
      <y>0</y>
      <width>907</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

@@ -30,11 +30,12 @@ class CentralUi(QtGui.QMainWindow):
         self.publisher = Publisher()
         self.modeId = 0
         self.grip = 0
+        self.ui.arm_mode.setCurrentIndex(1)
 
         # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []
 
-        #signal quality timer
+        # signal quality timer
         self.quality_timer = QtCore.QTimer()
         QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"),self.get_signal_quality)
         self.quality_timer.start(1000)
@@ -66,15 +67,14 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.set_mode3)
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
+        QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
+        QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
+        QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
         
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        QtCore.QObject.connect(self.ui.Camera2Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed2Index)
-        QtCore.QObject.connect(self.ui.Camera3Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed3Index)
-
         self.ui.pushButton.clicked.connect(self.add_way_point)
         self.ui.pushButton_2.clicked.connect(self.clear_map)
-        self.ui.addMarkedWaypoint.clicked().connect(self.add_way_point_specfic)
 
         self.setup_minimap()
 
@@ -149,7 +149,7 @@ class CentralUi(QtGui.QMainWindow):
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
-    def add_way_point_specfic(self):
+    def addCoord(self):
         x = self.ui.x.value() - self.dx
         y = self.ui.y.value() - self.dy
         self.x_waypoints.append(x)
@@ -177,7 +177,16 @@ class CentralUi(QtGui.QMainWindow):
         self.ui.sig_qual.setText("%s ms"%result)
 
     def set_point_steer(self, boolean):
-        self.publisher.setSteerMode(boolean)
+        if boolean:
+            self.publisher.setSteerMode(0)
+
+    def set_ackreman(self, boolean):
+        if boolean:
+            self.publisher.setSteerMode(1)
+
+    def set_translatory(self, boolean):
+        if boolean:
+            self.publisher.setSteerMode(2)
 
     def set_controller_timer(self):
         if self.controller.controller is not None:
@@ -210,6 +219,10 @@ class CentralUi(QtGui.QMainWindow):
             self.toggle_coordinate()
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
+        if self.profile.param_value["/joystick/translatory"]:
+            self.ui.translatory.setChecked(not self.ui.translatory.isChecked())
+        if self.profile.param_value["/joystick/ackreman"]:
+            self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
         elif self.profile.param_value["/joystick/arm_base_mode"]:

@@ -61,9 +61,10 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageTop = QtGui.QImage.fromData(self.imageTop.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
+                rotated = imageTop.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
                 pass
-            self.ui.camera2.setPixmap(imageTop)
+            self.ui.camera2.setPixmap(rotated)
         else:
             self.ui.camera2.setText("no video feed")
 
@@ -71,9 +72,10 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageBottom = QtGui.QImage.fromData(self.imageBottom.data)
                 imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
+                rotated = imageTop.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
                 pass
-            self.ui.camera3.setPixmap(imageBottom)
+            self.ui.camera3.setPixmap(rotated)
         else:
             self.ui.camera3.setText("no video feed")
 
@@ -81,8 +83,8 @@ class CentralUi(QtGui.QMainWindow):
         rospy.init_node('camera_viewer', anonymous=True)
         self.getimageTopic()
         rospy.Subscriber("/main/compressed", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber("top/compressed", CompressedImage, self.receiveimageTop)
-        rospy.Subscriber("/bottom/compressed", CompressedImage, self.receiveimageBottom)
+        rospy.Subscriber("/left/image_mono/compressed", CompressedImage, self.receiveimageTop)
+        rospy.Subscriber("/right/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
     def getimageTopic(self):
         self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))

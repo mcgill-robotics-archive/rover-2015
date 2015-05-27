@@ -35,12 +35,16 @@ class Publisher(object):
         Publish base arm position
         """
         msg = ArmMotion()
-        msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
-        msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
-        msg.theta = angle
+        msg.theta = angle * 0.01
         msg.cartesian = cartesian
         msg.on = True
         msg.velocity = velocity
+        if velocity:
+            msg.y = armLength*0.01  # y axis on joystick moves the target point forward and back
+            msg.x = armHeight*0.01  # rotation of the joystick moves the target point up and down
+        else:
+            msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
+            msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
         self.arm_movement_pub.publish(msg)
     
     # publish end effector position
@@ -60,16 +64,21 @@ class Publisher(object):
         self.cam_pub.publish(msg)
 
     # publish steering mode
-    def setSteerMode(self, boolean):
+    def setSteerMode(self, type):
         motionType = MotionType()
-        
-        motionType.TRANSLATORY = 0
+
         motionType.SWERVE = 0
-        if boolean:
+        if type == 0:
             motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 0
             motionType.POINT = 1
-        else:
+        elif type == 1:
             motionType.ACKERMANN = 1
+            motionType.TRANSLATORY = 0
+            motionType.POINT = 0
+        elif type == 2:
+            motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 1
             motionType.POINT = 0
 
         self.motionTypePublisher.publish(motionType)

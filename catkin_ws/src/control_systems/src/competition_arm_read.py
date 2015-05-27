@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import rospy
+import pygame
+from pygame.locals import *
 from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
@@ -11,6 +14,9 @@ a1 = rospy.get_param('control/ln_upperarm', 0.5)
 a2 = rospy.get_param('control/ln_forearm', 0.5)
 # a3 is the length of the wrist (attached to glove)
 a3 = rospy.get_param('control/ln_wrist', 0.1)
+
+#To help avoid divisions by close to zero
+zero = 1e-10
 
 # bounds on forearm and upperarm angles
 forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
@@ -29,8 +35,33 @@ class ArmControlReader(object):
     def __init__(self):
         # initiate node
         rospy.init_node('arm_reader')
+        #Start pygame module
+        self.winMaxX = 500
+        self.winMaxY = 500
+        self.winX = 0
+        self.winY = 0
+        self.winMessage = ArmMotion()
+        self.winMessage.x = 0
+        self.winMessage.y = 0
+        self.winMessage.theta = 0
+        self.winMessage.phi = 0
+        self.winMessage.on = False
+        self.winMessage.cartesian = False
+        pygame.init()
+        #initialize the screen
+        self.screen = pygame.display.set_mode((self.winMaxX,self.winMaxY))
+        pygame.display.set_caption('Arm Control')
+        #fill the background
+        self.background = pygame.Surface(self.screen.get_size())
+        self.background = self.background.convert()
+        self.background.fill((250,250,250))
+        # Blit everything to the screen
+        self.screen.blit(self.background,(0, 0))
+        pygame.display.flip()
+
         # publish arm settings to this topic
-        self.pubArm = rospy.Publisher('/arm', ArmAngles, queue_size=10, latch=10)
+        self.pubArm = rospy.Publisher('/arm', ArmAngles, queue_size=10, 
+                                      latch=10)
         # settings to be read in
         self.settings = ArmMotion()
         # set values to off
@@ -79,7 +110,23 @@ class ArmControlReader(object):
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(*self.bottomCorner)]
-        print self.ot[1]
+
+    def update_window_control(self):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return
+        self.screen.blit(self.background, (0, 0))
+        pygame.display.flip()
+        #update position of box
+        if pygame.mouse.get_pressed()[0]:
+            (self.winX,self.winY) = pygame.mouse.get_pos()
+            (x,y) = (1.*(float(self.winX))/self.winMaxX,
+                1.-2*self.winY/float(self.winMaxY))
+            print (x,y)
+            self.winMessage.x = x
+            self.winMessage.y = y
+            #try to update settings
+            self.update_settings(self.winMessage)
 
     def update_settings(self, msg):
         # import readings into object
@@ -132,7 +179,6 @@ class ArmControlReader(object):
             self.settings.theta = rotMax
         else:
             self.settings.theta = rotMin
-
         #get arm angles
         getAngles = possibleAngles(self.settings.x,self.settings.y)
         #If not in range, pick other
@@ -146,8 +192,8 @@ class ArmControlReader(object):
             
             self.angles.elbow = finalAngles[1]
             self.angles.shoulderElevation = finalAngles[0]
-        else: 
-            print "Error"
+
+
         self.angles.shoulderOrientation = self.settings.theta
 
         #Calculate wrist angle after testing
@@ -193,6 +239,10 @@ class ArmControlReader(object):
         v = (x-a,y-b)
         #normalize
         av = distance(v[0],v[1])
+        if abs(av) < zero:
+            #return nonsensical (working) value
+            #corner values will catch this
+            return (a,b)
         return (a+r*v[0]/av,b+r*v[1]/av)
 
     #Checks if value is inside curved region (see images)
@@ -221,20 +271,42 @@ class ArmControlReader(object):
         if (y < self.rightCorner[1] and\
             ((ddistance(self.ob[0],(x,y)))<=self.ob[1])):
             return False
-
+        
         #Concludes geometry tests!
         return True
-   
+
+    def convToWindow(self,(x,y)):
+        newx = self.winMaxX*x/1.
+        newy = self.winMaxY*(1.-y)/2.
+        return (int(newx),int(newy))
+ 
     def run(self):
-        r = rospy.Rate(60)
+        r = rospy.Rate(400)
         # continue until quit
+        radiusConversion = distance(self.winMaxX,self.winMaxY)/distance(a1,a2)
         while not rospy.is_shutdown():
+            self.update_window_control()
+            self.background.fill((255,255,255,0))
+            #Print actual point
+            #(x,y) = (1.*(float(self.winX))/self.winMaxX,
+            #    1.-2*self.winY/float(self.winMaxY))
+            (x,y) = self.convToWindow((self.settings.x,self.settings.y))
+            pygame.draw.rect(self.background,(0,0,0),
+            pygame.Rect(x,y,10,10))
+            #Draw circle bounds
+            #circle(Surface, color, pos, radius)
+            #[(0,0), distance(*self.topCorner)]
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.it[0]),int(radiusConversion * self.it[1])/5,2)
+            #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ib[0]),int(radiusConversion * self.ib[1])/5,2)
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
             if verbose:
                 rospy.loginfo(self.angles)  # next iteration
         r.sleep()
+
 
 #distance between points
 def ddistance((x1,y1),(x2,y2)):

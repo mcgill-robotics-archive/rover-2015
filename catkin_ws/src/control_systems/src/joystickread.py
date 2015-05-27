@@ -36,7 +36,6 @@ class DualJoystickReader(object):
         # note that this is only used for swerve - it resets upon
         # resetting swerve
 
-
         # self.motion.data = 0
         rospy.init_node('joystick_reader')  # Name of this node
 

@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  rover_msgs
 )
 
 find_package(Eigen REQUIRED)
@@ -92,7 +93,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES state_estimation
-  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf 
+  CATKIN_DEPENDS cmake_modules geometry_msgs message_generation nav_msgs roscpp rospy sensor_msgs std_msgs tf rover_msgs
 #  DEPENDS system_lib
 )
 
