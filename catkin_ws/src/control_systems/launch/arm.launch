@@ -1,0 +1,3 @@
+<launch>
+	<node name="arm_reader" pkg="control_systems" type="competition_arm_read.py" respawn="false" output="screen"/>
+</launch>

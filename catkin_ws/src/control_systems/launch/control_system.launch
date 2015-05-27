@@ -1,8 +1,0 @@
-<launch>
-<arg name="differential" />
-
-	<rosparam command="load" file="$(find control_systems)/params.yaml"/>
-	<rosparam if="$(arg differential)" param="control/differential_offse"> 0.1016</rosparam>
-	<node name="arm_reader" pkg="control_systems" type="competition_arm_read.py" 	respawn="false" output="screen"/>
-	<node name="steering" pkg="control_systems" type="joystickread.py" respawn="false" output="screen"/> 
-</launch>
