@@ -341,8 +341,7 @@ class ArmControlReader(object):
                 pygame.Rect(ibx-1*int(self.winMaxX*self.ib[1]/2.),
                             iby-1*int(self.winMaxY*self.ib[1]/2.),
                             2*int(self.winMaxX*self.ib[1]/2.),
-                            2*int(self.winMaxY*self.ib[1]/2.)),2)            
-            print (otx,oty)
+                            2*int(self.winMaxY*self.ib[1]/2.)),2)
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
