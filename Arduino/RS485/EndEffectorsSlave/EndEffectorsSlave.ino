@@ -1,5 +1,5 @@
 #include <Servo.h>
-byte boardAddress = 1;
+byte boardAddress = 21;
 byte j;
 byte message[7];
 byte address;
@@ -59,68 +59,83 @@ void readMessage(){
 
 void processMessage(){
   if ((function = 1) && (address = boardAddress))
-    enableLeftMotor();
+    enableClaw();
     
   else if ((function = 1) && (address = boardAddress + 1))
-    enableRightMotor();
+    enableScienceEnclosure();
     
   else if ((function = 2) && (address = boardAddress))
-    disableLeftMotor();
+    disableClaw();
     
   else if ((function = 2) && (address = boardAddress + 1))
-    disableRightMotor();
+    disableScienceEnclosure();
     
   else if ((function = 3) && (address = boardAddress))
-    setLeftMotorSpeed();
+    setClawSpeed();
     
   else if ((function = 3) && (address = boardAddress + 1))
-    setRightMotorSpeed();
+    setScienceEnclosureSpeed();
     
   else if ((function = 4) && (address = boardAddress))
-    leftMotorBrake();
+    clawBrake();
     
   else if ((function = 4) && (address = boardAddress + 1))
-    rightMotorBrake();  
+    scienceEnclosureBrake();
+    
+  else if ((function = 5) && (address = boardAddress))
+    setClawAngle;
+    
+  else if ((function = 5) && (address = boardAddress + 1))
+    setScienceEnclosureAngle;
     
   else{}
 }
 
-void enableLeftMotor(){
+void enableClaw(){
   //insert enable motor code here
 }
 
-void enableRightMotor(){
+void enableScienceEnclosure(){
   //insert enable motor code here
 }
 
-void disableLeftMotor(){
+void disableClaw(){
   //insert disable motor code here
 }
 
-void disableRightMotor(){
+void disableScienceEnclosure(){
   //insert disable motor code here
 }
 
 //5000 is 0 speed, 9000 is max forward and 1000 is max backward
-void setLeftMotorSpeed (){
+void setClawSpeed(){
   int speed = decodeLongArgument();
   //insert code for setting speed here
 }
 
-void setRightMotorSpeed (){
+void setScienceEnclosureSpeed(){
   int speed = decodeLongArgument();
   //insert code for setting speed here
 }
 
-void leftMotorBrake(){
+void clawBrake(){
   //insert code to brake motors here
 }
 
-void rightMotorBrake(){
+void scienceEnclosureBrake(){
   //insert code to brake motors here
+}
+
+void setClawAngle(){
+  int angle = decodeLongArgument();
+  //insert claw angle adjustment code here
+}
+
+void setScienceEnclosureAngle(){
+  int angle = decodeLongArgument();
+  //insert science enclosure angle adjustment code here
 }
 
 int decodeLongArgument(){
   return argumentHi + (argumentMid2 << 8) + (argumentMid1 << 16) + (argumentLo << 24);
 }
-

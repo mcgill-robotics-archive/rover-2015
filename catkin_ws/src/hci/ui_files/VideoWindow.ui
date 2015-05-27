@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>747</width>
-    <height>577</height>
+    <height>584</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QLabel" name="camera2">
       <property name="frameShape">
@@ -26,28 +26,90 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="camera1">
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="text">
-       <string>camMain</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="camera3">
+       <widget class="QLabel" name="camera1">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>510</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
         <property name="text">
-         <string>camRight</string>
+         <string>camMain</string>
         </property>
        </widget>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QRadioButton" name="rot0">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rot90">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>90</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rot180">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>180</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rot270">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>270</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="camera3">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string>camRight</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
