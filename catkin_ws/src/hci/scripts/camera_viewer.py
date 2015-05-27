@@ -51,9 +51,21 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageMain = QtGui.QImage.fromData(self.imageMain.data)
                 imageMain = QtGui.QPixmap.fromImage(qimageMain)
+
             finally:
                 pass
-            self.ui.camera1.setPixmap(imageMain)
+            if self.ui.rot0.isChecked():
+                self.ui.camera1.setPixmap(imageMain)
+            elif self.ui.rot90.isChecked():
+                rotated = imageMain.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                self.ui.camera2.setPixmap(rotated)
+            elif self.ui.rot180.isChecked():
+                rotated = imageMain.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
+                self.ui.camera2.setPixmap(rotated)
+            elif self.ui.rot270.isChecked():
+                rotated = imageMain.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
+                self.ui.camera2.setPixmap(rotated)
+
         else:
             self.ui.camera1.setText("no video feed")
 
@@ -72,7 +84,7 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageBottom = QtGui.QImage.fromData(self.imageBottom.data)
                 imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
-                rotated = imageTop.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = imageBottom.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
                 pass
             self.ui.camera3.setPixmap(rotated)
