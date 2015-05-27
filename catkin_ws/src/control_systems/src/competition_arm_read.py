@@ -110,7 +110,6 @@ class ArmControlReader(object):
         self.ob = [(a1*cos(uppMin),a1*sin(uppMin)), a2]
         self.it = [(a1*cos(uppMax),a1*sin(uppMax)), a2]
         self.ib = [(0,0), distance(*self.bottomCorner)]
-        print self.ot[1]
 
     def update_window_control(self):
         for event in pygame.event.get():
@@ -121,8 +120,8 @@ class ArmControlReader(object):
         #update position of box
         if pygame.mouse.get_pressed()[0]:
             (self.winX,self.winY) = pygame.mouse.get_pos()
-            (x,y) = (2*(float(self.winX)-20.)/self.winMaxX,
-                2.-4*self.winY/float(self.winMaxY))
+            (x,y) = (1.*(float(self.winX))/self.winMaxX,
+                1.-2*self.winY/float(self.winMaxY))
             print (x,y)
             self.winMessage.x = x
             self.winMessage.y = y
@@ -180,7 +179,6 @@ class ArmControlReader(object):
             self.settings.theta = rotMax
         else:
             self.settings.theta = rotMin
-
         #get arm angles
         getAngles = possibleAngles(self.settings.x,self.settings.y)
         #If not in range, pick other
@@ -276,7 +274,7 @@ class ArmControlReader(object):
 
         #Concludes geometry tests!
         return True
-   
+ 
     def run(self):
         r = rospy.Rate(400)
         # continue until quit
@@ -284,8 +282,12 @@ class ArmControlReader(object):
             self.update_window_control()
             self.background.fill((255,255,255,0))
             #Print actual point
+            #(x,y) = (1.*(float(self.winX))/self.winMaxX,
+            #    1.-2*self.winY/float(self.winMaxY))
+            x = self.winMaxX*self.settings.x/1.
+            y = self.winMaxY*(1.-self.settings.y)/2.
             pygame.draw.rect(self.background,(0,0,0),
-            pygame.Rect(self.settings.x-5,self.settings.y-5,10,10))
+            pygame.Rect(int(x),int(y),10,10))
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
