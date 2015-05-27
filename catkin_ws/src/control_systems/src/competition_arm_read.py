@@ -302,7 +302,11 @@ class ArmControlReader(object):
     def run(self):
         r = rospy.Rate(10)
         # continue until quit
-        radiusConversion = distance(self.winMaxX,self.winMaxY)/distance(a1,a2)
+        #radiusConversion = distance(self.winMaxX,self.winMaxY)/distance(a1,a2)
+        (otx,oty) = self.convToWindow(self.ot[0])
+        (obx,oby) = self.convToWindow(self.ob[0])
+        (itx,ity) = self.convToWindow(self.it[0])
+        (ibx,iby) = self.convToWindow(self.ib[0])
         while not rospy.is_shutdown():
             self.update_window_control()
             self.background.fill((255,255,255,0))
@@ -311,14 +315,34 @@ class ArmControlReader(object):
             #    1.-2*self.winY/float(self.winMaxY))
             (x,y) = self.convToWindow((self.settings.x,self.settings.y))
             pygame.draw.rect(self.background,(0,0,0),
-            pygame.Rect(x,y,10,10))
+            pygame.Rect(x-5,y-5,10,10))
             #Draw circle bounds
             #circle(Surface, color, pos, radius)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ot[0]),int(radiusConversion * self.ot[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.it[0]),int(radiusConversion * self.it[1])/5,2)
             #pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ib[0]),int(radiusConversion * self.ib[1])/5,2)
-            pygame.draw.circle(self.background,(0,0,0),self.convToWindow(self.ob[0]),int(radiusConversion * self.ob[1])/5,2) 
+            pygame.draw.ellipse(self.background,(0,0,0),
+                pygame.Rect(otx-1*int(self.winMaxX*self.ot[1]/2.),
+                            oty-1*int(self.winMaxY*self.ot[1]/2.),
+                            2*int(self.winMaxX*self.ot[1]/2.),
+                            2*int(self.winMaxY*self.ot[1]/2.)),2) 
+            pygame.draw.ellipse(self.background,(0,0,0),
+                pygame.Rect(obx-1*int(self.winMaxX*self.ob[1]/2.),
+                            oby-1*int(self.winMaxY*self.ob[1]/2.),
+                            2*int(self.winMaxX*self.ob[1]/2.),
+                            2*int(self.winMaxY*self.ob[1]/2.)),2)   
+            pygame.draw.ellipse(self.background,(0,0,0),
+                pygame.Rect(itx-1*int(self.winMaxX*self.it[1]/2.),
+                            ity-1*int(self.winMaxY*self.it[1]/2.),
+                            2*int(self.winMaxX*self.it[1]/2.),
+                            2*int(self.winMaxY*self.it[1]/2.)),2)             
+            pygame.draw.ellipse(self.background,(0,0,0),
+                pygame.Rect(ibx-1*int(self.winMaxX*self.ib[1]/2.),
+                            iby-1*int(self.winMaxY*self.ib[1]/2.),
+                            2*int(self.winMaxX*self.ib[1]/2.),
+                            2*int(self.winMaxY*self.ib[1]/2.)),2)            
+            print (otx,oty)
             # publish to topic
             self.pubArm.publish(self.angles)
             verbose = rospy.get_param("~verbose", False)
