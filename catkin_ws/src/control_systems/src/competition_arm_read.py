@@ -126,7 +126,6 @@ class ArmControlReader(object):
             self.winMessage.y = y
             #try to update settings
             self.update_settings(self.winMessage)
-            print (x,y)
 
     def update_settings(self, msg):
         # import readings into object
