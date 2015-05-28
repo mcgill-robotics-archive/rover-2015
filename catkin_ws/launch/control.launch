@@ -1,0 +1,4 @@
+<launch>
+	<include find="$<find hci)/launch/hci.launch" />
+	<include find="$<find control_systems)/launch/arm.launch" />
+</launch>
