@@ -315,14 +315,28 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
-         <widget class="QCheckBox" name="zoomGraph">
-          <property name="text">
-           <string>Zoom graph</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QCheckBox" name="zoomGraph">
+            <property name="text">
+             <string>Zoom graph</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ackMoving">
+            <property name="text">
+             <string>Ackreman Moving</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -561,8 +575,6 @@
    </layout>
    <zorder></zorder>
    <zorder></zorder>
-   <zorder>translatory</zorder>
-   <zorder>ackreman</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
