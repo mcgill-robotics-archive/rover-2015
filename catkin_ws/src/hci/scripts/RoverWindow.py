@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow_V4.ui'
 #
-# Created: Tue May 26 12:54:58 2015
+# Created: Wed May 27 22:50:45 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -165,10 +165,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.OtherData)
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
+        self.verticalLayout_5 = QtGui.QVBoxLayout()
+        self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
         self.zoomGraph = QtGui.QCheckBox(self.centralwidget)
         self.zoomGraph.setChecked(True)
         self.zoomGraph.setObjectName(_fromUtf8("zoomGraph"))
-        self.horizontalLayout_6.addWidget(self.zoomGraph)
+        self.verticalLayout_5.addWidget(self.zoomGraph)
+        self.ackMoving = QtGui.QCheckBox(self.centralwidget)
+        self.ackMoving.setChecked(True)
+        self.ackMoving.setObjectName(_fromUtf8("ackMoving"))
+        self.verticalLayout_5.addWidget(self.ackMoving)
+        self.horizontalLayout_6.addLayout(self.verticalLayout_5)
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.ackreman = QtGui.QRadioButton(self.centralwidget)
@@ -316,6 +323,7 @@ class Ui_MainWindow(object):
         self.Camera1Feed.setItemText(4, _translate("MainWindow", "Arm", None))
         self.Camera1Feed.setItemText(5, _translate("MainWindow", "Pan/Tilt", None))
         self.zoomGraph.setText(_translate("MainWindow", "Zoom graph", None))
+        self.ackMoving.setText(_translate("MainWindow", "Ackreman Moving", None))
         self.ackreman.setText(_translate("MainWindow", "Ackreman", None))
         self.pointSteer.setText(_translate("MainWindow", "Point steer ?", None))
         self.translatory.setText(_translate("MainWindow", "Translatory", None))

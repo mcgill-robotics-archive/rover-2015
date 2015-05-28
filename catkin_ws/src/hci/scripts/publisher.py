@@ -2,6 +2,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector
+from std_msgs.msg import Bool
 
 
 class Publisher(object):
@@ -17,17 +18,21 @@ class Publisher(object):
                                                    EndEffector, queue_size=10)
         self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic", "cmd_motion"),
                                                    MotionType, queue_size=10)
+        self.moving_bool_pub = rospy.Publisher("is_moving", Bool, queue_size=10)
 
     # publisher for velocity
-    def publish_velocity(self, a1, a2):
+    def publish_velocity(self, a1, a2, on):
         """
         Publish linear and angular command velocity in twist for control systems
         """
         msg = Twist()
         msg.linear.x = a2*3
         msg.angular.z = a1*3
+        bool = Bool()
+        bool.data = on
 
         self.vel_pub.publish(msg)
+        self.moving_bool_pub.publish(bool)
 
     # publish 2 main joystick axes for arm base movement (mode must be arm)
     def publish_arm_base_movement(self, armLength, armHeight, angle, cartesian=False, velocity=False):

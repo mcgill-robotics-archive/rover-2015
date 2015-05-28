@@ -37,7 +37,7 @@ class CentralUi(QtGui.QMainWindow):
 
         # signal quality timer
         self.quality_timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"),self.get_signal_quality)
+        QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"), self.get_signal_quality)
         self.quality_timer.start(1000)
         
         # map place holders
@@ -223,6 +223,8 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.translatory.setChecked(not self.ui.translatory.isChecked())
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
+        if self.profile.param_value["/joystick/ackreman_moving"]:
+            self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
         elif self.profile.param_value["/joystick/arm_base_mode"]:
@@ -241,7 +243,7 @@ class CentralUi(QtGui.QMainWindow):
     def publish_controls(self):
         if self.modeId == 0:
             # drive mode
-            self.publisher.publish_velocity(self.controller.a1, -self.controller.a2)
+            self.publisher.publish_velocity(self.controller.a1, -self.controller.a2, self.ui.ackMoving.isChecked())
 
         elif self.modeId == 1:
             # arm base mode
