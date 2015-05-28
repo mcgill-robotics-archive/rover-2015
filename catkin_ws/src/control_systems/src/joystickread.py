@@ -95,7 +95,6 @@ class DualJoystickReader(object):
             time_passed = clock() - self.clock.data
             self.clock.data = clock()
             self.rotation += self.value[1] * time_passed
-
         # swerve drive :)
         elif self.motion.SWERVE:
             # value from other joystick is the spin
@@ -155,7 +154,7 @@ class DualJoystickReader(object):
 
         elif self.motion.SKID:
             output = skid_steer(self.value[0],self.value[1])
-        #  [a-z]ckermann steering
+            #[a-z]ckermann steering
         else:
             output = steer(self.value[0], self.value[1])
             # Find new rotation of the rover
