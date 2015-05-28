@@ -9,11 +9,11 @@ from control_systems.msg import ArmMotion, ArmAngles
 from numpy import random
 
 # a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm', 0.5)
+a1 = rospy.get_param('control/ln_upperarm', 0.77)
 # a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm', 0.5)
+a2 = rospy.get_param('control/ln_forearm', 0.23)
 # a3 is the length of the wrist (attached to glove)
-a3 = rospy.get_param('control/ln_wrist', 0.1)
+a3 = rospy.get_param('control/ln_wrist', 0.23)
 
 #To help avoid divisions by close to zero
 zero = 1e-10
