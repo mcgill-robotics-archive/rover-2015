@@ -167,63 +167,57 @@ class ArmControlReader(object):
         #Whether entered point is out of bounds or not (assumed it is until 
         #proven innocent)
         outOfBounds = True
-        try:
-            #make sure point can be reached
-            if a1+a2 >= distance(msg.x,msg.y) >= zero and msg.x>0:
-               #Following function should not throw an error in this case.
-                getAngles = possibleAngles(msg.x,msg.y)
-                if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
-                    #Select final angle set
-                    finalAngles = getAngles[1]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-                    outOfBounds = False
-                elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
-                    finalAngles=getAngles[0]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-                    outOfBounds = False
-        except Exception:
-            print "Error!"
+        #make sure point can be reached
+        if a1+a2 >= distance(msg.x,msg.y) >= abs(a1-a2) and msg.x>0:
+           #Following function should not throw an error in this case.
+            getAngles = possibleAngles(msg.x,msg.y)
+            if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+                #Select final angle set
+                finalAngles = getAngles[1]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+            elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+                finalAngles=getAngles[0]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
 
         if outOfBounds:
-            try:
-                #quick bound check
-                #Need to find closest point...
-                #If not within bounds, we will
-                #find the closest point within bounds!
-                #This has been optimized using Mathematica and monte carlo
-                points = self.circlePoints((msg.x,msg.y))
-                #Corners may also be extremum
-                points.append(self.topCorner)
-                points.append(self.rightCorner)
-                points.append(self.bottomCorner)
-                points.append(self.leftCorner)
-                #print points[:2]
-                #Find the nearest valid point
-                s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
-                for i in points[1:]:
-                    tmp = ddistance(i,(msg.x,msg.y))
-                    if tmp < s[0]:
-                        s = [tmp,i]
-                #This is the closest valid point to the requested
-                #masterPoints.append(points)
-                self.settings.x = s[1][0]          
-                self.settings.y = s[1][1]
-                getAngles = possibleAngles(self.settings.x,self.settings.y)
-                if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
-                    #Select final angle set
-                    finalAngles = getAngles[1]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-                    outOfBounds = False
-                elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
-                    finalAngles=getAngles[0]
-                    self.angles.elbow = finalAngles[1]
-                    self.angles.shoulderElevation = finalAngles[0]
-                    outOfBounds = False
-            except Exception:
-                print "Error!"
+            #quick bound check
+            #Need to find closest point...
+            #If not within bounds, we will
+            #find the closest point within bounds!
+            #This has been optimized using Mathematica and monte carlo
+            points = self.circlePoints((msg.x,msg.y))
+            #Corners may also be extremum
+            points.append(self.topCorner)
+            points.append(self.rightCorner)
+            points.append(self.bottomCorner)
+            points.append(self.leftCorner)
+            #print points[:2]
+            #Find the nearest valid point
+            s = [ddistance(points[0],(msg.x,msg.y)),points[0]]
+            for i in points[1:]:
+                tmp = ddistance(i,(msg.x,msg.y))
+                if tmp < s[0]:
+                    s = [tmp,i]
+            #This is the closest valid point to the requested
+            #masterPoints.append(points)
+            self.settings.x = s[1][0]          
+            self.settings.y = s[1][1]
+            getAngles = possibleAngles(self.settings.x,self.settings.y)
+            if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
+                #Select final angle set
+                finalAngles = getAngles[1]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
+            elif self.anglesOkay(getAngles[0][0],getAngles[0][1]):
+                finalAngles=getAngles[0]
+                self.angles.elbow = finalAngles[1]
+                self.angles.shoulderElevation = finalAngles[0]
+                outOfBounds = False
         else:
             self.settings.x = msg.x
             self.settings.y = msg.y
