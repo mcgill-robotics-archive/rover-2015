@@ -52,6 +52,7 @@ class DualJoystickReader(object):
         # whether or not wheels should be moving
         self.pubmovement = rospy.Publisher('/movement', Moving, queue_size=10,
                                            latch=True)
+
         # Subscribe to the topic "/cmd_vel", and print out output to function
         rospy.Subscriber('/cmd_vel', Twist, self.update_value_settings,
                          queue_size=10)
@@ -152,6 +153,8 @@ class DualJoystickReader(object):
                 (output, self.rotation) = swerve(self.settings, time_passed, spin,
                                                  max_mag(self.altValue), heading, self.rotation)
 
+        elif self.motion.SKID:
+            output = skid_steer(self.value[0],self.value[1])
         #  [a-z]ckermann steering
         else:
             output = steer(self.value[0], self.value[1])
