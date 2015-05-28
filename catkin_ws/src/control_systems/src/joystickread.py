@@ -19,6 +19,8 @@ class DualJoystickReader(object):
         self.motion = MotionType()
         self.moving = Moving()
         self.rotation = 0
+        #Dependent on is_moving topic
+        self.isMoving = False
 
         # Serve motion will consist of:
         # A variable to record current orientation of the rover with respect to
@@ -60,6 +62,12 @@ class DualJoystickReader(object):
         # Secondary joystick
         rospy.Subscriber('/cmd_alt_vel', Twist, self.update_second_joystick,
                          queue_size=10)
+
+        #Boolean speed control
+        rospy.Subscriber('/is_moving', Bool, self.update_is_moving,
+                         queue_size=10)
+
+
 
     # update_settings depending on reading from topic
     def update_value_settings(self, msg):
