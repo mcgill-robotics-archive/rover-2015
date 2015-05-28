@@ -88,9 +88,26 @@ def skid_steer(vBody,diff):
     smsa = 0
     prsa = 0
     srsa = 0
+    movement = True
     #point steering
     if abs(diff)>0.5:
-        #
+        #Turn right
+        if diff>0:
+            #
+            pfrv = vBody
+            sfrv = -vBody*abs(diff-0.5)/0.5
+            pmrv = vBody
+            smrv = sfrv
+            prrv = vBody
+            srrv = sfrv
+        else:
+            #
+            sfrv = vBody
+            pfrv = -vBody*abs(diff-0.5)/0.5
+            smrv = vBody
+            pmrv = sfrv
+            srrv = vBody
+            prrv = sfrv
 
     else:
         #Turn right
@@ -111,7 +128,6 @@ def skid_steer(vBody,diff):
             pmrv = sfrv
             srrv = vBody
             prrv = sfrv
-            movement = True
 
 
 
