@@ -346,6 +346,16 @@
              <string>Ackreman</string>
             </property>
             <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="skid">
+            <property name="text">
+             <string>Skid</string>
+            </property>
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
