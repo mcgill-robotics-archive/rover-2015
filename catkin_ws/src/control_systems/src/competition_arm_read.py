@@ -162,6 +162,8 @@ class ArmControlReader(object):
             self.settings.theta = rotMax
         else:
             self.settings.theta = rotMin
+
+
         
         #Whether entered point is out of bounds or not (assumed it is until 
         #proven innocent)
@@ -225,8 +227,9 @@ class ArmControlReader(object):
         self.angles.shoulderOrientation = self.settings.theta
 
         #Calculate wrist angle after testing
-        testAngle = self.settings.phi - self.angles.shoulderElevation + self.angles.elbow
+        testAngle = msg.phi - self.angles.shoulderElevation + self.angles.elbow
         if wriMax>=testAngle>=wriMin:
+            self.settings.phi = msg.phi
             self.angles.wristElevation = testAngle
 
         #function will publish at 60Hz
