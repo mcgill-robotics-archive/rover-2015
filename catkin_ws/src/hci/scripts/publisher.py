@@ -77,13 +77,24 @@ class Publisher(object):
             motionType.ACKERMANN = 0
             motionType.TRANSLATORY = 0
             motionType.POINT = 1
+            motionType.SKID = 0
+
         elif type == 1:
             motionType.ACKERMANN = 1
             motionType.TRANSLATORY = 0
             motionType.POINT = 0
+            motionType.SKID = 0
+
         elif type == 2:
             motionType.ACKERMANN = 0
             motionType.TRANSLATORY = 1
             motionType.POINT = 0
+            motionType.SKID = 0
+
+        elif type == 3:
+            motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 0
+            motionType.POINT = 0
+            motionType.SKID = 1
 
         self.motionTypePublisher.publish(motionType)

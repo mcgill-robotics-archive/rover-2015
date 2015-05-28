@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow_V4.ui'
 #
-# Created: Wed May 27 22:50:45 2015
+# Created: Thu May 28 10:57:33 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -179,9 +179,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.ackreman = QtGui.QRadioButton(self.centralwidget)
-        self.ackreman.setChecked(True)
+        self.ackreman.setChecked(False)
         self.ackreman.setObjectName(_fromUtf8("ackreman"))
         self.verticalLayout_2.addWidget(self.ackreman)
+        self.skid = QtGui.QRadioButton(self.centralwidget)
+        self.skid.setChecked(True)
+        self.skid.setObjectName(_fromUtf8("skid"))
+        self.verticalLayout_2.addWidget(self.skid)
         self.pointSteer = QtGui.QRadioButton(self.centralwidget)
         self.pointSteer.setObjectName(_fromUtf8("pointSteer"))
         self.verticalLayout_2.addWidget(self.pointSteer)
@@ -325,6 +329,7 @@ class Ui_MainWindow(object):
         self.zoomGraph.setText(_translate("MainWindow", "Zoom graph", None))
         self.ackMoving.setText(_translate("MainWindow", "Ackreman Moving", None))
         self.ackreman.setText(_translate("MainWindow", "Ackreman", None))
+        self.skid.setText(_translate("MainWindow", "Skid", None))
         self.pointSteer.setText(_translate("MainWindow", "Point steer ?", None))
         self.translatory.setText(_translate("MainWindow", "Translatory", None))
         self.label_4.setText(_translate("MainWindow", "Signal quality", None))

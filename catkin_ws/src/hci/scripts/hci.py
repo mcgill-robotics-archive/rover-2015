@@ -68,6 +68,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
+        QtCore.QObject.connect(self.ui.skid, QtCore.SIGNAL("toggled(bool)"), self.set_skid)
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
         QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
         
@@ -184,6 +185,10 @@ class CentralUi(QtGui.QMainWindow):
         if boolean:
             self.publisher.setSteerMode(1)
 
+    def set_skid(self, boolean):
+        if boolean:
+            self.publisher.setSteerMode(3)
+
     def set_translatory(self, boolean):
         if boolean:
             self.publisher.setSteerMode(2)
@@ -220,7 +225,7 @@ class CentralUi(QtGui.QMainWindow):
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
         if self.profile.param_value["/joystick/translatory"]:
-            self.ui.translatory.setChecked(not self.ui.translatory.isChecked())
+            self.ui.skid.setChecked(not self.ui.skid.isChecked())
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
         if self.profile.param_value["/joystick/ackreman_moving"]:
