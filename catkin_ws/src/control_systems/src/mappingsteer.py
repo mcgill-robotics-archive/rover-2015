@@ -80,6 +80,41 @@ def stop():
     out.update({'srrv': srrv})
     return out
 
+#function steers the robot with skid
+def skid_steer(vBody,diff):
+    pfsa = 0
+    sfsa = 0
+    pmsa = 0
+    smsa = 0
+    prsa = 0
+    srsa = 0
+    #point steering
+    if abs(diff)>0.5:
+        #
+
+    else:
+        #Turn right
+        if diff>0:
+            #
+            pfrv = vBody
+            sfrv = vBody*abs(0.5-diff)/0.5
+            pmrv = vBody
+            smrv = sfrv
+            prrv = vBody
+            srrv = sfrv
+        #turn left
+        else:
+            #
+            sfrv = vBody
+            pfrv = vBody*abs(0.5-diff)/0.5
+            smrv = vBody
+            pmrv = sfrv
+            srrv = vBody
+            prrv = sfrv
+            movement = True
+
+
+
 
 # this function maps joystick input to steering angle of 6 wheels
 # wBody is only always true in magnitude
