@@ -255,17 +255,21 @@ class ArmControlReader(object):
         if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
             and max(self.rightCorner[0],self.bottomCorner[0])>=testPoint[0]\
             and min(self.rightCorner[0],self.bottomCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
         testPoint = self.closePoint(self.it[0],self.it[1],(x,y))
         if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1] \
             and max(self.topCorner[0],self.leftCorner[0])>=testPoint[0]\
             and min(self.topCorner[0],self.leftCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
         testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
         if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
             and max(self.leftCorner[0],self.bottomCorner[0])>=testPoint[0]\
             and min(self.leftCorner[0],self.bottomCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
+
         return points
 
     def closePoint(self, (a,b),r,(x,y)):
