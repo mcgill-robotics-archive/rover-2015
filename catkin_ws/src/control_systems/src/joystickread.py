@@ -67,7 +67,12 @@ class DualJoystickReader(object):
         rospy.Subscriber('/is_moving', Bool, self.update_is_moving,
                          queue_size=10)
 
-
+    #Whether or not rover is moving
+    def update_is_moving(self,msg):
+        if msg.data:
+            self.isMoving = True
+        else:
+            self.isMoving = False
 
     # update_settings depending on reading from topic
     def update_value_settings(self, msg):
@@ -186,6 +191,15 @@ class DualJoystickReader(object):
             # log wheel settings
             rotOut = Float32()
             rotOut.data = self.rotation
+
+            #Set all speeds to zero if speed set off
+            if self.isMoving:
+                self.settings.speedFL = 0
+                self.settings.speedFR = 0
+                self.settings.speedML = 0
+                self.settings.speedMR = 0
+                self.settings.speedRL = 0
+                self.settings.speedRR = 0
 
             verbose = rospy.get_param("~verbose", False)
             if verbose:
