@@ -78,7 +78,8 @@ class CentralUi(QtGui.QMainWindow):
         self.ui.pushButton_2.clicked.connect(self.clear_map)
 
         self.setup_minimap()
-
+        self.set_skid()
+        
         rospy.init_node('listener', anonymous=False)
 
         rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
