@@ -1,3 +1,6 @@
+#include <ros.h>
+#include <ArduinoHardware.h>
+
 byte initiation = 167;
 byte address = 0;
 byte function = 0;
