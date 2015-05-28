@@ -34,7 +34,7 @@ def publish_arm_motion_continuous(simulation):
 				motionFloat = 0.
 			else:
 				motionFloat += 0.01
-			#x and y move slowly in a circle	
+			#x and y move slowly in a circle
 			armSettings.x = 0.3*math.cos(motionFloat)+1.6
 			armSettings.y = 0.5*math.sin(motionFloat)-0.25
 			#theta just moves back and forth
