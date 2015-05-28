@@ -105,9 +105,9 @@ def skid_steer(vBody,diff):
             sfrv = vBody
             pfrv = -vBody*abs(abs(diff)-0.5)/0.5
             smrv = vBody
-            pmrv = sfrv
+            pmrv = pfrv
             srrv = vBody
-            prrv = sfrv
+            prrv = pfrv
 
     else:
         #Turn right
@@ -125,9 +125,9 @@ def skid_steer(vBody,diff):
             sfrv = vBody
             pfrv = vBody*abs(0.5-abs(diff))/0.5
             smrv = vBody
-            pmrv = sfrv
+            pmrv = pfrv
             srrv = vBody
-            prrv = sfrv
+            prrv = pfrv
 
     # I split them up to stay within 80 columns
     out = {'movement': movement, 'pfsa': pfsa, 'sfsa': sfsa, 'pmsa': pmsa}
