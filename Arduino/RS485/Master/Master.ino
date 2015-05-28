@@ -1,5 +1,8 @@
 #include <ros.h>
 #include <ArduinoHardware.h>
+#include <control_systems/ArmAngles.h>
+#include <control_systems/EndEffector.h>
+
 
 byte initiation = 167;
 byte address = 0;
