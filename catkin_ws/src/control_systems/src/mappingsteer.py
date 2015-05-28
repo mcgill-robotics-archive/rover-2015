@@ -20,10 +20,10 @@ import rospy  # to export parameters
 diff_offset = rospy.get_param("control/differential_offset", 0)
 
 # distance between wheels of: front and middle/middle and rear[m]
-D = rospy.get_param('control/wh_distance_fr', 0.5)
+D = rospy.get_param('control/wh_distance_fr', 0.437)
 # distance between longitudinal axis and port/startboard wheels[m]
-B = rospy.get_param('control/wh_base', 0.4) + diff_offset
-mid_wh_offset = rospy.get_param('control/middle_wh_offset', 0.1)
+B = rospy.get_param('control/wh_base', 0.318) + diff_offset
+mid_wh_offset = rospy.get_param('control/middle_wh_offset', 0.106)
 
 R = rospy.get_param('control/wh_radius', 0.165)  # wheel radius [m]
 W = rospy.get_param('control/wh_width', 0.15)  # wheel width [m]

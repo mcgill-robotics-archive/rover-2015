@@ -13,9 +13,9 @@ import sys
 
 #import lengths of robotic arm
 #length of first part of arm
-a1 = rospy.get_param('control/ln_upperarm',0.5)
+a1 = rospy.get_param('control/ln_upperarm',0.439)
 #length of second part of arm
-a2 = rospy.get_param('control/ln_forearm',0.5)
+a2 = rospy.get_param('control/ln_forearm',0.149)
 
 zero =1e-10
 

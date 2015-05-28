@@ -1,6 +1,5 @@
-control/wh_distance_fr: 0.86 #distance between back and front wheel
-control/wh_base: 0.33 #wheel base (half robot width)
+control/wh_distance_fr: 0.437 #distance between back and front wheel
+control/wh_base: 0.318 #wheel base (half robot width)
 control/middle_wh_offset: 0.1016 # middlewheels are not on straigth line with corner wheels
-control/wh_radius: 0.09652 # wheel radius
-control/wh_width: 0.03 # wheel width
-
+control/wh_radius: 0.165 # wheel radius
+control/wh_width: 0.15 # wheel width
