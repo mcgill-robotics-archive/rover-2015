@@ -95,7 +95,7 @@ def skid_steer(vBody,diff):
         if diff>0:
             #
             pfrv = vBody
-            sfrv = -vBody*abs(diff-0.5)/0.5
+            sfrv = -vBody*abs(abs(diff)-0.5)/0.5
             pmrv = vBody
             smrv = sfrv
             prrv = vBody
@@ -103,7 +103,7 @@ def skid_steer(vBody,diff):
         else:
             #
             sfrv = vBody
-            pfrv = -vBody*abs(diff-0.5)/0.5
+            pfrv = -vBody*abs(abs(diff)-0.5)/0.5
             smrv = vBody
             pmrv = sfrv
             srrv = vBody
@@ -114,7 +114,7 @@ def skid_steer(vBody,diff):
         if diff>0:
             #
             pfrv = vBody
-            sfrv = vBody*abs(0.5-diff)/0.5
+            sfrv = vBody*abs(0.5-abs(diff))/0.5
             pmrv = vBody
             smrv = sfrv
             prrv = vBody
@@ -123,7 +123,7 @@ def skid_steer(vBody,diff):
         else:
             #
             sfrv = vBody
-            pfrv = vBody*abs(0.5-diff)/0.5
+            pfrv = vBody*abs(0.5-abs(diff))/0.5
             smrv = vBody
             pmrv = sfrv
             srrv = vBody
