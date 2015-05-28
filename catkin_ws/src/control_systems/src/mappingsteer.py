@@ -129,8 +129,13 @@ def skid_steer(vBody,diff):
             srrv = vBody
             prrv = sfrv
 
-
-
+    # I split them up to stay within 80 columns
+    out = {'movement': movement, 'pfsa': pfsa, 'sfsa': sfsa, 'pmsa': pmsa}
+    # add more values
+    out.update({'smsa': smsa, 'prsa': prsa, 'srsa': srsa, 'pfrv': pfrv})
+    out.update({'sfrv': sfrv, 'pmrv': pmrv, 'smrv': smrv, 'prrv': prrv})
+    out.update({'srrv': srrv})
+    return out
 
 # this function maps joystick input to steering angle of 6 wheels
 # wBody is only always true in magnitude
