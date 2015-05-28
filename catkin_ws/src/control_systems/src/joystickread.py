@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  convert linear,angular speed to wheel settings
 import rospy  # for reading and publishing to topics
-from mappingsteer import steer, pointTurn, translationalMotion, swerve, max_mag
+from mappingsteer import steer, pointTurn, translationalMotion, swerve, max_mag, skid_steer
 from geometry_msgs.msg import Twist  # type of joystick input
 # type of wheel setting output
 from control_systems.msg import SetPoints, Moving, MotionType
