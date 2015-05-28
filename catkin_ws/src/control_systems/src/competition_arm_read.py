@@ -245,18 +245,26 @@ class ArmControlReader(object):
         #get closest point on circle to user's point
         testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
         #check y-coords if within region
-        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
+        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1] \
+            and max(self.topCorner[0],self.rightCorner[0])>=testPoint[0]\
+            and min(self.topCorner[0],self.rightCorner[0])<=testPoint[0]:
             #append to viable points
             points.append(testPoint)
         #repeat
         testPoint = self.closePoint(self.ob[0],self.ob[1],(x,y))
-        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
+            and max(self.rightCorner[0],self.bottomCorner[0])>=testPoint[0]\
+            and min(self.rightCorner[0],self.bottomCorner[0])<=testPoint[0]:
             points.append(testPoint)
         testPoint = self.closePoint(self.it[0],self.it[1],(x,y))
-        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1]:
+        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1] \
+            and max(self.topCorner[0],self.leftCorner[0])>=testPoint[0]\
+            and min(self.topCorner[0],self.leftCorner[0])<=testPoint[0]:
             points.append(testPoint)
         testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
-        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
+            and max(self.leftCorner[0],self.bottomCorner[0])>=testPoint[0]\
+            and min(self.leftCorner[0],self.bottomCorner[0])<=testPoint[0]:
             points.append(testPoint)
         return points
 
