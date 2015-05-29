@@ -2,10 +2,12 @@
 	<include file="$(find rover_camera)/launch/leftHaz.launch"/>
 	<include file="$(find rover_camera)/launch/rightHaz.launch"/>
 
-	<node name="feed_switcher" pkg="rever_camera" type="feedSwitcher.py" respawn="true" />
+	<node name="feed_switcher" pkg="rover_camera" type="feedSwitcher.py" respawn="true" />
 
-	<include find="$<find control_systems)/launch/drive.launch" />
-	<node name="gps_to_pose" pkg="hci" type="gps_to_pose.py" respawn=true />
+	<include file="$(find control_systems)/launch/drive.launch">
+		<arg name="differential" value="true" />
+	</include>
+	<node name="gps_to_pose" pkg="hci" type="gps_to_pose.py" respawn="true" />
 	
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" respawn="true" />
 </launch>
