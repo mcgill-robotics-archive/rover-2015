@@ -11,11 +11,9 @@ byte argumentHi;
 byte termination;
 
 void setup() {
-  pinMode(A5, OUTPUT);
-  pinMode(A4, OUTPUT);
-  digitalWrite(A4, HIGH);
-  digitalWrite(A5, LOW);
-  Serial.begin(57600);
+  pinMode(11, OUTPUT);
+  digitalWrite(11, LOW);
+  Serial.begin(9600);
   Serial1.begin(9600);
   //Serial1.setTimeout(15);
 

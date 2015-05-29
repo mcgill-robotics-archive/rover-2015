@@ -24,30 +24,29 @@ byte message[]= {address, function, argumentLo, argumentMid1, argumentMid2, argu
  * 4 for argument and 1 for termination which will always have a value of 255
  */
  
-void setup(){  
-  pinMode(A5, OUTPUT);
-  pinMode(A4, OUTPUT);
-  digitalWrite(A5, LOW);
-  digitalWrite(A4, HIGH);
-  Serial.begin(57600);          //USB Com port instantiation
+void setup(){ 
+ //A0 instead of A5
+ //A1 instead of A4 
+  pinMode(A0, OUTPUT);
+  pinMode(A1, OUTPUT);
+  digitalWrite(A0, LOW);
+  digitalWrite(A1, HIGH);
+  Serial.begin(9600);          //USB Com port instantiation
   Serial1.begin(9600);          //RS-485 Com port instantiation
   while(!Serial){;}
   Serial.println("System ON");
 }
 
 void loop(){
-    Serial.println("System ON");
-    Serial1.flush();
-    Serial1.write(initiation);
-    delay(40);
-    
+  Serial1.write((byte)167);
     for (int i=0; i<messageComponents; i++){
      //while (Serial1.available()<2){
-       Serial1.flush();
-       Serial1.write(byte(i));
+       Serial1.write('$');
+       Serial1.write(byte(i));       
        Serial1.write(message[i]);
+       Serial.print("sending "); Serial.println((int)message[i]);
        delay(40);
-     // }
+      //}
     }
 }
 
