@@ -12,11 +12,9 @@ byte termination;
 int messageComponents = 7;
 
 void setup() {
-  pinMode(A5, OUTPUT);
-  pinMode(A4, OUTPUT);
-  digitalWrite(A4, HIGH);
-  digitalWrite(A5, LOW);
-  Serial.begin(57600);
+  pinMode(11, OUTPUT);
+  digitalWrite(11, LOW);
+  Serial.begin(9600);
   Serial1.begin(9600);
   //Serial1.setTimeout(15);
 
@@ -25,11 +23,10 @@ void setup() {
 }
 
 void loop() {
-  if (Serial1.read() == 167)
     readMessage();
   
   //if this Board is the chosen one
-  if((address > 30) && (address < 39)){
+  if((address = boardAddress) || (address = boardAddress + 1)){
     
     //If the message was correctly terminated
     if (termination == 255){
@@ -39,15 +36,26 @@ void loop() {
 }
 
 void readMessage(){
- for (int i=0;i<messageComponents;i++){         //read in data for each element of a
-     if(Serial1.available()==2) {  //wait until the buffer contains two bytes
-     Serial.println("inside the if statement");
-     j = Serial1.read();      //read the first byte (index)
-     message[int(j)] = Serial1.read();      //read the second byte (actual value)
-     Serial1.flush();   //flush the output buffer
-     Serial.println(message[j]);  //tell arduino that item j was received
-     }
-   }
+ while (! Serial1.available()) delay(5);
+  if (Serial1.read() == 167)
+  {
+    for (int i = 0; i < 7; i++)
+    {
+      while( !(Serial1.available() > 2)) delay(5);
+      if (Serial1.read() != '$');
+      else
+      {
+        j = Serial1.read();      //read the first byte (index)
+//        Serial.print ("index: ");
+//        Serial.print(j);
+        message[int(j)] = Serial1.read();      //read the second byte (actual value)
+//        Serial.print(" message: ");
+//        Serial.println(message[j]);  //tell arduino that item j was received
+      }
+    }
+  }
+  else
+    delay(10);
    
   address = message[0];
   function = message[1];
