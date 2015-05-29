@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>907</width>
-    <height>669</height>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -213,6 +213,38 @@
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QRadioButton" name="baseRadio">
+          <property name="text">
+           <string>Base</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="shoulderRadio">
+          <property name="text">
+           <string>Shoulder</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="elbowRadio">
+          <property name="text">
+           <string>Elbow</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="wristRadio">
+          <property name="text">
+           <string>Wrist</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
