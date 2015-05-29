@@ -24,3 +24,8 @@ void arm_motor(const control_systems::ArmAngles& setPoints)
   setAngle(wrist_elevation, setPoints.wristElevation);
 }
 
+void camera_motor(const control_systems::PanTiltZoom& setPoints)
+{
+  setAngle(pan, setPoints.pan);
+  setAngle(tilt, setPoints.tilt);
+}

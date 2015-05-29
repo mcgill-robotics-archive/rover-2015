@@ -3,6 +3,7 @@
 
 #include <control_systems/ArmAngles.h>
 #include <control_systems/SetPoints.h>
+#include <control_systems/PanTiltZoom.h>
 
 enum DriveAddress {
   sfsa = 34,
@@ -24,7 +25,13 @@ enum ArmAddress {
   wrist_elevation = 14
 };
 
+enum CamMotor {
+  pan = 32,
+  tilt = 31
+};
+
 void drive_motor(const control_systems::SetPoints& setPoints);
 void arm_motor(const control_systems::ArmAngles& setPoints);
+void camera_motor(const control_systems::PanTiltZoom& setPoints);
 
 #endif

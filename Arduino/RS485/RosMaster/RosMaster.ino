@@ -15,6 +15,7 @@
 #include <control_systems/ArmAngles.h>
 #include <control_systems/SetPoints.h>
 #include <control_systems/Moving.h>
+#include <control_systems/PanTiltZoom.h>
 
 byte initiation = 167;
 byte address = 0;
@@ -45,6 +46,7 @@ rover_msgs::GPS msg;
 ros::Publisher publisher("raw_gps", &msg);
 ros::Subscriber<control_systems::ArmAngles> armAngleSub ("/arm", arm_motor);
 ros::Subscriber<control_systems::SetPoints> driveSub ("/wheels", drive_motor);
+ros::Subscriber<control_systems::PanTiltZoom> camSub ("/camera_orientation", camera_motor);
 //ros::Subscriber<control_systems::Moving> armAngleSub ("/movement", moving);
 int gpsOK = 1;
 
