@@ -59,6 +59,8 @@ class JoystickController(object):
             self.controller = pygame.joystick.Joystick(0)
             self.controller.init()
         else:
+            print "MORE CONTROLLERS"
+            print  pygame.joystick.get_count() 
             self.controller = None
 
     def clear_buttons(self):

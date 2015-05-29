@@ -5,6 +5,20 @@
 #include <control_systems/SetPoints.h>
 #include <control_systems/PanTiltZoom.h>
 
+int aBase = 1;
+int bBase = 2;
+int speedBase = 3;
+int aShoulder = 1;
+int bShoulder = 2;
+int speedShoulder= 3;
+int aElbow = 1;
+int bElbow = 2;
+int speedElbow = 3;
+int aWrist = 1;
+int bWrist = 2;
+int speedWrist = 3;
+
+
 enum DriveAddress {
   sfsa = 34,
   pfsa = 35,

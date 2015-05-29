@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow_V4.ui'
 #
-# Created: Thu May 28 10:57:33 2015
+# Created: Fri May 29 16:26:29 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(907, 669)
+        MainWindow.resize(907, 683)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout_8 = QtGui.QHBoxLayout(self.centralwidget)
@@ -130,6 +130,21 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.Camera1Feed, 1, 0, 1, 1)
         self.horizontalLayout_7.addLayout(self.gridLayout)
         self.verticalLayout_3.addLayout(self.horizontalLayout_7)
+        self.horizontalLayout_9 = QtGui.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName(_fromUtf8("horizontalLayout_9"))
+        self.baseRadio = QtGui.QRadioButton(self.centralwidget)
+        self.baseRadio.setObjectName(_fromUtf8("baseRadio"))
+        self.horizontalLayout_9.addWidget(self.baseRadio)
+        self.shoulderRadio = QtGui.QRadioButton(self.centralwidget)
+        self.shoulderRadio.setObjectName(_fromUtf8("shoulderRadio"))
+        self.horizontalLayout_9.addWidget(self.shoulderRadio)
+        self.elbowRadio = QtGui.QRadioButton(self.centralwidget)
+        self.elbowRadio.setObjectName(_fromUtf8("elbowRadio"))
+        self.horizontalLayout_9.addWidget(self.elbowRadio)
+        self.wristRadio = QtGui.QRadioButton(self.centralwidget)
+        self.wristRadio.setObjectName(_fromUtf8("wristRadio"))
+        self.horizontalLayout_9.addWidget(self.wristRadio)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_9)
         self.horizontalLayout_8.addLayout(self.verticalLayout_3)
         self.verticalLayout_4 = QtGui.QVBoxLayout()
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
@@ -326,6 +341,10 @@ class Ui_MainWindow(object):
         self.Camera1Feed.setItemText(3, _translate("MainWindow", "Back Hazcam", None))
         self.Camera1Feed.setItemText(4, _translate("MainWindow", "Arm", None))
         self.Camera1Feed.setItemText(5, _translate("MainWindow", "Pan/Tilt", None))
+        self.baseRadio.setText(_translate("MainWindow", "Base", None))
+        self.shoulderRadio.setText(_translate("MainWindow", "Shoulder", None))
+        self.elbowRadio.setText(_translate("MainWindow", "Elbow", None))
+        self.wristRadio.setText(_translate("MainWindow", "Wrist", None))
         self.zoomGraph.setText(_translate("MainWindow", "Zoom graph", None))
         self.ackMoving.setText(_translate("MainWindow", "Ackreman Moving", None))
         self.ackreman.setText(_translate("MainWindow", "Ackreman", None))

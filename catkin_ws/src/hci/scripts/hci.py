@@ -31,6 +31,7 @@ class CentralUi(QtGui.QMainWindow):
         self.modeId = 0
         self.grip = 0
         self.ui.arm_mode.setCurrentIndex(1)
+        self.ui.baseRadio.setChecked(True)
 
         # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []
@@ -74,7 +75,9 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.skid, QtCore.SIGNAL("toggled(bool)"), self.set_skid)
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
         QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
-        
+
+        self.armMotors = [self.ui.baseRadio, self.ui.shoulderRadio, self.ui.elbowRadio, self.ui.wristRadio]
+
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
         self.ui.pushButton.clicked.connect(self.add_way_point)
@@ -98,6 +101,15 @@ class CentralUi(QtGui.QMainWindow):
 
         self.sub = None
         rospy.loginfo("HCI initialization completed")
+
+    def switch_arm(self):
+        for i in xrange(0, len(self.armMotors)):
+            if self.armMotors[i].isChecked():
+                try:
+                    self.armMotors[i+1].setChecked(True)
+                except IndexError:
+                    self.armMotors[0].setChecked(True)
+                return
 
     def take_screenshot(self):
         self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)
@@ -242,6 +254,9 @@ class CentralUi(QtGui.QMainWindow):
             self.set_controller_mode(2)
         elif self.profile.param_value["/joystick/camera_mode"]:
             self.set_controller_mode(3)
+        if self.profile.param_value["/joystick/changeArmMotor"]:
+            self.switch_arm()
+
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
         self.publish_controls()
@@ -256,16 +271,9 @@ class CentralUi(QtGui.QMainWindow):
 
         elif self.modeId == 1:
             # arm base mode
-            length = -self.controller.a2
-            height = self.controller.a1
-            angle = self.controller.a3
-            cart = False
-            vel = False
-            if self.ui.coordinateSystem.currentIndex() is 1:
-                cart = True
-            if self.ui.arm_mode.currentIndex() is 1:
-                vel = True
-            self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
+            for i in xrange(0, len(self.armMotors)):
+                if self.armMotors[i].isChecked():
+                    self.publisher.publish_yolo_arm(i, -self.controller.a2)
 
         elif self.modeId == 2:
             # end effector mode

@@ -14,7 +14,8 @@ param_names = ["/joystick/drive_mode",
                "/joystick/camera/haz_front",
                "/joystick/camera/haz_back",
                "/joystick/camera/haz_right",
-               "/joystick/camera/haz_left"]
+               "/joystick/camera/haz_left",
+               "/joystick/changeArmMotor"]
 
 
 class ProfileParser():

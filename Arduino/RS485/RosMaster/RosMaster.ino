@@ -48,6 +48,8 @@ int tiltServoPin = 51;
 Servo panServo;
 Servo tiltServo;
 
+
+
 rover_msgs::GPS msg;
 ros::Publisher publisher("raw_gps", &msg);
 ros::Subscriber<control_systems::ArmAngles> armAngleSub ("/arm", arm_motor);
@@ -65,6 +67,19 @@ void setup()
   digitalWrite(A1, HIGH);
   panServo.attach(panServoPin);
   tiltServo.attach(tiltServoPin);
+
+  pinMode(aBase, OUTPUT);
+  pinMode(bBase, OUTPUT);
+  pinMode(speedBase, OUTPUT);
+  pinMode(aShoulder, OUTPUT);
+  pinMode(bShoulder, OUTPUT);
+  pinMode(speedShoulde, OUTPUT);
+  pinMode(aElbow, OUTPUT);
+  pinMode(bElbow, OUTPUT);
+  pinMode(speedElbow, OUTPUT);
+  pinMode(aWrist, OUTPUT);
+  pinMode(bWrist, OUTPUT);
+  pinMode(speedWrist, OUTPUT);
   
   Serial1.begin(9600);          //RS-485 Com port instantiation
   while(!Serial1){;}

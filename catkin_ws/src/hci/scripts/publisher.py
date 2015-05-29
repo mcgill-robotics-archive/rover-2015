@@ -1,7 +1,7 @@
 import rospy
 
 from geometry_msgs.msg import Twist
-from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector
+from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector, ArmAngles
 from std_msgs.msg import Bool
 
 
@@ -18,6 +18,7 @@ class Publisher(object):
         self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic", "cmd_motion"),
                                                    MotionType, queue_size=10)
         self.moving_bool_pub = rospy.Publisher("is_moving", Bool, queue_size=10)
+        self.yolo_arm = rospy.Publisher("arm", ArmAngles, queue_size=10)
 
     # publisher for velocity
     def publish_velocity(self, a1, a2, on):
@@ -50,7 +51,20 @@ class Publisher(object):
             msg.y = armLength*1.5  # y axis on joystick moves the target point forward and back
             msg.x = armHeight*1.5  # rotation of the joystick moves the target point up and down
         self.arm_movement_pub.publish(msg)
-    
+
+    def publish_yolo_arm(self, joint_index, value):
+        msg = ArmAngles()
+        if joint_index is 0:
+            msg.shoulderOrientation = value
+        elif joint_index is 1:
+            msg.shoulderElevation = value
+        elif joint_index is 2:
+            msg.elbow = value
+        elif joint_index is 3:
+            msg.wristElevation = value
+        self.yolo_arm.publish(msg)
+
+
     # publish end effector position
     def publish_endEffector(self, x, y, rotate, grip):
         msg = EndEffector()
