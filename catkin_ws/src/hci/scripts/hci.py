@@ -49,6 +49,9 @@ class CentralUi(QtGui.QMainWindow):
         self.x_waypoints = []
         self.y_waypoints = []
 
+        self.cam_x = 0
+        self.cam_y = 0
+
         rospy.loginfo("Starting joystick acquisition")
 
         # button connects
@@ -237,7 +240,7 @@ class CentralUi(QtGui.QMainWindow):
             self.set_controller_mode(1)
         elif self.profile.param_value["/joystick/end_effector_mode"]:
             self.set_controller_mode(2)
-        elif self.controller.b10:
+        elif self.profile.param_value["/joystick/camera_mode"]:
             self.set_controller_mode(3)
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
@@ -283,6 +286,11 @@ class CentralUi(QtGui.QMainWindow):
 
             # end effector mode
             # use joystick to control a1,a2, a3 for rotating motion and some other button for grip motion
+
+        elif self.modeId == 3:
+            self.cam_x += self.controller.a1
+            self.cam_y += self.controller.a2
+            self.publisher.publish_camera(self.cam_x, self.cam_y)
 
     def set_mode0(self):
         self.set_controller_mode(0)
