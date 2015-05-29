@@ -3,6 +3,7 @@ import rospy
 param_names = ["/joystick/drive_mode",
                "/joystick/arm_base_mode",
                "/joystick/end_effector_mode",
+               "/joystick/camera_mode",
                "/joystick/point_steer",
                "/joystick/translatory",
                "/joystick/ackreman",

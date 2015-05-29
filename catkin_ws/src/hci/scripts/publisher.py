@@ -8,8 +8,7 @@ from std_msgs.msg import Bool
 class Publisher(object):
     def __init__(self):
         # TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.cam_pub = rospy.Publisher(rospy.get_param("electrical_interface/cameraPos_topic",
-                                                       "electrical_interface/camera"),
+        self.cam_pub = rospy.Publisher("/camera_orientation",
                                        PanTiltZoom, queue_size=10)
         self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic", "cmd_vel"), Twist, queue_size=10)
         self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic", "/cmd_arm"),
@@ -77,13 +76,24 @@ class Publisher(object):
             motionType.ACKERMANN = 0
             motionType.TRANSLATORY = 0
             motionType.POINT = 1
+            motionType.SKID = 0
+
         elif type == 1:
             motionType.ACKERMANN = 1
             motionType.TRANSLATORY = 0
             motionType.POINT = 0
+            motionType.SKID = 0
+
         elif type == 2:
             motionType.ACKERMANN = 0
             motionType.TRANSLATORY = 1
             motionType.POINT = 0
+            motionType.SKID = 0
+
+        elif type == 3:
+            motionType.ACKERMANN = 0
+            motionType.TRANSLATORY = 0
+            motionType.POINT = 0
+            motionType.SKID = 1
 
         self.motionTypePublisher.publish(motionType)

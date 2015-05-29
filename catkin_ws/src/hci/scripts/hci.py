@@ -49,6 +49,9 @@ class CentralUi(QtGui.QMainWindow):
         self.x_waypoints = []
         self.y_waypoints = []
 
+        self.cam_x = 0
+        self.cam_y = 0
+
         rospy.loginfo("Starting joystick acquisition")
 
         # button connects
@@ -68,6 +71,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
+        QtCore.QObject.connect(self.ui.skid, QtCore.SIGNAL("toggled(bool)"), self.set_skid)
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
         QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
         
@@ -77,10 +81,11 @@ class CentralUi(QtGui.QMainWindow):
         self.ui.pushButton_2.clicked.connect(self.clear_map)
 
         self.setup_minimap()
-
+        
         rospy.init_node('listener', anonymous=False)
 
         rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
+        self.set_skid(True)
 
         self.switch_feed = rospy.ServiceProxy('/changeFeed', ChangeFeed)
 
@@ -184,6 +189,10 @@ class CentralUi(QtGui.QMainWindow):
         if boolean:
             self.publisher.setSteerMode(1)
 
+    def set_skid(self, boolean):
+        if boolean:
+            self.publisher.setSteerMode(3)
+
     def set_translatory(self, boolean):
         if boolean:
             self.publisher.setSteerMode(2)
@@ -220,7 +229,7 @@ class CentralUi(QtGui.QMainWindow):
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
         if self.profile.param_value["/joystick/translatory"]:
-            self.ui.translatory.setChecked(not self.ui.translatory.isChecked())
+            self.ui.skid.setChecked(not self.ui.skid.isChecked())
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
         if self.profile.param_value["/joystick/ackreman_moving"]:
@@ -231,7 +240,7 @@ class CentralUi(QtGui.QMainWindow):
             self.set_controller_mode(1)
         elif self.profile.param_value["/joystick/end_effector_mode"]:
             self.set_controller_mode(2)
-        elif self.controller.b10:
+        elif self.profile.param_value["/joystick/camera_mode"]:
             self.set_controller_mode(3)
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
@@ -277,6 +286,11 @@ class CentralUi(QtGui.QMainWindow):
 
             # end effector mode
             # use joystick to control a1,a2, a3 for rotating motion and some other button for grip motion
+
+        elif self.modeId == 3:
+            self.cam_x += self.controller.a1
+            self.cam_y += self.controller.a2
+            self.publisher.publish_camera(self.cam_x, self.cam_y)
 
     def set_mode0(self):
         self.set_controller_mode(0)

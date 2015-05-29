@@ -20,10 +20,10 @@ import rospy  # to export parameters
 diff_offset = rospy.get_param("control/differential_offset", 0)
 
 # distance between wheels of: front and middle/middle and rear[m]
-D = rospy.get_param('control/wh_distance_fr', 0.5)
+D = rospy.get_param('control/wh_distance_fr', 0.437)
 # distance between longitudinal axis and port/startboard wheels[m]
-B = rospy.get_param('control/wh_base', 0.4) + diff_offset
-mid_wh_offset = rospy.get_param('control/middle_wh_offset', 0.1)
+B = rospy.get_param('control/wh_base', 0.318) + diff_offset
+mid_wh_offset = rospy.get_param('control/middle_wh_offset', 0.106)
 
 R = rospy.get_param('control/wh_radius', 0.165)  # wheel radius [m]
 W = rospy.get_param('control/wh_width', 0.15)  # wheel width [m]
@@ -80,6 +80,62 @@ def stop():
     out.update({'srrv': srrv})
     return out
 
+#function steers the robot with skid
+def skid_steer(vBody,diff):
+    pfsa = 0
+    sfsa = 0
+    pmsa = 0
+    smsa = 0
+    prsa = 0
+    srsa = 0
+    movement = True
+    #point steering
+    if abs(diff)>0.5:
+        #Turn right
+        if diff>0:
+            #
+            pfrv = vBody
+            sfrv = -vBody*abs(abs(diff)-0.5)/0.5
+            pmrv = vBody
+            smrv = sfrv
+            prrv = vBody
+            srrv = sfrv
+        else:
+            #
+            sfrv = vBody
+            pfrv = -vBody*abs(abs(diff)-0.5)/0.5
+            smrv = vBody
+            pmrv = pfrv
+            srrv = vBody
+            prrv = pfrv
+
+    else:
+        #Turn right
+        if diff>0:
+            #
+            pfrv = vBody
+            sfrv = vBody*abs(0.5-abs(diff))/0.5
+            pmrv = vBody
+            smrv = sfrv
+            prrv = vBody
+            srrv = sfrv
+        #turn left
+        else:
+            #
+            sfrv = vBody
+            pfrv = vBody*abs(0.5-abs(diff))/0.5
+            smrv = vBody
+            pmrv = pfrv
+            srrv = vBody
+            prrv = pfrv
+
+    # I split them up to stay within 80 columns
+    out = {'movement': movement, 'pfsa': pfsa, 'sfsa': sfsa, 'pmsa': pmsa}
+    # add more values
+    out.update({'smsa': smsa, 'prsa': prsa, 'srsa': srsa, 'pfrv': pfrv})
+    out.update({'sfrv': sfrv, 'pmrv': pmrv, 'smrv': smrv, 'prrv': prrv})
+    out.update({'srrv': srrv})
+    return out
 
 # this function maps joystick input to steering angle of 6 wheels
 # wBody is only always true in magnitude

@@ -9,11 +9,11 @@ from control_systems.msg import ArmMotion, ArmAngles
 from numpy import random
 
 # a1 is the length of the upper arm (touches base)
-a1 = rospy.get_param('control/ln_upperarm', 0.5)
+a1 = rospy.get_param('control/ln_upperarm', 0.439)
 # a2 is the length of the forearm (attached to hand)
-a2 = rospy.get_param('control/ln_forearm', 0.5)
+a2 = rospy.get_param('control/ln_forearm', 0.149)
 # a3 is the length of the wrist (attached to glove)
-a3 = rospy.get_param('control/ln_wrist', 0.1)
+a3 = rospy.get_param('control/ln_wrist', 0.189)
 
 #To help avoid divisions by close to zero
 zero = 1e-10
@@ -162,12 +162,13 @@ class ArmControlReader(object):
             self.settings.theta = rotMax
         else:
             self.settings.theta = rotMin
-        
+
+
         #Whether entered point is out of bounds or not (assumed it is until 
         #proven innocent)
         outOfBounds = True
         #make sure point can be reached
-        if a1+a2 >= distance(msg.x,msg.y) >= zero and msg.x>0:
+        if a1+a2 >= distance(msg.x,msg.y) >= abs(a1-a2) and msg.x>0:
            #Following function should not throw an error in this case.
             getAngles = possibleAngles(msg.x,msg.y)
             if self.anglesOkay(getAngles[1][0], getAngles[1][1]):
@@ -225,8 +226,9 @@ class ArmControlReader(object):
         self.angles.shoulderOrientation = self.settings.theta
 
         #Calculate wrist angle after testing
-        testAngle = self.settings.phi - self.angles.shoulderElevation + self.angles.elbow
+        testAngle = msg.phi - self.angles.shoulderElevation + self.angles.elbow
         if wriMax>=testAngle>=wriMin:
+            self.settings.phi = msg.phi
             self.angles.wristElevation = testAngle
 
         #function will publish at 60Hz
@@ -242,19 +244,31 @@ class ArmControlReader(object):
         #get closest point on circle to user's point
         testPoint = self.closePoint(self.ot[0],self.ot[1],(x,y))
         #check y-coords if within region
-        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1]:
+        if self.topCorner[1]>=testPoint[1]>=self.rightCorner[1] \
+            and max(self.topCorner[0],self.rightCorner[0])>=testPoint[0]\
+            and min(self.topCorner[0],self.rightCorner[0])<=testPoint[0]:
             #append to viable points
             points.append(testPoint)
         #repeat
         testPoint = self.closePoint(self.ob[0],self.ob[1],(x,y))
-        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+        if self.rightCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
+            and max(self.rightCorner[0],self.bottomCorner[0])>=testPoint[0]\
+            and min(self.rightCorner[0],self.bottomCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
         testPoint = self.closePoint(self.it[0],self.it[1],(x,y))
-        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1]:
+        if self.topCorner[1]>=testPoint[1]>=self.leftCorner[1] \
+            and max(self.topCorner[0],self.leftCorner[0])>=testPoint[0]\
+            and min(self.topCorner[0],self.leftCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
         testPoint = self.closePoint(self.ib[0],self.ib[1],(x,y))
-        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1]:
+        if self.leftCorner[1]>=testPoint[1]>=self.bottomCorner[1] \
+            and max(self.leftCorner[0],self.bottomCorner[0])>=testPoint[0]\
+            and min(self.leftCorner[0],self.bottomCorner[0])<=testPoint[0]:
+
             points.append(testPoint)
+
         return points
 
     def closePoint(self, (a,b),r,(x,y)):

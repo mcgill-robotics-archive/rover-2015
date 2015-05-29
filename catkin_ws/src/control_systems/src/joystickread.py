@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  convert linear,angular speed to wheel settings
 import rospy  # for reading and publishing to topics
-from mappingsteer import steer, pointTurn, translationalMotion, swerve, max_mag
+from mappingsteer import steer, pointTurn, translationalMotion, swerve, max_mag, skid_steer
 from geometry_msgs.msg import Twist  # type of joystick input
 # type of wheel setting output
 from control_systems.msg import SetPoints, Moving, MotionType
@@ -52,6 +52,7 @@ class DualJoystickReader(object):
         # whether or not wheels should be moving
         self.pubmovement = rospy.Publisher('/movement', Moving, queue_size=10,
                                            latch=True)
+
         # Subscribe to the topic "/cmd_vel", and print out output to function
         rospy.Subscriber('/cmd_vel', Twist, self.update_value_settings,
                          queue_size=10)
@@ -94,7 +95,6 @@ class DualJoystickReader(object):
             time_passed = clock() - self.clock.data
             self.clock.data = clock()
             self.rotation += self.value[1] * time_passed
-
         # swerve drive :)
         elif self.motion.SWERVE:
             # value from other joystick is the spin
@@ -152,7 +152,9 @@ class DualJoystickReader(object):
                 (output, self.rotation) = swerve(self.settings, time_passed, spin,
                                                  max_mag(self.altValue), heading, self.rotation)
 
-        #  [a-z]ckermann steering
+        elif self.motion.SKID:
+            output = skid_steer(self.value[0],self.value[1])
+            #[a-z]ckermann steering
         else:
             output = steer(self.value[0], self.value[1])
             # Find new rotation of the rover
