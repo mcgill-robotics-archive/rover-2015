@@ -1,3 +1,4 @@
+
 /*
  gps reader 
  arduino code, must run rosserial_python serial_node.py node to publish in ROS
@@ -11,6 +12,7 @@
 #include <ros.h>
 #include <rover_msgs/GPS.h>
 #include "motor.h"
+#include <Servo.h>
 
 #include <control_systems/ArmAngles.h>
 #include <control_systems/SetPoints.h>
@@ -41,6 +43,10 @@ ros::NodeHandle  nh;
 
 static const uint32_t GPSBaud = 4800;
 TinyGPSPlus gps;
+int panServoPin = 50;
+int tiltServoPin = 51;
+Servo panServo;
+Servo tiltServo;
 
 rover_msgs::GPS msg;
 ros::Publisher publisher("raw_gps", &msg);
@@ -57,6 +63,8 @@ void setup()
   pinMode(A1, OUTPUT);
   digitalWrite(A0, LOW);
   digitalWrite(A1, HIGH);
+  panServo.attach(panServoPin);
+  tiltServo.attach(tiltServoPin);
   
   Serial1.begin(9600);          //RS-485 Com port instantiation
   while(!Serial1){;}

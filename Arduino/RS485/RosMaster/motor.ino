@@ -1,4 +1,5 @@
 #include "motor.h"
+#include <Servo.h>
 
 
 void drive_motor(const control_systems::SetPoints& setPoints)
@@ -26,6 +27,6 @@ void arm_motor(const control_systems::ArmAngles& setPoints)
 
 void camera_motor(const control_systems::PanTiltZoom& setPoints)
 {
-  setAngle(pan, setPoints.pan);
-  setAngle(tilt, setPoints.tilt);
+  panServo.write(setPoints.pan);
+  tiltServo.write(setPoints.tilt);  
 }
