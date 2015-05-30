@@ -21,7 +21,7 @@ class Publisher(object):
         self.yolo_arm = rospy.Publisher("arm", ArmAngles, queue_size=10)
         self.yolo_claw = rospy.Publisher("claw", Int16, queue_size=10)
 
-    def yolo_claw_pub(self, op)
+    def yolo_claw_pub(self, op):
         msg = Int16(op)
         self.yolo_claw.publish(msg)
 

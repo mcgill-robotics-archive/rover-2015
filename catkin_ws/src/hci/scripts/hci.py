@@ -21,7 +21,7 @@ from sensor_msgs.msg import Image
 class CentralUi(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(CentralUi, self).__init__(parent)
-
+        self.counter = 0
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.DriveMode.setChecked(True)
@@ -112,14 +112,15 @@ class CentralUi(QtGui.QMainWindow):
                 return
 
     def take_screenshot(self):
-        self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)
+        self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)  # TODO CHANGE TOPIC
         rospy.loginfo("created screenshot subscriber")
 
     def screenshot_callback(self, msg):
         rospy.loginfo("shot callback")
         self.sub.unregister()
         image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
-        save = image.save("screen.jpeg")  # TODO: give right topic for arm camera
+        srt = "Screen"+str(self.counter)+".jpeg"
+        save = image.save(srt)
         if save:
             rospy.loginfo("save successfull")
         else:

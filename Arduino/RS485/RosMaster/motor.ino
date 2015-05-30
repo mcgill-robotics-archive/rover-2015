@@ -5,19 +5,16 @@
 void claw(const std_msgs::Int16& boole)
 {
  if (boole.data == -1){
-    //close  
-    myStepper.setSpeed(motorSpeed);
-    
+    //close   
+    dSPIN_Run(REV, SpdCalc(700));
  }
  else  if (boole.data == 1){
     // open
-    myStepper.setSpeed(-motorSpeed);
-    
+    dSPIN_Run(FWD, SpdCalc(700));
  }
  else {
   // stop 
-  myStepper.setSpeed(0);
-    
+  dSPIN_SoftStop();
  }
  
 }

@@ -1,5 +1,10 @@
-#include <Stepper.h>
 
+#include "L6470.h"  // include the register and bit definitions
+
+
+#define SLAVE_SELECT_PIN 50  // Wire this to the CSN pin
+#define dSPIN_RESET      53  // Wire this to the STBY line
+#define dSPIN_BUSYN      52  // Wire this to the BSYN line
 
 /*
  gps reader 
@@ -86,15 +91,6 @@ int panServoPin = 50;
 int tiltServoPin = 51;
 Servo panServo;
 Servo tiltServo;
-
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
-// for your motor
-
-
-// initialize the stepper library on pins 8 through 11: (CHANGE)
-Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
-int stepCount = 0;  // number of steps the motor has taken
-int motorSpeed = 20;
 
 rover_msgs::GPS msg;
 ros::Publisher publisher("raw_gps", &msg);

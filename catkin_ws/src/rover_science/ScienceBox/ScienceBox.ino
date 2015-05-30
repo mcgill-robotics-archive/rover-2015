@@ -1,17 +1,15 @@
 #include <Servo.h> 
-#include <Servo.Serial>
-#include <Stepper.h>
+#include <SPI.h>
 #include <SoftwareSerial.h>
+#include "L6470.h"  // include the register and bit definitions
 
-#define BASE_ROTATE 9
-
-#define STEP_1 1
-#define STEP_2 2
-#define STEP_3 3
-#define STEP_4 4
 
 #define rx 5
 #define tx 6
+
+#define SLAVE_SELECT_PIN 50  // Wire this to the CSN pin
+#define dSPIN_RESET      53  // Wire this to the STBY line
+#define dSPIN_BUSYN      52  // Wire this to the BSYN line
 
 #define PH_STEPS 20
 #define BIO_STEPS 30
@@ -27,7 +25,6 @@ SoftwareSerial pH_probe(rx,tx);
 int home = 0;
 double dry_1 = 360/14, wet_1 = 2*360/14, wet_2 = 3*360/14, wet_3 = 4*360/14, dry_3 = 5*360/14, dry_2 = 6*360/14;
 int pos = 0; 
-Stepper prober = Stepper(720,STEP_1,STEP_2,STEP_3,STEP_4);
 
 //copypasta from sparkfun website
 char ph_data[20];              
@@ -39,40 +36,116 @@ byte startup=0;
 float ph=0;                    
 byte string_received=0;        
 
-
-
 void setup() { 
   Serial.begin(9600);
   pH_probe.begin(9600);
-  pinMode(STEP_1,OUTPUT);
-  pinMode(STEP_2,OUTPUT);
-  pinMode(STEP_3,OUTPUT);
-  pinMode(STEP_4,OUTPUT);
-  
-  base.attach(BASE_ROTATE); // attaches the servo on pin 9 to the servo object 
-  base.write(0);
+  setupStepperScience();
+  base.write(home);
 } 
 
-void loop() { 
-  //positionWriterTest();
-  //turnBySection();
-  //moistureTest();
-  
-  
-  
-  collectSamples();
-  
-  /*acidityTests();
-  
-  Serial.println("Which site's sample would you like to test? (Enter 1-3)");
-  while (Serial.available() == 0);
-  int input = Serial.parseInt();
-  
-  bioTest(input);
-  */
-  
+void setupStepperScience()
+{
+    
+  dSPIN_init();
+  dSPIN_SetParam(dSPIN_STEP_MODE,
+                 !dSPIN_SYNC_EN |
+                 dSPIN_STEP_SEL_1_8 |
+                 dSPIN_SYNC_SEL_1);
+  dSPIN_SetParam(dSPIN_MAX_SPEED, MaxSpdCalc(750));
+  dSPIN_SetParam(dSPIN_FS_SPD, 0x3FF);
+  dSPIN_SetParam(dSPIN_OCD_TH, dSPIN_OCD_TH_6000mA);
+  dSPIN_SetParam(dSPIN_CONFIG,
+                 dSPIN_CONFIG_PWM_DIV_1 |
+                 dSPIN_CONFIG_PWM_MUL_2 |
+                 dSPIN_CONFIG_SR_180V_us |
+                 dSPIN_CONFIG_OC_SD_ENABLE |
+                 dSPIN_CONFIG_VS_COMP_DISABLE |
+                 dSPIN_CONFIG_SW_HARD_STOP |
+                 dSPIN_CONFIG_INT_16MHZ);
+  dSPIN_SetParam(dSPIN_KVAL_HOLD, 0x2F);
+  dSPIN_SetParam(dSPIN_KVAL_RUN, 0x43);
+  dSPIN_SetParam(dSPIN_KVAL_ACC, 0x43);
+  dSPIN_SetParam(dSPIN_KVAL_DEC, 0x43);
+  dSPIN_SetParam(dSPIN_ST_SLP, 0x1B);
+  dSPIN_SetParam(dSPIN_INT_SPD, 0x39E6);
+  dSPIN_SetParam(dSPIN_FN_SLP_ACC, 0x2E);
+  dSPIN_SetParam(dSPIN_FN_SLP_DEC, 0x2E);
+  dSPIN_GetStatus();
 }
 
+void loop() { 
+  if (Serial.available() > 0)
+  {
+     char cmd = Serial.read();
+     if (cmd == 'a')
+     {
+      acidityTests();
+     }
+     else if (cmd == 'b')
+     {
+      while (Serial.available() < 1);
+      int unit = Serial.parseInt();
+      bioTest(unit);
+     }
+     else if (cmd == 'm')
+     {
+      moistureTest();
+     }
+     else if (cmd == 'r')
+     {
+      returnHome();
+     }
+     else if (cmd == 'd')
+     {
+      while (Serial.available() < 1);
+      int unit = Serial.parseInt();
+      dry(unit);
+     }
+     else if (cmd == 'w')
+     {
+      while (Serial.available() < 1);
+      int unit = Serial.parseInt();
+      wet(unit);
+     }
+  }
+  else delay(10);
+}
+
+void returnHome(){
+  base.write(home);
+}
+
+void dry(int i)
+{
+  if (i == 1)
+  {
+    base.write(dry_1);
+  }
+  else if (i == 2)
+  {
+    base.write(dry_2);
+  }
+  else if (i == 3)
+  {
+    base.write(dry_3);
+  }
+}
+
+void wet(int i)
+{
+  if (i == 1)
+  {
+    base.write(wet_1);
+  }
+  else if (i == 2)
+  {
+    base.write(wet_2);
+  }
+  else if (i == 3)
+  {
+    base.write(wet_3);
+  }
+}
 
 void moistureTest(){
   int sensorValue = analogRead(A0);
@@ -223,19 +296,22 @@ void collectSamples(){
 void acidityTests(){
   while (Serial.available() == 0);
   base.write(wet_1);
-  prober.step(PH_STEPS); //TODO: Find out if the program waits until movement is finished to start next line
+  dSPIN_Move(FWD, PH_STEPS);
   float pH_1 = getAveragedPH();
-  prober.step(-PH_STEPS);
+  Serial.println((String)pH_1);
+  dSPIN_Move(REV, PH_STEPS);
   
   base.write(wet_2);
-  prober.step(PH_STEPS);
+  dSPIN_Move(FWD, PH_STEPS);
   float pH_2 = getAveragedPH();
-  prober.step(-PH_STEPS);
+  Serial.println((String)pH_2);
+  dSPIN_Move(REV, PH_STEPS);
   
   base.write(wet_3);
-  prober.step(PH_STEPS);
+  dSPIN_Move(FWD, PH_STEPS);
   float pH_3 = getAveragedPH();
-  prober.step(-PH_STEPS);
+  Serial.println((String)pH_3);
+  dSPIN_Move(REV, PH_STEPS);
   
 }
 
@@ -265,40 +341,41 @@ void bioTest(int input){
     Serial.println("bad input");
   }
   
-  prober.step(BIO_STEPS);
+  dSPIN_Move(FWD, BIO_STEPS);
   delay(BIO_COLLECTION_TIME_ms);
-  prober.step(-BIO_STEPS);
+  dSPIN_Move(REV, BIO_STEPS);
   base.write(home);
-  prober.step(BIO_READING_STEPS);
+  dSPIN_Move(FWD, BIO_STEPS);
   delay(4000);
-  prober.step(-BIO_READING_STEPS);
+  dSPIN_Move(REV, BIO_STEPS);
+  
 }
 
 void cal_s(){                        //calibrate to a pH of 7
-  myserial.print("cal,mid,7\r");}    //send the "cal,mid,7" command to calibrate to a pH of 7.00
+  pH_probe.print("cal,mid,7\r");}    //send the "cal,mid,7" command to calibrate to a pH of 7.00
 
 
 void cal_f(){                       //calibrate to a pH of 4 
-  myserial.print("cal,low,4\r");}     //send the "cal,low,4" command to calibrate to a pH of 4.00 
+  pH_probe.print("cal,low,4\r");}     //send the "cal,low,4" command to calibrate to a pH of 4.00 
 
 
 void cal_t(){                      //calibrate to a pH of 10.00
-  myserial.print("cal,high,10\r");}  //send the "cal,high,10" command to calibrate to a pH of 10.00  
+  pH_probe.print("cal,high,10\r");}  //send the "cal,high,10" command to calibrate to a pH of 10.00  
 
 
 void phFactoryDefault(){           //factory defaults the pH circuit
-  myserial.print("X\r");}          //send the "X" command to factory reset the device 
+  pH_probe.print("X\r");}          //send the "X" command to factory reset the device 
 
 
 void read_info(){                  //get device info
-    myserial.print("I\r");}        //send the "I" command to query the information
+    pH_probe.print("I\r");}        //send the "I" command to query the information
 
 
 void phSetLEDs(byte enabled)      //turn the LEDs on or off
 {
   if(enabled)                     //if enabled is > 0 
-    myserial.print("L,1\r");      //the LED's will turn ON 
+    pH_probe.print("L,1\r");      //the LED's will turn ON 
   else                            //if enabled is 0        
-    myserial.print("L,0\r");      //the LED's will turn OFF
+    pH_probe.print("L,0\r");      //the LED's will turn OFF
 }
 
