@@ -2,7 +2,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector, ArmAngles
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, Int16
 
 
 class Publisher(object):
@@ -10,7 +10,7 @@ class Publisher(object):
         # TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
         self.cam_pub = rospy.Publisher("/camera_orientation",
                                        PanTiltZoom, queue_size=10)
-        self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic", "cmd_vel"), Twist, queue_size=10)
+        self.vel_pub = rospy.Publisher("wheels", Int16, queue_size=10)
         self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic", "/cmd_arm"),
                                                 ArmMotion, queue_size=10)
         self.arm_endEffector_pub = rospy.Publisher(rospy.get_param("cmd_endEffector_topic", "cmd_endEffector"),
@@ -19,20 +19,19 @@ class Publisher(object):
                                                    MotionType, queue_size=10)
         self.moving_bool_pub = rospy.Publisher("is_moving", Bool, queue_size=10)
         self.yolo_arm = rospy.Publisher("arm", ArmAngles, queue_size=10)
+        self.yolo_claw = rospy.Publisher("claw", Int16, queue_size=10)
+
+    def yolo_claw_pub(self, op)
+        msg = Int16(op)
+        self.yolo_claw.publish(msg)
 
     # publisher for velocity
     def publish_velocity(self, a1, a2, on):
         """
         Publish linear and angular command velocity in twist for control systems
         """
-        msg = Twist()
-        msg.linear.x = a2*3
-        msg.angular.z = a1*3
-        bool = Bool()
-        bool.data = on
-
+        msg = Int16(4000 * a2 + 5000)
         self.vel_pub.publish(msg)
-        self.moving_bool_pub.publish(bool)
 
     # publish 2 main joystick axes for arm base movement (mode must be arm)
     def publish_arm_base_movement(self, armLength, armHeight, angle, cartesian=False, velocity=False):

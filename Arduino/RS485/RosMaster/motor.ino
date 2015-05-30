@@ -2,19 +2,68 @@
 #include <Servo.h>
 
 
-void drive_motor(const control_systems::SetPoints& setPoints)
+void claw(const std_msgs::Int16& boole)
 {
-    setMotorSpeed(pfrv, setPoints.speedFL);
-    setMotorSpeed(srrv, setPoints.speedFR);
-    setMotorSpeed(sfrv, setPoints.speedML);
-    setMotorSpeed(pmrv, setPoints.speedMR);
-    setMotorSpeed(smrv, setPoints.speedRL);
-    setMotorSpeed(prrv, setPoints.speedRR);
+ if (boole.data == -1){
+    //close  
+    myStepper.setSpeed(motorSpeed);
+    
+ }
+ else  if (boole.data == 1){
+    // open
+    myStepper.setSpeed(-motorSpeed);
+    
+ }
+ else {
+  // stop 
+  myStepper.setSpeed(0);
+    
+ }
+ 
+}
 
-    setAngle(sfsa, setPoints.thetaFL);
-    setAngle(pfsa, setPoints.thetaFR);
-    setAngle(srsa, setPoints.thetaRL);
-    setAngle(prsa, setPoints.thetaRR);
+
+void drive_motor(const std_msgs::Int16& setPoints)
+{
+    ENB = 1;
+    BRK = 0;
+    DRV = setPoints.data;
+
+    if (ENB==1){
+      digitalWrite(EN, HIGH);
+    }
+    else {
+      digitalWrite(EN, LOW);
+    }
+    
+    if (BRK==1){
+      digitalWrite(BK, HIGH);
+    }
+    else {
+      digitalWrite(BK, LOW);
+    }
+
+    if (DRV<5000){
+      digitalWrite(DR, LOW);
+      int DRVd= map(DRV, 5000,1000,0,4000);
+      WriteRegister(ADDB, DRVd,1);
+      WriteRegister(ADD0, REG01,1);
+      WriteRegister(ADD2, REG21,1);
+      WriteRegister(ADD3, REG31,1);
+      WriteRegister(ADD4, REG41,1);
+      WriteRegister(ADDA, REGA1,1);
+    }
+    else{
+      digitalWrite(DR, HIGH);
+      int DRVd=map(DRV, 5000, 9000, 0, 4000);
+      WriteRegister(ADDB, DRVd,1);
+      WriteRegister(ADD0, REG01,1);
+      WriteRegister(ADD2, REG21,1);
+      WriteRegister(ADD3, REG31,1);
+      WriteRegister(ADD4, REG41,1);
+      WriteRegister(ADDA, REGA1,1);
+    
+  }
 }
 
 void arm_motor(const control_systems::ArmAngles& setPoints)

@@ -2,22 +2,21 @@
 #define MOTOR_H
 
 #include <control_systems/ArmAngles.h>
-#include <control_systems/SetPoints.h>
+#include <std_msgs/Int16.h>
 #include <control_systems/PanTiltZoom.h>
 
-int aBase = 1;
-int bBase = 2;
-int speedBase = 3;
-int aShoulder = 1;
-int bShoulder = 2;
-int speedShoulder= 3;
-int aElbow = 1;
-int bElbow = 2;
-int speedElbow = 3;
-int aWrist = 1;
-int bWrist = 2;
-int speedWrist = 3;
-
+int aBase = A6;
+int bBase = A11;
+int speedBase = 2;
+int aShoulder = A5;
+int bShoulder = A10;
+int speedShoulder = 3;
+int aElbow = A4;
+int bElbow = A9;
+int speedElbow = 4;
+int aWrist = A3;
+int bWrist = A8;
+int speedWrist = 5;
 
 enum DriveAddress {
   sfsa = 34,
@@ -44,8 +43,8 @@ enum CamMotor {
   tilt = 31
 };
 
-void drive_motor(const control_systems::SetPoints& setPoints);
+void claw(const std_msgs::Int16& boole);
+void drive_motor(const std_msgs::Int16& setPoints);
 void arm_motor(const control_systems::ArmAngles& setPoints);
 void camera_motor(const control_systems::PanTiltZoom& setPoints);
-
 #endif

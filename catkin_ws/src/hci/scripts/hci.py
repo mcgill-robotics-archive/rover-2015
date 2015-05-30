@@ -77,7 +77,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
 
         self.armMotors = [self.ui.baseRadio, self.ui.shoulderRadio, self.ui.elbowRadio, self.ui.wristRadio]
-
+        self.ui.baseRadio.setChecked(True)
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
         self.ui.pushButton.clicked.connect(self.add_way_point)
@@ -240,8 +240,8 @@ class CentralUi(QtGui.QMainWindow):
             self.toggle_coordinate()
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.profile.param_value["/joystick/translatory"]:
-            self.ui.skid.setChecked(not self.ui.skid.isChecked())
+        if self.profile.param_value["/joystick/claw_stop"]:
+            self.claw_stop();
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
         if self.profile.param_value["/joystick/ackreman_moving"]:
@@ -256,10 +256,23 @@ class CentralUi(QtGui.QMainWindow):
             self.set_controller_mode(3)
         if self.profile.param_value["/joystick/changeArmMotor"]:
             self.switch_arm()
+        if self.profile.param_value["/joystick/close_claw"]:
+            self.close_claw();
+        if self.profile.param_value["/joystick/open_claw"]:
+            self.open_claw();
 
         self.controller.clear_buttons()
         # minus sign to compensate for joystick inherent positive and negative mappings
         self.publish_controls()
+
+    def close_calw(self):
+        self.publisher.yolo_claw_pub(1)
+        
+    def close_calw(self):
+        self.publisher.yolo_claw_pub(0)
+
+    def open_claw(self):      
+        self.publisher.yolo_claw_pub(-1)
 
     def toggle_coordinate(self):
         self.ui.coordinateSystem.setCurrentIndex((self.ui.coordinateSystem.currentIndex()+1) % 2)

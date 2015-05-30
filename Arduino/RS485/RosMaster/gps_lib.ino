@@ -6,6 +6,7 @@ void displayInfo()
     msg.locationValid = true;
     msg.latitude = gps.location.lat();
     msg.longitude = gps.location.lng();
+    msg.altitude = gps.altitude.meters();
   }
   else msg.locationValid = false;
   
