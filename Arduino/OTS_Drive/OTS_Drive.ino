@@ -171,7 +171,7 @@ void setWheelAngle()
 
 ros::NodeHandle nh;
 control_systems::SetPoints setPoints;
-ros::Subscriber<control_systems::SetPoints> driveSubscriber("toggle_led", &driveCallback );
+ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
 
 void setup()
 {
