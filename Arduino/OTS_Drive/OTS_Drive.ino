@@ -3,6 +3,8 @@
 #include "pins.h"
 #include <control_systems/SetPoints.h>
 
+#define PI 3.141592653
+
 Servo LF_servo, RF_servo, LR_servo, RR_servo;
 
 //SET STRAIGHT AS DEFAULT
@@ -22,6 +24,11 @@ int RF_servo_cmd = 0;
 int LR_servo_cmd = 0;
 int RR_servo_cmd = 0;  
 
+float radToDeg(float rad)
+{
+    return rad / PI * 180.0;
+}
+
 void driveCallback( const control_systems::SetPoints& setPoints )
 {
     FLsetSpeed(setPoints.speedFL);
@@ -30,6 +37,14 @@ void driveCallback( const control_systems::SetPoints& setPoints )
     MRsetSpeed(setPoints.speedMR);
     BLsetSpeed(setPoints.speedRL);
     BRsetSpeed(setPoints.speedRR);
+
+    LF_servo_angle = 90.0 + radToDeg(setPoints.thetaFL);
+    RF_servo_angle = 90.0 + radToDeg(setPoints.thetaFR);
+    LR_servo_angle = 90.0 + radToDeg(setPoints.thetaRL);
+    RR_servo_angle = 90.0 + radToDeg(setPoints.thetaRR);
+    
+    setWheelAngle();
+
 }
 
 void FLsetSpeed(double speed) 
@@ -46,7 +61,7 @@ void FLsetSpeed(double speed)
         else 
             digitalWrite(FL_DIRECTION_PIN, LOW);
 
-        analogWrite(FL_DRIVE_PIN, abs(speed));
+        analogWrite(FL_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
@@ -64,7 +79,7 @@ void FRsetSpeed(double speed)
         else 
             digitalWrite(FR_DIRECTION_PIN, LOW);
 
-        analogWrite(FR_DRIVE_PIN, abs(speed));
+        analogWrite(FR_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
@@ -82,7 +97,7 @@ void MLsetSpeed(double speed)
         else 
             digitalWrite(ML_DIRECTION_PIN, LOW);
 
-        analogWrite(ML_DRIVE_PIN, abs(speed));
+        analogWrite(ML_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
@@ -100,7 +115,7 @@ void MRsetSpeed(double speed)
         else 
             digitalWrite(MR_DIRECTION_PIN, LOW);
 
-        analogWrite(MR_DRIVE_PIN, abs(speed));
+        analogWrite(MR_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
@@ -118,7 +133,7 @@ void BLsetSpeed(double speed)
         else 
             digitalWrite(BL_DIRECTION_PIN, LOW);
 
-        analogWrite(BL_DRIVE_PIN, abs(speed));
+        analogWrite(BL_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
@@ -136,7 +151,7 @@ void BRsetSpeed(double speed)
         else 
             digitalWrite(BR_DIRECTION_PIN, LOW);
 
-        analogWrite(BR_DRIVE_PIN, abs(speed));
+        analogWrite(BR_DRIVE_PIN, abs(speed) * 10);
     }
 }
 
