@@ -1,7 +1,7 @@
 set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake)
 
 cmake_minimum_required(VERSION 2.8.3)
-project(Arduino_Cmake C CXX)
+project(arduino-test C CXX)
 if(linux)
     #set(ROS_LIB_DIR /home/david/rover/catkin_ws/build/arduino_test/ros_lib)
     set(ROS_LIB_DIR /home/david/sketchbook/libraries/ros_lib)

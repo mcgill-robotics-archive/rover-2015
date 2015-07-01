@@ -2,186 +2,13 @@
 #include <ros.h>
 #include "pins.h"
 #include <control_systems/SetPoints.h>
+#include "SteeringControl.h"
+#include "DriveControl.h"
 
-//#define PI 3.141592653
-
-Servo LF_servo, RF_servo, LR_servo, RR_servo;
-
-//SET STRAIGHT AS DEFAULT
-float LF_servo_angle = 90.0;
-float RF_servo_angle = 90.0;
-float LR_servo_angle = 90.0;
-float RR_servo_angle = 90.0;
-
-//initialize limits on what commands can be sent to servos
-int frontServoLowerLimit_cmd = 1000;
-int frontServoUpperLimit_cmd = 2000;
-int rearServoLowerLimit_cmd = 1000;
-int rearServoUpperLimit_cmd = 2000;
-
-int LF_servo_cmd = 0;
-int RF_servo_cmd = 0;
-int LR_servo_cmd = 0;
-int RR_servo_cmd = 0;  
 
 float radToDeg(float rad)
 {
     return rad / PI * 180.0;
-}
-
-void FLsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(FL_DRIVE_PIN, 0);
-     //   digitalWrite(FL_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(FL_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(FL_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(FL_DIRECTION_PIN, LOW);
-
-        analogWrite(FL_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void FRsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(FR_DRIVE_PIN, 0);
-    //    digitalWrite(FR_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(FR_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(FR_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(FR_DIRECTION_PIN, LOW);
-
-        analogWrite(FR_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void MLsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(ML_DRIVE_PIN, 0);
-    //    digitalWrite(ML_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(ML_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(ML_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(ML_DIRECTION_PIN, LOW);
-
-        analogWrite(ML_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void MRsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(MR_DRIVE_PIN, 0);
-    //    digitalWrite(MR_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(MR_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(MR_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(MR_DIRECTION_PIN, LOW);
-
-        analogWrite(MR_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void BLsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(BL_DRIVE_PIN, 0);
-    //    digitalWrite(BL_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(BL_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(BL_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(BL_DIRECTION_PIN, LOW);
-
-        analogWrite(BL_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void BRsetSpeed(double speed) 
-{
-    // cw is gnd
-    // ccw is vcc
-    if (speed == 0)
-    {
-        analogWrite(BR_DRIVE_PIN, 0);
-     //   digitalWrite(BR_ENABLE_PIN, LOW);
-    }
-    else
-    {
-        digitalWrite(BR_ENABLE_PIN, HIGH);
-        if (speed < 0)
-            digitalWrite(BR_DIRECTION_PIN, HIGH); // confirm direction polarity
-        else 
-            digitalWrite(BR_DIRECTION_PIN, LOW);
-
-        analogWrite(BR_DRIVE_PIN, (int) (abs(speed) * 10));
-    }
-}
-
-void setWheelAngle()
-{ 
-  //convert angle in degrees to command
-  LF_servo_cmd = (int) map((long) LF_servo_angle,0,180,1000,2000);
-  RF_servo_cmd = (int) map((long) RF_servo_angle,0,180,1000,2000);
-  LR_servo_cmd = (int) map((long) LR_servo_angle,0,180,1000,2000);
-  RR_servo_cmd = (int) map((long) RR_servo_angle,0,180,1000,2000);
-  
-  //Fine tune servo calibration:
-  //should not be greater than like 50 or 100
-  //The larger the number, the smaller the range of motion of the servos
-  LF_servo_cmd += 0;
-  RF_servo_cmd += 0;
-  LR_servo_cmd += 0;
-  RR_servo_cmd += 0;  
-    
-  LF_servo_cmd = constrain(LF_servo_cmd, frontServoLowerLimit_cmd, frontServoUpperLimit_cmd);
-  RF_servo_cmd = constrain(RF_servo_cmd, frontServoLowerLimit_cmd, frontServoUpperLimit_cmd);
-  LR_servo_cmd = constrain(LR_servo_cmd, rearServoLowerLimit_cmd, rearServoUpperLimit_cmd);
-  RR_servo_cmd = constrain(RR_servo_cmd, rearServoLowerLimit_cmd, rearServoUpperLimit_cmd);
-
-  //send signals to motors
-  LF_servo.writeMicroseconds(LF_servo_cmd);
-  RF_servo.writeMicroseconds(RF_servo_cmd);
-  LR_servo.writeMicroseconds(LR_servo_cmd);
-  RR_servo.writeMicroseconds(RR_servo_cmd);
-
 }
 
 void driveCallback( const control_systems::SetPoints& setPoints )
@@ -193,17 +20,16 @@ void driveCallback( const control_systems::SetPoints& setPoints )
     BLsetSpeed(setPoints.speedRL);
     BRsetSpeed(setPoints.speedRR);
 
-    LF_servo_angle = 90.0 + radToDeg(setPoints.thetaFL);
-    RF_servo_angle = 90.0 + radToDeg(setPoints.thetaFR);
-    LR_servo_angle = 90.0 + radToDeg(setPoints.thetaRL);
-    RR_servo_angle = 90.0 + radToDeg(setPoints.thetaRR);
+    float flAngle = 90.0 + radToDeg(setPoints.thetaFL);
+    float frAngle = 90.0 + radToDeg(setPoints.thetaFR);
+    float blAngle = 90.0 + radToDeg(setPoints.thetaRL);
+    float brAngle = 90.0 + radToDeg(setPoints.thetaRR);
 
-    setWheelAngle();
+    setWheelAngle(flAngle, frAngle, blAngle, brAngle);
 
 }
 
 ros::NodeHandle nh;
-control_systems::SetPoints setPoints;
 ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
 
 void setup()
@@ -238,10 +64,7 @@ void setup()
     pinMode(BL_STEERING_PIN, OUTPUT);
     pinMode(BR_STEERING_PIN, OUTPUT);
 
-    LF_servo.attach(FL_STEERING_PIN);
-    RF_servo.attach(FR_STEERING_PIN);
-    LR_servo.attach(BL_STEERING_PIN);
-    RR_servo.attach(BR_STEERING_PIN);
+    attachServos();
 
     nh.initNode();
     nh.subscribe(driveSubscriber);
