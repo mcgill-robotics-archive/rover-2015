@@ -3,7 +3,7 @@
 #include "pins.h"
 #include <control_systems/SetPoints.h>
 
-#define PI 3.141592653
+//#define PI 3.141592653
 
 Servo LF_servo, RF_servo, LR_servo, RR_servo;
 
@@ -29,30 +29,15 @@ float radToDeg(float rad)
     return rad / PI * 180.0;
 }
 
-void driveCallback( const control_systems::SetPoints& setPoints )
-{
-    FLsetSpeed(setPoints.speedFL);
-    FRsetSpeed(setPoints.speedFR);
-    MLsetSpeed(setPoints.speedML);
-    MRsetSpeed(setPoints.speedMR);
-    BLsetSpeed(setPoints.speedRL);
-    BRsetSpeed(setPoints.speedRR);
-
-    LF_servo_angle = 90.0 + radToDeg(setPoints.thetaFL);
-    RF_servo_angle = 90.0 + radToDeg(setPoints.thetaFR);
-    LR_servo_angle = 90.0 + radToDeg(setPoints.thetaRL);
-    RR_servo_angle = 90.0 + radToDeg(setPoints.thetaRR);
-    
-    setWheelAngle();
-
-}
-
 void FLsetSpeed(double speed) 
 {
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(FL_ENABLE_PIN, LOW);
+    {
+        analogWrite(FL_DRIVE_PIN, 0);
+     //   digitalWrite(FL_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(FL_ENABLE_PIN, HIGH);
@@ -61,7 +46,7 @@ void FLsetSpeed(double speed)
         else 
             digitalWrite(FL_DIRECTION_PIN, LOW);
 
-        analogWrite(FL_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(FL_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
@@ -70,7 +55,10 @@ void FRsetSpeed(double speed)
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(FR_ENABLE_PIN, LOW);
+    {
+        analogWrite(FR_DRIVE_PIN, 0);
+    //    digitalWrite(FR_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(FR_ENABLE_PIN, HIGH);
@@ -79,7 +67,7 @@ void FRsetSpeed(double speed)
         else 
             digitalWrite(FR_DIRECTION_PIN, LOW);
 
-        analogWrite(FR_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(FR_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
@@ -88,7 +76,10 @@ void MLsetSpeed(double speed)
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(ML_ENABLE_PIN, LOW);
+    {
+        analogWrite(ML_DRIVE_PIN, 0);
+    //    digitalWrite(ML_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(ML_ENABLE_PIN, HIGH);
@@ -97,7 +88,7 @@ void MLsetSpeed(double speed)
         else 
             digitalWrite(ML_DIRECTION_PIN, LOW);
 
-        analogWrite(ML_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(ML_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
@@ -106,7 +97,10 @@ void MRsetSpeed(double speed)
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(MR_ENABLE_PIN, LOW);
+    {
+        analogWrite(MR_DRIVE_PIN, 0);
+    //    digitalWrite(MR_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(MR_ENABLE_PIN, HIGH);
@@ -115,7 +109,7 @@ void MRsetSpeed(double speed)
         else 
             digitalWrite(MR_DIRECTION_PIN, LOW);
 
-        analogWrite(MR_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(MR_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
@@ -124,7 +118,10 @@ void BLsetSpeed(double speed)
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(BL_ENABLE_PIN, LOW);
+    {
+        analogWrite(BL_DRIVE_PIN, 0);
+    //    digitalWrite(BL_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(BL_ENABLE_PIN, HIGH);
@@ -133,7 +130,7 @@ void BLsetSpeed(double speed)
         else 
             digitalWrite(BL_DIRECTION_PIN, LOW);
 
-        analogWrite(BL_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(BL_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
@@ -142,7 +139,10 @@ void BRsetSpeed(double speed)
     // cw is gnd
     // ccw is vcc
     if (speed == 0)
-        digitalWrite(BR_ENABLE_PIN, LOW);
+    {
+        analogWrite(BR_DRIVE_PIN, 0);
+     //   digitalWrite(BR_ENABLE_PIN, LOW);
+    }
     else
     {
         digitalWrite(BR_ENABLE_PIN, HIGH);
@@ -151,17 +151,17 @@ void BRsetSpeed(double speed)
         else 
             digitalWrite(BR_DIRECTION_PIN, LOW);
 
-        analogWrite(BR_DRIVE_PIN, abs(speed) * 10);
+        analogWrite(BR_DRIVE_PIN, (int) (abs(speed) * 10));
     }
 }
 
 void setWheelAngle()
 { 
   //convert angle in degrees to command
-  LF_servo_cmd = map(LF_servo_angle,0,180,1000,2000); 
-  RF_servo_cmd = map(RF_servo_angle,0,180,1000,2000);
-  LR_servo_cmd = map(LR_servo_angle,0,180,1000,2000);
-  RR_servo_cmd = map(RR_servo_angle,0,180,1000,2000);
+  LF_servo_cmd = (int) map((long) LF_servo_angle,0,180,1000,2000);
+  RF_servo_cmd = (int) map((long) RF_servo_angle,0,180,1000,2000);
+  LR_servo_cmd = (int) map((long) LR_servo_angle,0,180,1000,2000);
+  RR_servo_cmd = (int) map((long) RR_servo_angle,0,180,1000,2000);
   
   //Fine tune servo calibration:
   //should not be greater than like 50 or 100
@@ -181,6 +181,24 @@ void setWheelAngle()
   RF_servo.writeMicroseconds(RF_servo_cmd);
   LR_servo.writeMicroseconds(LR_servo_cmd);
   RR_servo.writeMicroseconds(RR_servo_cmd);
+
+}
+
+void driveCallback( const control_systems::SetPoints& setPoints )
+{
+    FLsetSpeed(setPoints.speedFL);
+    FRsetSpeed(setPoints.speedFR);
+    MLsetSpeed(setPoints.speedML);
+    MRsetSpeed(setPoints.speedMR);
+    BLsetSpeed(setPoints.speedRL);
+    BRsetSpeed(setPoints.speedRR);
+
+    LF_servo_angle = 90.0 + radToDeg(setPoints.thetaFL);
+    RF_servo_angle = 90.0 + radToDeg(setPoints.thetaFR);
+    LR_servo_angle = 90.0 + radToDeg(setPoints.thetaRL);
+    RR_servo_angle = 90.0 + radToDeg(setPoints.thetaRR);
+
+    setWheelAngle();
 
 }
 
