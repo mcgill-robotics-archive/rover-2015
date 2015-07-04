@@ -5,7 +5,6 @@
 #include "SteeringControl.h"
 #include "DriveControl.h"
 
-
 float radToDeg(float rad)
 {
     return rad / PI * 180.0;
@@ -26,7 +25,6 @@ void driveCallback( const control_systems::SetPoints& setPoints )
     float brAngle = 90.0 + radToDeg(setPoints.thetaRR);
 
     setWheelAngle(flAngle, frAngle, blAngle, brAngle);
-
 }
 
 ros::NodeHandle nh;
@@ -63,6 +61,19 @@ void setup()
     pinMode(FR_STEERING_PIN, OUTPUT);
     pinMode(BL_STEERING_PIN, OUTPUT);
     pinMode(BR_STEERING_PIN, OUTPUT);
+
+    pinMode(FL_DATA1_PIN, OUTPUT);
+    pinMode(FL_DATA2_PIN, OUTPUT);
+    pinMode(FR_DATA1_PIN, OUTPUT);
+    pinMode(FR_DATA2_PIN, OUTPUT);
+    pinMode(ML_DATA1_PIN, OUTPUT);
+    pinMode(ML_DATA2_PIN, OUTPUT);
+    pinMode(MR_DATA1_PIN, OUTPUT);
+    pinMode(MR_DATA2_PIN, OUTPUT);
+    pinMode(BL_DATA1_PIN, OUTPUT);
+    pinMode(BL_DATA2_PIN, OUTPUT);
+    pinMode(BR_DATA1_PIN, OUTPUT);
+    pinMode(BR_DATA2_PIN, OUTPUT);
 
     attachServos();
 

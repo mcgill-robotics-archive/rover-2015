@@ -31,5 +31,23 @@
 #define BL_STEERING_PIN 10
 #define BR_STEERING_PIN 8
 
+#define FL_DATA1_PIN 1
+#define FL_DATA2_PIN 1
+
+#define FR_DATA1_PIN 1
+#define FR_DATA2_PIN 1
+
+#define ML_DATA1_PIN 1
+#define ML_DATA2_PIN 1
+
+#define MR_DATA1_PIN 1
+#define MR_DATA2_PIN 1
+
+#define BL_DATA1_PIN 1
+#define BL_DATA2_PIN 1
+
+#define BR_DATA1_PIN 1
+#define BR_DATA2_PIN 1
+
 
 #endif
