@@ -19,9 +19,9 @@ void FLsetSpeed(double speed) {
     {
         digitalWrite(FL_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(FL_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(FL_DIRECTION_PIN, LOW); // confirm direction polarity
         else
-            digitalWrite(FL_DIRECTION_PIN, LOW);
+            digitalWrite(FL_DIRECTION_PIN, HIGH);
 
         analogWrite(FL_DRIVE_PIN, (int) (abs(speed) * 10));
     }
@@ -61,9 +61,9 @@ void MLsetSpeed(double speed) {
     {
         digitalWrite(ML_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(ML_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(ML_DIRECTION_PIN, LOW); // confirm direction polarity
         else
-            digitalWrite(ML_DIRECTION_PIN, LOW);
+            digitalWrite(ML_DIRECTION_PIN, HIGH);
 
         analogWrite(ML_DRIVE_PIN, (int) (abs(speed) * 10));
     }
@@ -103,9 +103,9 @@ void BLsetSpeed(double speed) {
     {
         digitalWrite(BL_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(BL_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(BL_DIRECTION_PIN, LOW); // confirm direction polarity
         else
-            digitalWrite(BL_DIRECTION_PIN, LOW);
+            digitalWrite(BL_DIRECTION_PIN, HIGH);
 
         analogWrite(BL_DRIVE_PIN, (int) (abs(speed) * 10));
     }

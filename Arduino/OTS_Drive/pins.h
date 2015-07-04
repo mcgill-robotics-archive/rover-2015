@@ -26,9 +26,9 @@
 #define BL_ENABLE_PIN 26
 #define BR_ENABLE_PIN 32
 
-#define FL_STEERING_PIN 11
-#define FR_STEERING_PIN 10
-#define BL_STEERING_PIN 9
+#define FL_STEERING_PIN 9
+#define FR_STEERING_PIN 11
+#define BL_STEERING_PIN 10
 #define BR_STEERING_PIN 8
 
 
