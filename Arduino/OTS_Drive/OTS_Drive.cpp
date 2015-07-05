@@ -4,6 +4,7 @@
 #include <control_systems/SetPoints.h>
 #include "SteeringControl.h"
 #include "DriveControl.h"
+#include "std_msgs/Bool.h"
 
 float radToDeg(float rad)
 {
@@ -27,8 +28,17 @@ void driveCallback( const control_systems::SetPoints& setPoints )
     setWheelAngle(flAngle, frAngle, blAngle, brAngle);
 }
 
+void callbackMoving( const std_msgs::Bool& boolean)
+{
+    if (boolean.data)
+        enableMotors();
+    else
+        disableMotors();
+}
+
 ros::NodeHandle nh;
 ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
+ros::Subscriber<std_msgs::Bool> movingSubscriber("/is_moving", &callbackMoving);
 
 void setup()
 {
@@ -79,6 +89,7 @@ void setup()
 
     nh.initNode();
     nh.subscribe(driveSubscriber);
+    nh.subscribe(movingSubscriber);
 }
 
 void loop()

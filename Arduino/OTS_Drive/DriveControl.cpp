@@ -13,13 +13,11 @@ void FLsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(FL_DRIVE_PIN, 0);
-        //   digitalWrite(FL_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(FL_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(FL_DIRECTION_PIN, LOW); // confirm direction polarity
+            digitalWrite(FL_DIRECTION_PIN, LOW);
         else
             digitalWrite(FL_DIRECTION_PIN, HIGH);
 
@@ -34,13 +32,11 @@ void FRsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(FR_DRIVE_PIN, 0);
-        //    digitalWrite(FR_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(FR_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(FR_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(FR_DIRECTION_PIN, HIGH);
         else
             digitalWrite(FR_DIRECTION_PIN, LOW);
 
@@ -55,13 +51,11 @@ void MLsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(ML_DRIVE_PIN, 0);
-        //    digitalWrite(ML_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(ML_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(ML_DIRECTION_PIN, LOW); // confirm direction polarity
+            digitalWrite(ML_DIRECTION_PIN, LOW);
         else
             digitalWrite(ML_DIRECTION_PIN, HIGH);
 
@@ -76,13 +70,11 @@ void MRsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(MR_DRIVE_PIN, 0);
-        //    digitalWrite(MR_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(MR_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(MR_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(MR_DIRECTION_PIN, HIGH);
         else
             digitalWrite(MR_DIRECTION_PIN, LOW);
 
@@ -97,13 +89,11 @@ void BLsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(BL_DRIVE_PIN, 0);
-        //    digitalWrite(BL_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(BL_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(BL_DIRECTION_PIN, LOW); // confirm direction polarity
+            digitalWrite(BL_DIRECTION_PIN, LOW);
         else
             digitalWrite(BL_DIRECTION_PIN, HIGH);
 
@@ -118,16 +108,35 @@ void BRsetSpeed(double speed) {
     if (speed == 0)
     {
         analogWrite(BR_DRIVE_PIN, 0);
-        //   digitalWrite(BR_ENABLE_PIN, LOW);
     }
     else
     {
-        digitalWrite(BR_ENABLE_PIN, HIGH);
         if (speed < 0)
-            digitalWrite(BR_DIRECTION_PIN, HIGH); // confirm direction polarity
+            digitalWrite(BR_DIRECTION_PIN, HIGH);
         else
             digitalWrite(BR_DIRECTION_PIN, LOW);
 
         analogWrite(BR_DRIVE_PIN, (int) (abs(speed) * 10));
     }
+}
+
+void enableMotors()
+{
+    digitalWrite(FL_ENABLE_PIN, HIGH);
+    digitalWrite(FR_ENABLE_PIN, HIGH);
+    digitalWrite(ML_ENABLE_PIN, HIGH);
+    digitalWrite(MR_ENABLE_PIN, HIGH);
+    digitalWrite(BL_ENABLE_PIN, HIGH);
+    digitalWrite(BR_ENABLE_PIN, HIGH);
+
+}
+
+void disableMotors()
+{
+    digitalWrite(FL_ENABLE_PIN, LOW);
+    digitalWrite(FR_ENABLE_PIN, LOW);
+    digitalWrite(ML_ENABLE_PIN, LOW);
+    digitalWrite(MR_ENABLE_PIN, LOW);
+    digitalWrite(BL_ENABLE_PIN, LOW);
+    digitalWrite(BR_ENABLE_PIN, LOW);
 }
