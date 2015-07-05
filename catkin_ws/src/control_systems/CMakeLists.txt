@@ -54,7 +54,6 @@ find_package(catkin REQUIRED COMPONENTS
    ArmMotion.msg
    ArmAngles.msg
    EndEffector.msg
-   PanTiltZoom.msg
 )
 
 ## Generate services in the 'srv' folder

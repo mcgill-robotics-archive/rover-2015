@@ -53,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
    Imu.msg
    RoverSpeed.msg
    Tachometers.msg
+   PanTiltZoom.msg
  )
 
 ## Generate services in the 'srv' folder
