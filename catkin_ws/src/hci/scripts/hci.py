@@ -31,6 +31,7 @@ class CentralUi(QtGui.QMainWindow):
         self.modeId = 0
         self.grip = 0
         self.ui.arm_mode.setCurrentIndex(1)
+        self.ui.ackMoving.setChecked(False)
 
         # List of topic names for the camera feeds, compiled from parameter server
         self.camera_topic_list = []

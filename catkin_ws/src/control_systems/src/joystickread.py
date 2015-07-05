@@ -195,7 +195,7 @@ class DualJoystickReader(object):
             rotOut.data = self.rotation
 
             #Set all speeds to zero if speed set off
-            if self.isMoving:
+            if not self.isMoving:
                 self.settings.speedFL = 0
                 self.settings.speedFR = 0
                 self.settings.speedML = 0
