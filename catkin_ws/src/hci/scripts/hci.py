@@ -14,7 +14,6 @@ import os
 from std_msgs.msg import *
 from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
-from rover_camera.srv import ChangeFeed
 from sensor_msgs.msg import Image
 
 
@@ -24,23 +23,29 @@ class CentralUi(QtGui.QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
         self.ui.DriveMode.setChecked(True)
-        self.controller = JoystickController()
-        self.profile = ProfileParser(self.controller)
-        self.publisher = Publisher()
-        self.modeId = 0
-        self.grip = 0
         self.ui.arm_mode.setCurrentIndex(1)
         self.ui.ackMoving.setChecked(False)
 
-        # List of topic names for the camera feeds, compiled from parameter server
-        self.camera_topic_list = []
+        self.controller = JoystickController()
+        self.profile = ProfileParser(self.controller)
+        self.publisher = Publisher()
 
-        # signal quality timer
-        self.quality_timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"), self.get_signal_quality)
-        self.quality_timer.start(1000)
-        
+        self.quality_timer = None
+        self.addPointTimer = None
+        self.controller_timer = None
+
+        self.init_ros()
+        self.init_connects()
+        self.init_timers()
+        self.setup_minimap()
+
+        self.sub = None
+
+        self.modeId = 0
+        self.grip = 0
+
         # map place holders
         self.tempPose = Queue.Queue()
         self.new_x = []
@@ -53,52 +58,55 @@ class CentralUi(QtGui.QMainWindow):
         self.cam_x = 0
         self.cam_y = 0
 
-        rospy.loginfo("Starting joystick acquisition")
+        self.first_point = False
+        self.dx = 0
+        self.dy = 0
 
-        # button connects
-        # controller timer connect
-        self.controller_timer = QtCore.QTimer()
-        self.addPointTimer = QtCore.QTimer()
-        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.read_controller)
-        QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.add_point_timeout)
-        self.set_controller_timer()
-        self.addPointTimer.start(100)
+        rospy.loginfo("HCI initialization completed")
 
+    def init_ros(self):
+        rospy.init_node('listener', anonymous=False)
+        rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
+
+    def init_connects(self):
         # joystick mode buttons signal connect
-        QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), self.set_mode0)
-        QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), self.set_mode1)
-        QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), self.set_mode2)
-        QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), self.set_mode3)
+        QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), lambda index = 0: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), lambda index = 1: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), lambda index = 2: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), lambda index = 3: self.set_controller_mode(index))
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
         QtCore.QObject.connect(self.ui.skid, QtCore.SIGNAL("toggled(bool)"), self.set_skid)
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
         QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
-        
+
         # camera feed selection signal connects
-        QtCore.QObject.connect(self.ui.Camera1Feed, QtCore.SIGNAL("currentIndexChanged(int)"), self.setFeed1Index)
-        self.ui.pushButton.clicked.connect(self.add_way_point)
-        self.ui.pushButton_2.clicked.connect(self.clear_map)
+        QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.add_way_point)
+        QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
 
-        self.setup_minimap()
-        
-        rospy.init_node('listener', anonymous=False)
+    def init_timers(self):
+        # signal quality timer
+        self.quality_timer = QtCore.QTimer()
+        QtCore.QObject.connect(self.quality_timer, QtCore.SIGNAL("timeout()"), self.get_signal_quality)
+        self.quality_timer.start(1000)
 
-        rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
-        self.set_skid(True)
+        # add point to map
+        self.addPointTimer = QtCore.QTimer()
+        QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.add_point_timeout)
+        self.addPointTimer.start(100)
 
-        self.switch_feed = rospy.ServiceProxy('/changeFeed', ChangeFeed)
+        # button connects
+        # controller timer connect
 
-        self.feed1index = 0
-        self.feed2index = 0
-        self.feed3index = 0
-        self.first_point = False
-        self.dx = 0
-        self.dy = 0
+        self.controller_timer = QtCore.QTimer()
+        QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.read_controller)
 
-        self.sub = None
-        rospy.loginfo("HCI initialization completed")
+        if self.controller.controller is not None:
+            self.controller_timer.start(100)
+            rospy.loginfo("Started controller timer")
+        else:
+            rospy.loginfo("Missing controller, timer aborted")
 
     def take_screenshot(self):
         self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)
@@ -110,7 +118,7 @@ class CentralUi(QtGui.QMainWindow):
         image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
         save = image.save("screen.jpeg")  # TODO: give right topic for arm camera
         if save:
-            rospy.loginfo("save successfull")
+            rospy.loginfo("save successful")
         else:
             rospy.logwarn("fail save")
 
@@ -198,33 +206,10 @@ class CentralUi(QtGui.QMainWindow):
         if boolean:
             self.publisher.setSteerMode(2)
 
-    def set_controller_timer(self):
-        if self.controller.controller is not None:
-            self.controller_timer.start(100)
-            rospy.loginfo("Started controller timer")
-        else:
-            rospy.loginfo("Missing controller, timer aborted")
-
     def read_controller(self):
         self.controller.update()
         self.profile.update_values()
-        self.ui.MainX.setValue(self.controller.a1*1000)
-        self.ui.MainY.setValue(-self.controller.a2*1000)
-        self.ui.StickRotation.setValue(self.controller.a3*1000)
-        self.ui.SecondaryY.setValue(-self.controller.a4*1000)
 
-        if self.profile.param_value["/joystick/camera/pantilt"]:
-            self.ui.Camera1Feed.setCurrentIndex(5)
-        elif self.profile.param_value["/joystick/camera/arm"]:
-            self.ui.Camera1Feed.setCurrentIndex(4)
-        elif self.profile.param_value["/joystick/camera/haz_left"]:
-            self.ui.Camera1Feed.setCurrentIndex(1)
-        elif self.profile.param_value["/joystick/camera/haz_front"]:
-            self.ui.Camera1Feed.setCurrentIndex(0)
-        elif self.profile.param_value["/joystick/camera/haz_back"]:
-            self.ui.Camera1Feed.setCurrentIndex(3)
-        elif self.profile.param_value["/joystick/camera/haz_right"]:
-            self.ui.Camera1Feed.setCurrentIndex(2)
         if self.profile.param_value["/joystick/coord_system"]:
             self.toggle_coordinate()
         if self.profile.param_value["/joystick/point_steer"]:
@@ -285,25 +270,10 @@ class CentralUi(QtGui.QMainWindow):
 
             self.publisher.publish_endEffector(x, y, rotate, grip)
 
-            # end effector mode
-            # use joystick to control a1,a2, a3 for rotating motion and some other button for grip motion
-
         elif self.modeId == 3:
             self.cam_x += self.controller.a1
             self.cam_y += self.controller.a2
             self.publisher.publish_camera(self.cam_x, self.cam_y)
-
-    def set_mode0(self):
-        self.set_controller_mode(0)
-
-    def set_mode1(self):
-        self.set_controller_mode(1)
-
-    def set_mode2(self):
-        self.set_controller_mode(2)
-
-    def set_mode3(self):
-        self.set_controller_mode(3)
 
     def set_controller_mode(self, mode_id):
         self.modeId = mode_id
@@ -327,55 +297,6 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.ArmBaseMode.setChecked(False)
             self.ui.EndEffectorMode.setChecked(False)
             self.ui.function4.setChecked(True)
-
-    #TODO:Demonstration of desired operation MAKE FUNCTIONAL
-    def setFeed1Index(self, newIndex):
-        rospy.wait_for_service('/changeFeed')
-        try:
-            resp = self.switch_feed(1, newIndex)
-        except rospy.ServiceException:
-            rospy.logwarn("Service call failed")
-            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
-            return
-        if resp.success is 200:
-            self.feed1index = newIndex
-        else:
-            rospy.loginfo("Switch in camera1 failed")
-
-    def setFeed2Index(self, newIndex):
-        rospy.wait_for_service('/changeFeed')
-        try:
-            resp = self.switch_feed(2, newIndex)
-        except rospy.ServiceException:
-            rospy.logwarn("Service call failed")
-            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
-            return
-        if resp.success is 200:
-            self.feed1index = newIndex
-        else:
-            rospy.loginfo("Switch in camera1 failed")
-
-    def setFeed3Index(self, newIndex):
-        rospy.wait_for_service('/changeFeed')
-        try:
-            resp = self.switch_feed(3, newIndex)
-        except rospy.ServiceException:
-            rospy.logwarn("Service call failed")
-            self.ui.Camera1Feed.setCurrentIndex(self.feed1index)
-            return
-        if resp.success is 200:
-            self.feed1index = newIndex
-        else:
-            rospy.loginfo("Switch in camera1 failed")
-
-    def get_image_topic(self):
-        self.camera_topic_list.append(rospy.get_param("camera/topic_haz_front", "/hazcam_front/camera/image_raw"))
-        self.camera_topic_list.append(rospy.get_param("camera/topic_haz_left", "/hazcam_left/camera/image_raw"))
-        self.camera_topic_list.append(rospy.get_param("camera/topic_haz_right", "/hazcam_right/camera/image_raw"))
-        self.camera_topic_list.append(rospy.get_param("camera/topic_haz_back", "/hazcam_back/camera/image_raw"))
-        self.camera_topic_list.append(rospy.get_param("camera/topic_arm", "/camera_arm/camera/image_raw"))
-        self.camera_topic_list.append(rospy.get_param("camera/topic_pan_tilt", "/camera_pan_tilt/camera/image_raw"))
-        rospy.loginfo(self.camera_topic_list)
 
 
 if __name__ == "__main__":

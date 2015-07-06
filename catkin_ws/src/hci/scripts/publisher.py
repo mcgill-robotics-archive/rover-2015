@@ -1,9 +1,9 @@
 import rospy
 
 from geometry_msgs.msg import Twist
-from control_systems.msg import MotionType, PanTiltZoom, ArmMotion, EndEffector
+from control_systems.msg import MotionType, ArmMotion, EndEffector
 from std_msgs.msg import Bool
-
+from rover_msgs.msg import PanTiltZoom
 
 class Publisher(object):
     def __init__(self):
@@ -25,8 +25,8 @@ class Publisher(object):
         Publish linear and angular command velocity in twist for control systems
         """
         msg = Twist()
-        msg.linear.x = a2*3
-        msg.angular.z = a1*3
+        msg.linear.x = a2*2
+        msg.angular.z = a1*2
         bool = Bool()
         bool.data = on
 
@@ -97,3 +97,4 @@ class Publisher(object):
             motionType.SKID = 1
 
         self.motionTypePublisher.publish(motionType)
+

@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>907</width>
-    <height>669</height>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_8">
+   <layout class="QHBoxLayout" name="horizontalLayout_9">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -27,14 +27,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="waypoint">
           <property name="text">
            <string>Add Waypoint</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="clearMap">
           <property name="text">
            <string>Clear</string>
           </property>
@@ -68,6 +68,16 @@
          <widget class="QPushButton" name="addMarkedWaypoint">
           <property name="text">
            <string>Add Waypoint</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="zoomGraph">
+          <property name="text">
+           <string>Zoom graph</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -163,163 +173,20 @@
           </property>
          </widget>
         </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Main Screen</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QComboBox" name="Camera1Feed">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>26</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>Front Hazcam</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Left Hazcam</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Right Hazcam</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Back Hazcam</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Arm</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Pan/Tilt</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
        </layout>
       </item>
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QFrame" name="OtherData">
-        <property name="minimumSize">
-         <size>
-          <width>191</width>
-          <height>161</height>
-         </size>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QDial" name="StickRotation">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>50</width>
-           <height>64</height>
-          </rect>
-         </property>
-         <property name="minimum">
-          <number>-1000</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-        </widget>
-        <widget class="QSlider" name="MainY">
-         <property name="geometry">
-          <rect>
-           <x>70</x>
-           <y>0</y>
-           <width>22</width>
-           <height>160</height>
-          </rect>
-         </property>
-         <property name="minimum">
-          <number>-1000</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-        <widget class="QSlider" name="MainX">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>70</y>
-           <width>160</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="minimum">
-          <number>-1000</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="invertedAppearance">
-          <bool>false</bool>
-         </property>
-        </widget>
-        <widget class="QSlider" name="SecondaryY">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>0</y>
-           <width>22</width>
-           <height>160</height>
-          </rect>
-         </property>
-         <property name="minimum">
-          <number>-1000</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </widget>
-      </item>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QCheckBox" name="zoomGraph">
+           <widget class="QCheckBox" name="ackMoving">
             <property name="text">
-             <string>Zoom graph</string>
+             <string>Motor Enable</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -327,12 +194,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="ackMoving">
+           <widget class="QPushButton" name="screenshot">
             <property name="text">
-             <string>Ackreman Moving</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <string>Capture Arm cam</string>
             </property>
            </widget>
           </item>
@@ -397,187 +261,285 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Control Layout</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Drive motor mode</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="driveModeSelection">
+          <item>
+           <property name="text">
+            <string>Low Speed</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Med Speed</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>High Speed</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Open Loop</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="Line" name="line">
+       <spacer name="verticalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Vertical</enum>
         </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Joystick Control Function</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="DriveMode">
+             <property name="text">
+              <string>Drive / Camera</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="EndEffectorMode">
+             <property name="text">
+              <string>End Effector</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="ArmBaseMode">
+             <property name="text">
+              <string>Arm Base</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="function4">
+             <property name="text">
+              <string>function 4</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="DriveMode">
-          <property name="text">
-           <string>Drive / Camera</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="EndEffectorMode">
-          <property name="text">
-           <string>End Effector</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="ArmBaseMode">
-          <property name="text">
-           <string>Arm Base</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="function4">
-          <property name="text">
-           <string>function 4</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QDoubleSpinBox" name="armSetX"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="armSetY"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="armSetZ"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_11">
-            <property name="text">
-             <string>Z</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QPushButton" name="sendCoords">
-          <property name="text">
-           <string>Send</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="maximumSize">
-             <size>
-              <width>67</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Arm mode</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="arm_mode">
-            <item>
-             <property name="text">
-              <string>Position Control</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Velocity Control</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLabel" name="label_8">
-            <property name="maximumSize">
-             <size>
-              <width>71</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Coordinate</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="coordinateSystem">
-            <item>
-             <property name="text">
-              <string>Cylindrical</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Cartesian</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="screenshot">
-        <property name="text">
-         <string>Capture Arm cam</string>
+       <widget class="QFrame" name="frame_2">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="maximumSize">
+              <size>
+               <width>67</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Arm mode</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="arm_mode">
+             <item>
+              <property name="text">
+               <string>Position Control</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Velocity Control</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="maximumSize">
+              <size>
+               <width>71</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Coordinate</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="coordinateSystem">
+             <item>
+              <property name="text">
+               <string>Cylindrical</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Cartesian</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="0">
+            <widget class="QDoubleSpinBox" name="armSetX"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="armSetY"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QDoubleSpinBox" name="armSetZ"/>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Z</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sendCoords">
+           <property name="text">
+            <string>Send</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -585,6 +547,10 @@
    </layout>
    <zorder></zorder>
    <zorder></zorder>
+   <zorder>frame</zorder>
+   <zorder>frame_2</zorder>
+   <zorder>label_5</zorder>
+   <zorder>driveModeSelection</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -595,8 +561,25 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionRestart"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionRestart">
+   <property name="text">
+    <string>Restart</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
