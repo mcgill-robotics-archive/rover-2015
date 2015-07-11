@@ -15,6 +15,7 @@ from std_msgs.msg import *
 from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
+from rover_msgs.msg import MotorControllerMode
 
 
 class CentralUi(QtGui.QMainWindow):
@@ -36,10 +37,6 @@ class CentralUi(QtGui.QMainWindow):
         self.addPointTimer = None
         self.controller_timer = None
 
-        self.init_ros()
-        self.init_connects()
-        self.init_timers()
-        self.setup_minimap()
 
         self.sub = None
 
@@ -61,6 +58,11 @@ class CentralUi(QtGui.QMainWindow):
         self.first_point = False
         self.dx = 0
         self.dy = 0
+
+        self.init_ros()
+        self.init_connects()
+        self.init_timers()
+        self.setup_minimap()
 
         rospy.loginfo("HCI initialization completed")
 
@@ -84,6 +86,7 @@ class CentralUi(QtGui.QMainWindow):
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.add_way_point)
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
+        QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
 
     def init_timers(self):
         # signal quality timer
@@ -107,6 +110,33 @@ class CentralUi(QtGui.QMainWindow):
             rospy.loginfo("Started controller timer")
         else:
             rospy.loginfo("Missing controller, timer aborted")
+
+    def set_motor_controller_mode(self, modeIndex):
+        msg = MotorControllerMode()
+        if modeIndex == 0:
+            msg.lowSpeed = 1
+            msg.medSpeed = 0
+            msg.highSpeed = 0
+            msg.openLoop = 0
+        elif modeIndex == 1:
+            msg.lowSpeed = 0
+            msg.medSpeed = 1
+            msg.highSpeed = 0
+            msg.openLoop = 0
+        elif modeIndex == 2:
+            msg.lowSpeed = 0
+            msg.medSpeed = 0
+            msg.highSpeed = 1
+            msg.openLoop = 0
+        elif modeIndex == 3:
+            msg.lowSpeed = 0
+            msg.medSpeed = 0
+            msg.highSpeed = 0
+            msg.openLoop = 1
+            #
+        print msg
+        self.publisher.publish_mode(msg)
+        pass
 
     def take_screenshot(self):
         self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)

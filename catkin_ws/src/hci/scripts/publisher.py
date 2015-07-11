@@ -3,7 +3,9 @@ import rospy
 from geometry_msgs.msg import Twist
 from control_systems.msg import MotionType, ArmMotion, EndEffector
 from std_msgs.msg import Bool
-from rover_msgs.msg import PanTiltZoom
+from rover_msgs.msg import PanTiltZoom, MotorControllerMode
+
+max_speed = 2
 
 class Publisher(object):
     def __init__(self):
@@ -18,20 +20,25 @@ class Publisher(object):
         self.motionTypePublisher = rospy.Publisher(rospy.get_param("cmd_motion_topic", "cmd_motion"),
                                                    MotionType, queue_size=10)
         self.moving_bool_pub = rospy.Publisher("is_moving", Bool, queue_size=10)
+        self.mode_publisher = rospy.Publisher("mc_mode", MotorControllerMode, queue_size=10)
 
     # publisher for velocity
-    def publish_velocity(self, a1, a2, on):
+    def publish_velocity(self, angular, linear, on):
         """
         Publish linear and angular command velocity in twist for control systems
+        Input should be between -1 and 1 where 1  is max speed forward, -1 is max back and 0 is immobile
         """
         msg = Twist()
-        msg.linear.x = a2*2
-        msg.angular.z = a1*2
-        bool = Bool()
-        bool.data = on
+        msg.linear.x = linear * max_speed
+        msg.angular.z = angular
+        moving_bool = Bool()
+        moving_bool.data = on
 
         self.vel_pub.publish(msg)
-        self.moving_bool_pub.publish(bool)
+        self.moving_bool_pub.publish(moving_bool)
+
+    def publish_mode(self, msg):
+        self.mode_publisher.publish(msg)
 
     # publish 2 main joystick axes for arm base movement (mode must be arm)
     def publish_arm_base_movement(self, armLength, armHeight, angle, cartesian=False, velocity=False):
