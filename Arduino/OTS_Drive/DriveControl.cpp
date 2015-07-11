@@ -59,7 +59,7 @@ void MLsetSpeed(double speed) {
         else
             digitalWrite(ML_DIRECTION_PIN, HIGH);
 
-        analogWrite(ML_DRIVE_PIN, (int) (abs(speed) * 10));
+        analogWrite(ML_DRIVE_PIN, (int) (abs(speed) * 10)); //TODO: Fix over flow error with max steering
     }
 }
 

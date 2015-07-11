@@ -5,6 +5,10 @@
 #include "SteeringControl.h"
 #include "DriveControl.h"
 #include "std_msgs/Bool.h"
+#include "rover_msgs/MotorControllerMode.h"
+#include "DataControl.h"
+
+ros::NodeHandle nh;
 
 float radToDeg(float rad)
 {
@@ -36,9 +40,34 @@ void callbackMoving( const std_msgs::Bool& boolean)
         disableMotors();
 }
 
-ros::NodeHandle nh;
+void mcMode(const rover_msgs::MotorControllerMode& msg)
+{
+    nh.loginfo("called in subscriber");
+    if (msg.highSpeed)
+    {
+        nh.loginfo("high");
+        data::setModeHighSpeed();
+    }
+    else if (msg.medSpeed)
+    {
+        nh.loginfo("med");
+        data::setModeMediumSpeed();
+    }
+    else if (msg.lowSpeed)
+    {
+        nh.loginfo("low");
+        data::setModeLowSpeed();
+    }
+    else
+    {
+        nh.loginfo("open");
+        data::setModeOpenLoop();
+    }
+}
+
 ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
 ros::Subscriber<std_msgs::Bool> movingSubscriber("/is_moving", &callbackMoving);
+ros::Subscriber<rover_msgs::MotorControllerMode> modeSubscriber("/mc_mode", &mcMode);
 
 void setup()
 {
@@ -90,6 +119,7 @@ void setup()
     nh.initNode();
     nh.subscribe(driveSubscriber);
     nh.subscribe(movingSubscriber);
+    nh.subscribe(modeSubscriber);
 }
 
 void loop()

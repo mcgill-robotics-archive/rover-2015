@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    RoverSpeed.msg
    Tachometers.msg
    PanTiltZoom.msg
+   MotorControllerMode.msg
  )
 
 ## Generate services in the 'srv' folder
