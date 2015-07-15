@@ -1,7 +1,6 @@
 <launch>
 <arg name="name" />
 <arg name="device" />
-<arg name="topic" />
 <arg name="topic_name" />
 
 <group ns="$(arg name)" >
@@ -25,8 +24,8 @@
         args="standalone image_proc/crop_decimate"
         name="decimator">
 
-        <param name="decimation_x" type="int" value="2" />
-        <param name="decimation_y" type="int" value="2" />
+        <param name="decimation_x" type="int" value="3" />
+        <param name="decimation_y" type="int" value="3" />
 
         <remap from="camera/image_raw" to="image_raw" />
       </node>
@@ -42,8 +41,7 @@
         <param name="_fps" type="int" value="10" />
         <remap from="/image_mono/compressed" to="/$(arg name)/image_mono/compressed" />
         
-        <remap if="$(arg topic)"  from="/reduced/compressed" to="/$(arg topic_name)" />
-        <remap unless="$(arg topic)"  from="/reduced/compressed" to="/$(arg name)/reduced/compressed" />
+        <remap from="/reduced/compressed" to="/$(arg topic_name)" />
       </node>
 
     </group>
