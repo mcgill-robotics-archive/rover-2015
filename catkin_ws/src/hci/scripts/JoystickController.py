@@ -89,31 +89,42 @@ class JoystickController(object):
         """
 
         for anEvent in pygame.event.get():
-            if anEvent.type == pygame.locals.JOYBUTTONDOWN:
-                self.b1 = self.controller.get_button(0)
-                self.b2 = self.controller.get_button(1)
-                self.b3 = self.controller.get_button(2)
-                self.b4 = self.controller.get_button(3)
-                self.b5 = self.controller.get_button(4)
-                self.b6 = self.controller.get_button(5)
-                self.b7 = self.controller.get_button(6)
-                self.b8 = self.controller.get_button(7)
-                self.b9 = self.controller.get_button(8)
-                self.b10 = self.controller.get_button(9)
-                self.b11 = self.controller.get_button(10)
-                self.b12 = self.controller.get_button(11)    
-            elif anEvent.type == pygame.locals.JOYAXISMOTION:
-                self.a1 = self.controller.get_axis(0)
-                self.a2 = self.controller.get_axis(1)
-                self.a3 = self.controller.get_axis(2)
-                self.a4 = self.controller.get_axis(3)
-            else:
-                self.hat = self.controller.get_hat(0)
-                if self.hat == (-1, 0):
-                    self.hat_left = True
-                elif self.hat == (0, 1):
-                    self.hat_top = True
-                elif self.hat == (0, -1):
-                    self.hat_down = True
-                elif self.hat == (1, 0):
-                    self.hat_right = True
+            try:
+                if anEvent.type == pygame.locals.JOYBUTTONDOWN:
+                    self.b1 = self.controller.get_button(0)
+                    self.b2 = self.controller.get_button(1)
+                    self.b3 = self.controller.get_button(2)
+                    self.b4 = self.controller.get_button(3)
+                    self.b5 = self.controller.get_button(4)
+                    self.b6 = self.controller.get_button(5)
+                    self.b7 = self.controller.get_button(6)
+                    self.b8 = self.controller.get_button(7)
+                    self.b9 = self.controller.get_button(8)
+                    self.b10 = self.controller.get_button(9)
+                    self.b11 = self.controller.get_button(10)
+                    self.b12 = self.controller.get_button(11)    
+                elif anEvent.type == pygame.locals.JOYAXISMOTION:
+                    self.a1 = self.controller.get_axis(0)
+                    self.a2 = self.controller.get_axis(1)
+                    self.a3 = self.controller.get_axis(2)
+                    self.a4 = self.controller.get_axis(3)
+                else:
+                    self.hat = self.controller.get_hat(0)
+                    if self.hat == (-1, 0):
+                        self.hat_left = True
+                    elif self.hat == (0, 1):
+                        self.hat_top = True
+                    elif self.hat == (0, -1):
+                        self.hat_down = True
+                    elif self.hat == (1, 0):
+                        self.hat_right = True
+            except pygame.error:
+                pass
+            finally:
+                pass
+
+if __name__ == "__main__":
+    controller = JoystickController()
+    while True:
+        controller.update()
+        print (controller.a1, controller.a2, controller.a3)
