@@ -4,6 +4,7 @@
 
 #include "AhrsIg500n.h"
 #include "stdio.h"
+#include "ros/ros.h"
 
 
 using namespace lineranger::ahrs;
@@ -16,7 +17,7 @@ AhrsIg500n::AhrsIg500n(const char * deviceName, uint32 baudRate) {
         if (mError != SBG_NO_ERROR) {
         sbgComErrorToString(mError, mErrorMsg);
         std::runtime_error e(mErrorMsg);
-//        LR_LOG_FATAL() << e.what();
+        //ROS_ERROR(e.what());
         throw e;
     }
 
@@ -27,13 +28,13 @@ AhrsIg500n::AhrsIg500n(const char * deviceName, uint32 baudRate) {
     if (mError != SBG_NO_ERROR) {
         sbgComErrorToString(mError, mErrorMsg);
         std::runtime_error e(mErrorMsg);
-//        LR_LOG_FATAL() << e.what();
+        //ROS_ERROR(e.what());
     }
     mError = sbgSetContinuousMode(mProtocolHandle, SBG_CONTINUOUS_MODE_ENABLE, OUTPUT_DIVISOR);
     if (mError != SBG_NO_ERROR) {
         sbgComErrorToString(mError, mErrorMsg);
         std::runtime_error e(mErrorMsg);
-//        LR_LOG_FATAL() << e.what();
+        //ROS_ERROR(e.what());
     }
     sbgSetContinuousErrorCallback(mProtocolHandle, &errorCallbackWrapper, (void *)(this));
     sbgSetContinuousModeCallback(mProtocolHandle, &normalCallbackWrapper, (void *)(this));
@@ -48,7 +49,7 @@ AhrsIg500n::AhrsIg500n(const char * deviceName, uint32 baudRate) {
     if (!mpThread)
     {
         std::runtime_error e("Failed to create ahrs periodic thread.");
-//        LR_LOG_FATAL() << e.what();
+        //ROS_ERROR(e.what());
         throw e;
     }
     printf("Thread done\n");
@@ -74,7 +75,7 @@ void AhrsIg500n::update() {
         char errorMsg[256];
         sbgComErrorToString(mError, errorMsg);
         std::runtime_error e(errorMsg);
-//        LR_LOG_FATAL() << e.what();
+        //ROS_ERROR(e.what());
     }
 }
 void AhrsIg500n::errorCallbackWrapper(SbgProtocolHandleInt *pHandler, SbgErrorCode errorCode, void *pUsrArg){
@@ -94,7 +95,7 @@ void AhrsIg500n::continuousErrorCallback(SbgProtocolHandleInt *pHandler, SbgErro
 
     sbgComErrorToString(mError, mErrorMsg);
     std::runtime_error e(mErrorMsg);
-//    LR_LOG_FATAL() << e.what();
+    //ROS_ERROR(e.what());
     return ;
 }
 

@@ -13,7 +13,7 @@ using namespace lineranger:: ahrs;
 
 AhrsConfig::AhrsConfig ()
 {
-    mDevName = "/dev/ttyUSB0";
+    mDevName = "/dev/ahrs";
     mBaudRate = 115200;
     mSimulationMode = true;
 }
