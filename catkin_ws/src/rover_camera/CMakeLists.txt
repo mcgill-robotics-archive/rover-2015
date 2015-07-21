@@ -106,17 +106,17 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(change_fps src/change_fps.cpp)
+#add_executable(change_fps src/change_fps.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(change_fps image_transport)
+#add_dependencies(change_fps image_transport)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(change_fps
-   ${catkin_LIBRARIES}
- )
-
+# target_link_libraries(change_fps
+#   ${catkin_LIBRARIES}
+# )
+#
 #############
 ## Install ##
 #############
