@@ -20,6 +20,8 @@ int main(int argc, char ** argv)
     ros::NodeHandle nh;
     signal(SIGINT, mySigintHandler);
 
+    ROS_INFO("ahrs_node launching");
+
     lineranger::ahrs::AhrsConfig config;
     config.setSimulation(false);
     boost::scoped_ptr<lineranger::ahrs::Ahrs> ahrs;
@@ -30,7 +32,9 @@ int main(int argc, char ** argv)
     catch (const std::runtime_error& error)
     {
         ROS_ERROR(error.what());
-        return (-1);
+        config.setSimulation(true);
+        ROS_WARN("real ahrs not found, creating virtual ahrs");
+        ahrs.reset(lineranger::ahrs::Ahrs::createAhrs(config));
     }
 
     ros::Publisher ahrsPublisher = nh.advertise<rover_msgs::AhrsStatusMessage>("ahrs_status", 100);
@@ -38,7 +42,7 @@ int main(int argc, char ** argv)
 
     ros::Rate loopRate(10);
     rover_msgs::AhrsStatusMessage msg;
-    ROS_INFO("ahrs_node starting acquisition");
+    ROS_INFO("ahrs_node ready, starting acquisition");
     while (ros::ok())
     {
         ahrsStatus = ahrs->getStatus();
