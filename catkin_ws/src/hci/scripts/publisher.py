@@ -10,8 +10,8 @@ max_speed = 2
 class Publisher(object):
     def __init__(self):
         # TODO change names once control systems has a defined topic name and variable names, copied from AUV as of now
-        self.cam_pub = rospy.Publisher("/camera_orientation",
-                                       PanTiltZoom, queue_size=10)
+        self.cam_pub = rospy.Publisher("/camera_motion",
+                                       Twist, queue_size=10)
         self.vel_pub = rospy.Publisher(rospy.get_param("cmd_vel_topic", "cmd_vel"), Twist, queue_size=10)
         self.arm_movement_pub = rospy.Publisher(rospy.get_param("electrical_interface/arm_topic", "/cmd_arm"),
                                                 ArmMotion, queue_size=10)
@@ -69,9 +69,9 @@ class Publisher(object):
 
     # publish camera zoom from axis 4
     def publish_camera(self, a3, a4):
-        msg = PanTiltZoom()
-        msg.pan = a3
-        msg.tilt = a4
+        msg = Twist()
+        msg.angular.z = a3  # pan
+        msg.angular.y = a4  # tilt
         self.cam_pub.publish(msg)
 
     # publish steering mode

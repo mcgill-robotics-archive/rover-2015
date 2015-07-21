@@ -52,8 +52,8 @@ class CentralUi(QtGui.QMainWindow):
         self.x_waypoints = []
         self.y_waypoints = []
 
-        self.cam_x = 0
-        self.cam_y = 0
+        # self.cam_x = 0
+        # self.cam_y = 0
 
         self.first_point = False
         self.dx = 0
@@ -211,7 +211,7 @@ class CentralUi(QtGui.QMainWindow):
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
     def get_signal_quality(self):
-        #s = os.popen("ping -c 1 artemis")
+        # s = os.popen("ping -c 1 air")
         s = os.popen("ping -c 1 localhost")
         s.readline()
         k = s.readline()
@@ -301,9 +301,9 @@ class CentralUi(QtGui.QMainWindow):
             self.publisher.publish_endEffector(x, y, rotate, grip)
 
         elif self.modeId == 3:
-            self.cam_x += self.controller.a1
-            self.cam_y += self.controller.a2
-            self.publisher.publish_camera(self.cam_x, self.cam_y)
+            # self.cam_x += self.controller.a1
+            # self.cam_y += self.controller.a2
+            self.publisher.publish_camera(self.controller.a1, self.controller.a2)
 
     def set_controller_mode(self, mode_id):
         self.modeId = mode_id

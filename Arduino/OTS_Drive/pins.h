@@ -49,5 +49,7 @@
 #define BR_DATA1_PIN 34
 #define BR_DATA2_PIN 35
 
+#define CAMERA_PAN_SERVO 1
+#define CAMERA_TILT_SERVO 1
 
 #endif

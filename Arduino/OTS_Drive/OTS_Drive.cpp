@@ -7,8 +7,10 @@
 #include "std_msgs/Bool.h"
 #include "rover_msgs/MotorControllerMode.h"
 #include "DataControl.h"
+#include "CameraControl.h"
 
 ros::NodeHandle nh;
+CameraControl cameraControl;
 
 float radToDeg(float rad)
 {
@@ -65,10 +67,15 @@ void mcMode(const rover_msgs::MotorControllerMode& msg)
     }
 }
 
+void callbackCamera(const geometry_msgs::Twist & twist)
+{
+    cameraControl.handleTwist(twist);
+}
+
 ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
 ros::Subscriber<std_msgs::Bool> movingSubscriber("/is_moving", &callbackMoving);
 ros::Subscriber<rover_msgs::MotorControllerMode> modeSubscriber("/mc_mode", &mcMode);
-
+ros::Subscriber<geometry_msgs::Twist> cameraSubscriber("/camera_motion", &callbackCamera);
 void setup()
 {
     // set drive output pin mode
@@ -115,11 +122,14 @@ void setup()
     pinMode(BR_DATA2_PIN, OUTPUT);
 
     attachServos();
+    cameraControl.init();
 
     nh.initNode();
     nh.subscribe(driveSubscriber);
     nh.subscribe(movingSubscriber);
     nh.subscribe(modeSubscriber);
+    nh.subscribe(cameraSubscriber);
+
 }
 
 void loop()
