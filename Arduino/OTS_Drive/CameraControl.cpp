@@ -11,6 +11,9 @@ CameraControl::CameraControl() {
     mPanAngle = 0;
     mTiltAngle = 0;
 
+    pinMode(CAMERA_PAN_SERVO, OUTPUT);
+    pinMode(CAMERA_TILT_SERVO, OUTPUT);
+
     mPanServo.attach(CAMERA_PAN_SERVO);
     mTittServo.attach(CAMERA_TILT_SERVO);
 
