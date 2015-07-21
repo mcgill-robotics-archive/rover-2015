@@ -4,7 +4,7 @@ joystick/end_effector_mode :    "9"
 joystick/camera_mode :          "10"
 joystick/point_steer :          "3"
 joystick/ackreman :             "2"
-joystick/ackreman_moving :      "1"
+joystick/ackreman_moving :      "1" # motor enable
 joystick/translatory :          "4"
 joystick/coord_system :         "11"
 #joystick/camera/arm :           "6"

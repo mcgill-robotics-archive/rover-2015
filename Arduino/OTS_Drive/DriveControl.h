@@ -13,7 +13,7 @@ void MRsetSpeed(double speed);
 void BLsetSpeed(double speed);
 void BRsetSpeed(double speed);
 
-void enableMotors();
+void enableMotors(bool watchDog);
 void disableMotors();
 
 #endif //ARDUINO_TEST_DRIVECONTROL_H

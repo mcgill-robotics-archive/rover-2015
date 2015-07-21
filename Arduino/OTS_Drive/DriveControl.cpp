@@ -120,15 +120,17 @@ void BRsetSpeed(double speed) {
     }
 }
 
-void enableMotors()
+void enableMotors(bool watchDog)
 {
-    digitalWrite(FL_ENABLE_PIN, HIGH);
-    digitalWrite(FR_ENABLE_PIN, HIGH);
-    digitalWrite(ML_ENABLE_PIN, HIGH);
-    digitalWrite(MR_ENABLE_PIN, HIGH);
-    digitalWrite(BL_ENABLE_PIN, HIGH);
-    digitalWrite(BR_ENABLE_PIN, HIGH);
-
+    if (! watchDog)
+    {
+        digitalWrite(FL_ENABLE_PIN, HIGH);
+        digitalWrite(FR_ENABLE_PIN, HIGH);
+        digitalWrite(ML_ENABLE_PIN, HIGH);
+        digitalWrite(MR_ENABLE_PIN, HIGH);
+        digitalWrite(BL_ENABLE_PIN, HIGH);
+        digitalWrite(BR_ENABLE_PIN, HIGH);
+    }
 }
 
 void disableMotors()

@@ -73,7 +73,7 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageTop = QtGui.QImage.fromData(self.imageTop.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
-                rotated = imageTop.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = imageTop #.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
                 pass
             self.ui.camera2.setPixmap(rotated)
@@ -94,9 +94,9 @@ class CentralUi(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         self.getimageTopic()
-        rospy.Subscriber("/left/image_mono/compressed", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber("/left/image_mono/compressed", CompressedImage, self.receiveimageTop)
-        rospy.Subscriber("/right/image_mono/compressed", CompressedImage, self.receiveimageBottom)
+        rospy.Subscriber("/front_haz/image_mono/compressed", CompressedImage, self.receiveimageMain)
+        rospy.Subscriber("/econ/image_mono/compressed", CompressedImage, self.receiveimageTop)
+        rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
     def getimageTopic(self):
         self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))

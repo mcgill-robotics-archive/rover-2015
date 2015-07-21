@@ -5,7 +5,8 @@
 #include <ros/ros.h>
 #include <ros/time.h>
 #include <geometry_msgs/Twist.h>
-#include <rover_msgs/GPS.h>
+//#include <rover_msgs/GPS.h>
+#include "rover_msgs/GPS.h"
 #include <Eigen/Dense>
 #include "ekf.h"
 #include <cmath>

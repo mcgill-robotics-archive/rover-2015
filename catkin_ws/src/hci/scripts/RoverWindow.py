@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow_V4.ui'
+# Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Sun Jul  5 13:47:43 2015
+# Created: Tue Jul 21 12:26:47 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -280,7 +280,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 907, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 907, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -329,10 +329,10 @@ class Ui_MainWindow(object):
         self.driveModeSelection.setItemText(2, _translate("MainWindow", "High Speed", None))
         self.driveModeSelection.setItemText(3, _translate("MainWindow", "Open Loop", None))
         self.label_3.setText(_translate("MainWindow", "Joystick Control Function", None))
-        self.DriveMode.setText(_translate("MainWindow", "Drive / Camera", None))
+        self.DriveMode.setText(_translate("MainWindow", "Drive", None))
         self.EndEffectorMode.setText(_translate("MainWindow", "End Effector", None))
         self.ArmBaseMode.setText(_translate("MainWindow", "Arm Base", None))
-        self.function4.setText(_translate("MainWindow", "function 4", None))
+        self.function4.setText(_translate("MainWindow", "Camera", None))
         self.label_2.setText(_translate("MainWindow", "Arm mode", None))
         self.arm_mode.setItemText(0, _translate("MainWindow", "Position Control", None))
         self.arm_mode.setItemText(1, _translate("MainWindow", "Velocity Control", None))

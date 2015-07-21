@@ -7,8 +7,13 @@
 #include "std_msgs/Bool.h"
 #include "rover_msgs/MotorControllerMode.h"
 #include "DataControl.h"
+#include "CameraControl.h"
+#include "rover_msgs/ResetWatchDog.h"
 
 ros::NodeHandle nh;
+CameraControl cameraControl;
+unsigned long lastReset = 0;
+bool watchDog = true;
 
 float radToDeg(float rad)
 {
@@ -35,7 +40,7 @@ void driveCallback( const control_systems::SetPoints& setPoints )
 void callbackMoving( const std_msgs::Bool& boolean)
 {
     if (boolean.data)
-        enableMotors();
+        enableMotors(watchDog);
     else
         disableMotors();
 }
@@ -65,9 +70,42 @@ void mcMode(const rover_msgs::MotorControllerMode& msg)
     }
 }
 
+void callbackCamera(const geometry_msgs::Twist & twist)
+{
+    cameraControl.handleTwist(twist);
+}
+
+void callbackResetWatchdog(const rover_msgs::ResetWatchDog::Request & request, rover_msgs::ResetWatchDog::Response & response)
+{
+    if (request.OpCode == 1)
+    {
+        // running fine
+        lastReset = millis(); // TODO: check if token matches sequence
+        response.Response = 555;
+    }
+    else if (request.OpCode == 2)
+    {
+        // reset, should use token to get seed parameters
+        watchDog = false;
+        lastReset = millis();
+        response.Response = request.Token;
+    }
+    else
+    {
+        // whatever the OpCode, trigger fail safe
+        lastReset = 0;
+        disableMotors();
+
+    }
+}
+
 ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCallback );
 ros::Subscriber<std_msgs::Bool> movingSubscriber("/is_moving", &callbackMoving);
 ros::Subscriber<rover_msgs::MotorControllerMode> modeSubscriber("/mc_mode", &mcMode);
+ros::Subscriber<geometry_msgs::Twist> cameraSubscriber("/camera_motion", &callbackCamera);
+
+ros::ServiceServer<rover_msgs::ResetWatchDog::Request, rover_msgs::ResetWatchDog::Response>
+        watchDogServer("reset_watchdog",&callbackResetWatchdog);
 
 void setup()
 {
@@ -120,10 +158,19 @@ void setup()
     nh.subscribe(driveSubscriber);
     nh.subscribe(movingSubscriber);
     nh.subscribe(modeSubscriber);
+    nh.subscribe(cameraSubscriber);
+    nh.advertiseService(watchDogServer);
+
 }
 
 void loop()
 {
+    if ((millis() - lastReset) > 500)
+    {
+        disableMotors();
+        watchDog = true;
+    }
+
     nh.spinOnce();
     delay(1);
 }
