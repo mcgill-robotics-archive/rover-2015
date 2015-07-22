@@ -9,9 +9,9 @@ import rospy
 from sensor_msgs.msg import CompressedImage
 
 
-class CentralUi(QtGui.QMainWindow):
+class CameraViewer(QtGui.QMainWindow):
     def __init__(self, parent=None):
-        super(CentralUi, self).__init__(parent)
+        super(CameraViewer, self).__init__(parent)
 
         self.feedTopics = []
         self.imageMain = None
@@ -23,6 +23,10 @@ class CentralUi(QtGui.QMainWindow):
 
         self.signal = QtCore.QTimer(self)
         self.signal.timeout.connect(self.repaint_image)
+        
+        self.ui.camera1.setScaledContents(true)
+        self.ui.camera2.setScaledContents(true)
+        self.ui.camera3.setScaledContents(true)
 
         self.ros_init()
 
@@ -73,7 +77,8 @@ class CentralUi(QtGui.QMainWindow):
             try:
                 qimageTop = QtGui.QImage.fromData(self.imageTop.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
-                rotated = imageTop #.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = imageTop.transformed(Qtransform().scale(-1,1))  # mirror on the y axis
+                                 #.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
                 pass
             self.ui.camera2.setPixmap(rotated)
@@ -93,22 +98,20 @@ class CentralUi(QtGui.QMainWindow):
 
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
-        self.getimageTopic()
+        
         rospy.Subscriber("/front_haz/image_mono/compressed", CompressedImage, self.receiveimageMain)
         rospy.Subscriber("/econ/image_mono/compressed", CompressedImage, self.receiveimageTop)
         rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
-    def getimageTopic(self):
-        self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))
-        self.feedTopics.append(rospy.get_param("feed/topicTop", "/feed2/image_raw"))
-        self.feedTopics.append(rospy.get_param("feed/topicBottom", "/feed3/image_raw"))
-        rospy.loginfo(self.feedTopics)
+    # def getimageTopic(self):
+    #     self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))
+    #     self.feedTopics.append(rospy.get_param("feed/topicTop", "/feed2/image_raw"))
+    #     self.feedTopics.append(rospy.get_param("feed/topicBottom", "/feed3/image_raw"))
+    #     rospy.loginfo(self.feedTopics)
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    AppWindow = CentralUi()
+    AppWindow = CameraViewer()
     AppWindow.show()
     sys.exit(app.exec_())
-    
-
