@@ -324,7 +324,7 @@ class CentralUi(QtGui.QMainWindow):
         elif self.modeId == 3:
             # self.cam_x += self.controller.a1
             # self.cam_y += self.controller.a2
-            self.publisher.publish_camera(self.controller.a1, self.controller.a2)
+            self.publisher.publish_camera(-self.controller.a1, self.controller.a2)
 
     def set_controller_mode(self, mode_id):
         self.modeId = mode_id
