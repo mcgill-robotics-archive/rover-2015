@@ -1,0 +1,6 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", SYMLINK+="redBoard"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="ahrs"
+SUBSYSTEMS=="usb", ATTRS{serial}=="A4139373530351307080",ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", SYMLINK+="mega_drive"
+SUBSYSTEM=="video4linux", ATTRS{idProduct}=="708c", ATTRS{idVendor}=="0458", SYMLINK+="cam_ultra_wide"
+SUBSYSTEM=="video4linux", ATTRS{serial}=="8ECDD33F",ATTRS{idVendor}=="046d", SYMLINK+="logitech1"
+SUBSYSTEMS=="usb",ATTRS{idVendor}=="2560",ATTRS{idProduct}=="c034", SYMLINK+="econ_camera"
