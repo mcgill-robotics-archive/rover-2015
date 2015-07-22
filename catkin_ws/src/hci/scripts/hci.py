@@ -16,6 +16,21 @@ from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
 from rover_msgs.msg import MotorControllerMode
+from rover_msgs.srv import ResetWatchDog
+
+
+def reset_watchdog():
+    # reset watchdog
+    rospy.wait_for_service("reset_watchdog", 0.1)
+
+    try:
+        reset = rospy.ServiceProxy("reset_watchdog", ResetWatchDog)
+        response = reset(1, 10)
+        if response.Response != 555:
+            rospy.logerr("Bad response")
+
+    except rospy.ServiceException, e:
+        print "Service call failed: %s", e
 
 
 class CentralUi(QtGui.QMainWindow):
@@ -36,6 +51,7 @@ class CentralUi(QtGui.QMainWindow):
         self.quality_timer = None
         self.addPointTimer = None
         self.controller_timer = None
+        self.watchdog_timer = None
 
 
         self.sub = None
@@ -98,6 +114,11 @@ class CentralUi(QtGui.QMainWindow):
         self.addPointTimer = QtCore.QTimer()
         QtCore.QObject.connect(self.addPointTimer, QtCore.SIGNAL("timeout()"), self.add_point_timeout)
         self.addPointTimer.start(100)
+
+        # add point to map
+        self.watchdog_timer = QtCore.QTimer()
+        QtCore.QObject.connect(self.watchdog_timer, QtCore.SIGNAL("timeout()"), reset_watchdog)
+        self.watchdog_timer.start(100)
 
         # button connects
         # controller timer connect

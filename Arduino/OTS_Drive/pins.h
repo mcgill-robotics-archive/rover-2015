@@ -28,8 +28,8 @@
 
 #define FL_STEERING_PIN 9
 #define FR_STEERING_PIN 11
-#define BL_STEERING_PIN 10
-#define BR_STEERING_PIN 8
+#define BL_STEERING_PIN 1
+#define BR_STEERING_PIN 1
 
 #define FL_DATA1_PIN 42
 #define FL_DATA2_PIN 45
@@ -49,7 +49,7 @@
 #define BR_DATA1_PIN 34
 #define BR_DATA2_PIN 35
 
-#define CAMERA_PAN_SERVO 1
-#define CAMERA_TILT_SERVO 1
+#define CAMERA_PAN_SERVO 8
+#define CAMERA_TILT_SERVO 10
 
 #endif

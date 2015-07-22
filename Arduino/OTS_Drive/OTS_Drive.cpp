@@ -2,16 +2,18 @@
 #include <ros.h>
 #include "pins.h"
 #include <control_systems/SetPoints.h>
+#include <geometry_msgs/Twist.h>
 #include "SteeringControl.h"
 #include "DriveControl.h"
 #include "std_msgs/Bool.h"
 #include "rover_msgs/MotorControllerMode.h"
 #include "DataControl.h"
-#include "CameraControl.h"
+//#include "CameraControl.h"
 #include "rover_msgs/ResetWatchDog.h"
+#include "Camera.h"
 
 ros::NodeHandle nh;
-CameraControl cameraControl;
+//CameraControl cameraControl(nh);
 unsigned long lastReset = 0;
 bool watchDog = true;
 
@@ -70,11 +72,6 @@ void mcMode(const rover_msgs::MotorControllerMode& msg)
     }
 }
 
-void callbackCamera(const geometry_msgs::Twist & twist)
-{
-    cameraControl.handleTwist(twist);
-}
-
 void callbackResetWatchdog(const rover_msgs::ResetWatchDog::Request & request, rover_msgs::ResetWatchDog::Response & response)
 {
     if (request.OpCode == 1)
@@ -82,6 +79,7 @@ void callbackResetWatchdog(const rover_msgs::ResetWatchDog::Request & request, r
         // running fine
         lastReset = millis(); // TODO: check if token matches sequence
         response.Response = 555;
+        watchDog = false;
     }
     else if (request.OpCode == 2)
     {
@@ -153,6 +151,7 @@ void setup()
     pinMode(BR_DATA2_PIN, OUTPUT);
 
     attachServos();
+    initCameraTable();
 
     nh.initNode();
     nh.subscribe(driveSubscriber);

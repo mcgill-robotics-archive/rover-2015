@@ -1,6 +1,6 @@
 generate_arduino_firmware(drive
-    SRCS OTS_Drive.cpp ${ROS_LIB_DIR}/time.cpp SteeringControl.cpp DriveControl.cpp DataControl.cpp CameraControl.cpp
-    HDRS pins.h SteeringControl.h DriveControl.h DataControl.h CameraControl.h
-    BOARD uno
-    PORT /dev/redBoard
+    SRCS OTS_Drive.cpp ${ROS_LIB_DIR}/time.cpp SteeringControl.cpp DriveControl.cpp DataControl.cpp Camera.cpp
+    HDRS pins.h SteeringControl.h DriveControl.h DataControl.h Camera.h
+    BOARD mega2560
+    PORT /dev/ttyACM0
 )
