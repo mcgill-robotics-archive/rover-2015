@@ -15,7 +15,7 @@
 ros::NodeHandle nh;
 //CameraControl cameraControl(nh);
 unsigned long lastReset = 0;
-bool watchDog = true;
+bool watchDog = false;
 
 float radToDeg(float rad)
 {
@@ -164,11 +164,11 @@ void setup()
 
 void loop()
 {
-    if ((millis() - lastReset) > 500)
-    {
-        disableMotors();
-        watchDog = true;
-    }
+    //if ((millis() - lastReset) > 500)
+   // {
+     //   disableMotors();
+       // watchDog = true;
+   // }
 
     nh.spinOnce();
     delay(1);

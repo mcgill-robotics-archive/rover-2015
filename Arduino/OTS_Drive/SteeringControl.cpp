@@ -44,7 +44,7 @@ void setWheelAngle(float LF_servo_angle, float RF_servo_angle, float LR_servo_an
     //send signals to motors
     LF_servo.writeMicroseconds(LF_servo_cmd);
     RF_servo.writeMicroseconds(RF_servo_cmd);
-    LR_servo.writeMicroseconds(LR_servo_cmd);
+    LR_servo.writeMicroseconds(LR_servo_cmd + 100);
     RR_servo.writeMicroseconds(RR_servo_cmd);
 
 }

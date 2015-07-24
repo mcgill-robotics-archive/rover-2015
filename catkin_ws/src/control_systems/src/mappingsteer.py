@@ -255,8 +255,8 @@ def pointTurn(wBody):
     sfsa = -pfsa
     pmsa = 0
     smsa = 0
-    prsa = pfsa
-    srsa = -pfsa
+    prsa = -pfsa
+    srsa = pfsa
 
     if abs(wBody) < zero:
         # if no velocity, return angles and nothing else
