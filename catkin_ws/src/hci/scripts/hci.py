@@ -40,8 +40,8 @@ def lbl_bg_red(thing):
 
 
 def lbl_bg_norm(thing):
-    """sets a style sheet to the @param thing resulting in a normal background"""
-    thing.setStyleSheet('background-color:#f2f1f0')
+    """sets a style sheet to the @param thing resulting in a green background"""
+    thing.setStyleSheet('background-color:#33CC33')
     thing.setText("Ok")
 
 
