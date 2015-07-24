@@ -15,7 +15,7 @@ from std_msgs.msg import *
 from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
-from rover_msgs.msg import MotorControllerMode
+from rover_msgs.msg import MotorControllerMode, MotorStatus
 from rover_msgs.srv import ResetWatchDog
 
 
@@ -33,7 +33,34 @@ def reset_watchdog():
         print "Service call failed: %s", e
 
 
+def lbl_bg_red(thing):
+    """sets a style sheet to the @param thing resulting in a red background"""
+    thing.setStyleSheet('background-color:#ff0000')
+    thing.setText("Bad")
+
+
+def lbl_bg_norm(thing):
+    """sets a style sheet to the @param thing resulting in a normal background"""
+    thing.setStyleSheet('background-color:#f2f1f0')
+    thing.setText("Ok")
+
+
 class CentralUi(QtGui.QMainWindow):
+
+    fl_signal_ok = QtCore.pyqtSignal()
+    fr_signal_ok = QtCore.pyqtSignal()
+    ml_signal_ok = QtCore.pyqtSignal()
+    mr_signal_ok = QtCore.pyqtSignal()
+    bl_signal_ok = QtCore.pyqtSignal()
+    br_signal_ok = QtCore.pyqtSignal()
+
+    fl_signal_bad = QtCore.pyqtSignal()
+    fr_signal_bad = QtCore.pyqtSignal()
+    ml_signal_bad = QtCore.pyqtSignal()
+    mr_signal_bad = QtCore.pyqtSignal()
+    bl_signal_bad = QtCore.pyqtSignal()
+    br_signal_bad = QtCore.pyqtSignal()
+
     def __init__(self, parent=None):
         super(CentralUi, self).__init__(parent)
 
@@ -85,6 +112,38 @@ class CentralUi(QtGui.QMainWindow):
     def init_ros(self):
         rospy.init_node('listener', anonymous=False)
         rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
+        rospy.Subscriber('/motor_status', MotorStatus, self.motor_status, queue_size=10)
+
+    def motor_status(self, msg):
+        if msg.ok[0]:
+            self.fl_signal_ok.emit()
+        else:
+            self.fl_signal_bad.emit()
+
+        if msg.ok[1]:
+            self.fr_signal_ok.emit()
+        else:
+            self.fr_signal_bad.emit()
+
+        if msg.ok[2]:
+            self.ml_signal_ok.emit()
+        else:
+            self.ml_signal_bad.emit()
+
+        if msg.ok[3]:
+            self.mr_signal_ok.emit()
+        else:
+            self.mr_signal_bad.emit()
+
+        if msg.ok[4]:
+            self.bl_signal_ok.emit()
+        else:
+            self.bl_signal_bad.emit()
+
+        if msg.ok[5]:
+            self.br_signal_ok.emit()
+        else:
+            self.br_signal_bad.emit()
 
     def init_connects(self):
         # joystick mode buttons signal connect
@@ -104,6 +163,22 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
         QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
 
+        #motor readys
+        self.fl_signal_ok.connect(lambda lbl=self.ui.fl_ok: lbl_bg_norm(lbl))
+        self.fr_signal_ok.connect(lambda lbl=self.ui.fr_ok: lbl_bg_norm(lbl))
+        self.ml_signal_ok.connect(lambda lbl=self.ui.ml_ok: lbl_bg_norm(lbl))
+        self.mr_signal_ok.connect(lambda lbl=self.ui.mr_ok: lbl_bg_norm(lbl))
+        self.bl_signal_ok.connect(lambda lbl=self.ui.bl_ok: lbl_bg_norm(lbl))
+        self.br_signal_ok.connect(lambda lbl=self.ui.br_ok: lbl_bg_norm(lbl))
+
+        self.fl_signal_bad.connect(lambda lbl=self.ui.fl_ok: lbl_bg_red(lbl))
+        self.fr_signal_bad.connect(lambda lbl=self.ui.fr_ok: lbl_bg_red(lbl))
+        self.ml_signal_bad.connect(lambda lbl=self.ui.ml_ok: lbl_bg_red(lbl))
+        self.mr_signal_bad.connect(lambda lbl=self.ui.mr_ok: lbl_bg_red(lbl))
+        self.bl_signal_bad.connect(lambda lbl=self.ui.bl_ok: lbl_bg_red(lbl))
+        self.br_signal_bad.connect(lambda lbl=self.ui.br_ok: lbl_bg_red(lbl))
+
+
     def init_timers(self):
         # signal quality timer
         self.quality_timer = QtCore.QTimer()
@@ -116,9 +191,9 @@ class CentralUi(QtGui.QMainWindow):
         self.addPointTimer.start(100)
 
         # add point to map
-        self.watchdog_timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.watchdog_timer, QtCore.SIGNAL("timeout()"), reset_watchdog)
-        self.watchdog_timer.start(100)
+        # self.watchdog_timer = QtCore.QTimer()
+        # QtCore.QObject.connect(self.watchdog_timer, QtCore.SIGNAL("timeout()"), reset_watchdog)
+        # self.watchdog_timer.start(100)
 
         # button connects
         # controller timer connect
