@@ -14,7 +14,7 @@
 ros::NodeHandle nh;
 rover_msgs::MotorStatus motorStatus;
 unsigned long lastReset = 0;
-bool watchDog = true;
+bool watchDog = false;
 unsigned long lastSend = 0;
 
 float radToDeg(float rad)

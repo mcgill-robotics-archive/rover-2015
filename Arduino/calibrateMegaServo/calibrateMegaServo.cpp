@@ -21,10 +21,10 @@ void setup()
           
   // servo pins valid Wed May 8 night
   
-  rf.attach(3);
-  rr.attach(5);
-  lr.attach(4);
-  lf.attach(2);
+  rf.attach(8);
+  rr.attach(9);
+  lr.attach(10);
+  lf.attach(11);
 
   
 }
@@ -34,7 +34,7 @@ void loop()
   // if there's any serial available, read it:
   while (Serial.available() > 0) {
     int val = (int) Serial.parseInt();
-    
+
     if (val == 1){          // This is a 1 degree of rotation (exterior is positive angle)
                             // i degree is very approximate, but a small angle
         gotoMilisec(2200);
