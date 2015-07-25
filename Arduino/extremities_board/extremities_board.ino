@@ -5,13 +5,13 @@
     
   Linear actuators (up +, down -):
     (Elbow)
-      -Green: M2B
-      -Black: M2A
+      -Black: M2B
+      -White: M2A
     (Shoulder)
       -White: M1B
-      -Red: M1A
+      -Black: M1A
       
-  Banebot: TO BE DETERMINED (up + down -)
+  Banebot:(up + down -)
     (Wrist)
       -Black: M1B
       -White: M1A
@@ -37,7 +37,7 @@ int _EN_CLAW = 23; // ACTIVE LOW
 int STEP_CLAW = 25;
 int DIR_CLAW = 27;
 int WRIST = 2;
-int SHOULDER = 4;
+int SHOULDER = 3;
 int ELBOW = 5;
 int WRIST_ROT_1 = 10; // Servo port 0
 int WRIST_ROT_2 = 9; // Servo port 1
@@ -56,10 +56,88 @@ void setup()
 
 void loop()
 {
-  setServoVelocity(100, WRIST);
+
+  if(Serial.available() > 0)
+  {
+    String command = Serial.readString();
+    if(command.charAt(0) == 's')
+    {
+      if(command.charAt(1) == 'u')
+      {
+        setServoVelocity(50, SHOULDER);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setServoVelocity(-50, SHOULDER);
+      }
+      else
+      {
+        setServoVelocity(0, SHOULDER);
+      }
+    }
+    else if(command.charAt(0) == 'e')
+    {
+      if(command.charAt(1) == 'u')
+      {
+        setServoVelocity(50, ELBOW);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setServoVelocity(-50, ELBOW);
+      }
+      else
+      {
+        setServoVelocity(0, ELBOW);
+      }
+    }
+    else if(command.charAt(0) == 'w')
+    {
+      if(command.charAt(1) == 'u')
+      {
+        setServoVelocity(25, WRIST);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setServoVelocity(-25, WRIST);
+      }
+      else
+      {
+        setServoVelocity(0, WRIST);
+      }
+    }
+    else if(command.charAt(0) == 'r') // Why isn't this working???
+    {
+      if(command.charAt(1) == 'w') // clock_W_ise
+      {
+        setWristRotationVelocity(100);
+      }
+      else if(command.charAt(1) == 'c') // _C_ounterclockwise
+      {
+        setWristRotationVelocity(-100);
+      }
+      else
+      {
+        setWristRotationVelocity(0);
+      }
+    }
+    else if(command.charAt(0) == 'c')
+    {
+      if(command.charAt(1) == 'o')
+      {
+        setClawDisplacement(0.5);
+      }
+      else if(command.charAt(0) == 'c')
+      {
+        setClawDisplacement(-0.5);
+      }
+      else
+      {
+      }
+    }
+  }
 }
 
-void setClawDisplacement(int disp)
+void setClawDisplacement(float disp)
 {
   if(disp > 0)
   {
@@ -71,7 +149,7 @@ void setClawDisplacement(int disp)
     digitalWrite(DIR_CLAW, HIGH);
   }
   else{}
-  for(int i = 0; i < disp * 200; i++)
+  for(int i = 0; i < int(disp * 200); i++)
   {
     digitalWrite(STEP_CLAW, LOW);
     delayMicroseconds(1000);
@@ -110,11 +188,14 @@ void setServoVelocity(int vel, int pin)
   {
     vel *= -1;
     int servoVal = ceil(vel * (90 - minim) / 100);
+    Serial.println(); // WHY
     servo.write(servoVal);
   }
   else
   {
     int servoVal = 90 + floor(vel * (maxim - 90) / 100);
+    Serial.println(); // WHY
     servo.write(servoVal);
   }
 }
+
