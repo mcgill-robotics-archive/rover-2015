@@ -52,4 +52,11 @@
 #define CAMERA_PAN_SERVO 8
 #define CAMERA_TILT_SERVO 10
 
+#define FL_READY_PIN 47
+#define FR_READY_PIN 46
+#define ML_READY_PIN 49
+#define MR_READY_PIN 48
+#define BL_READY_PIN 51
+#define BR_READY_PIN 50
+
 #endif

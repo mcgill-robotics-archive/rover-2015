@@ -3,6 +3,7 @@
 //
 
 #include <Arduino.h>
+#include <ros.h>
 #include "DataControl.h"
 #include "pins.h"
 
@@ -68,4 +69,23 @@ void data::setModeHighSpeed()
     digitalWrite(BL_DATA2_PIN, HIGH);
     digitalWrite(BR_DATA1_PIN, HIGH);
     digitalWrite(BR_DATA2_PIN, HIGH);
+}
+
+void data::sendMotorStatus(ros::Publisher &publisher) {
+    rover_msgs::MotorStatus message;
+    message.ok_length = 6;
+
+    bool status[] = {
+            (bool) digitalRead(FL_READY_PIN),
+            (bool) digitalRead(FR_READY_PIN),
+            (bool) digitalRead(ML_READY_PIN),
+            (bool) digitalRead(MR_READY_PIN),
+            (bool) digitalRead(BL_READY_PIN),
+            (bool) digitalRead(BR_READY_PIN)
+    };
+
+    memcpy(message.ok, status,6);
+
+    publisher.publish(&message);
+
 }

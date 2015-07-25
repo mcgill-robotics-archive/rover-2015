@@ -8,14 +8,14 @@
 #include "std_msgs/Bool.h"
 #include "rover_msgs/MotorControllerMode.h"
 #include "DataControl.h"
-//#include "CameraControl.h"
 #include "rover_msgs/ResetWatchDog.h"
 #include "Camera.h"
 
 ros::NodeHandle nh;
-//CameraControl cameraControl(nh);
+rover_msgs::MotorStatus motorStatus;
 unsigned long lastReset = 0;
 bool watchDog = true;
+unsigned long lastSend = 0;
 
 float radToDeg(float rad)
 {
@@ -24,12 +24,12 @@ float radToDeg(float rad)
 
 void driveCallback( const control_systems::SetPoints& setPoints )
 {
-    FLsetSpeed(setPoints.speedFL);
-    FRsetSpeed(setPoints.speedFR);
+    FLsetSpeed(setPoints.speedFL / 6);
+    FRsetSpeed(setPoints.speedFR / 6);
     MLsetSpeed(setPoints.speedML);
     MRsetSpeed(setPoints.speedMR);
-    BLsetSpeed(setPoints.speedRL);
-    BRsetSpeed(setPoints.speedRR);
+    BLsetSpeed(setPoints.speedRL / 6);
+    BRsetSpeed(setPoints.speedRR / 6);
 
     float flAngle = 90.0 + radToDeg(setPoints.thetaFL);
     float frAngle = 90.0 + radToDeg(setPoints.thetaFR);
@@ -101,7 +101,7 @@ ros::Subscriber<control_systems::SetPoints> driveSubscriber("/wheels", &driveCal
 ros::Subscriber<std_msgs::Bool> movingSubscriber("/is_moving", &callbackMoving);
 ros::Subscriber<rover_msgs::MotorControllerMode> modeSubscriber("/mc_mode", &mcMode);
 ros::Subscriber<geometry_msgs::Twist> cameraSubscriber("/camera_motion", &callbackCamera);
-
+ros::Publisher motorStatusPublisher("motor_status", &motorStatus);
 ros::ServiceServer<rover_msgs::ResetWatchDog::Request, rover_msgs::ResetWatchDog::Response>
         watchDogServer("reset_watchdog",&callbackResetWatchdog);
 
@@ -159,6 +159,7 @@ void setup()
     nh.subscribe(modeSubscriber);
     nh.subscribe(cameraSubscriber);
     nh.advertiseService(watchDogServer);
+    nh.advertise(motorStatusPublisher);
 
 }
 
@@ -169,6 +170,12 @@ void loop()
         disableMotors();
         watchDog = true;
     }
+
+//    if ((millis() - lastSend > 500))
+//    {
+//        data::sendMotorStatus(motorStatusPublisher);
+//        lastSend = millis();
+//    }
 
     nh.spinOnce();
     delay(1);

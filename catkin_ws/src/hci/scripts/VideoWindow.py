@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'VideoWindow.ui'
+# Form implementation generated from reading ui file '../ui_files/VideoWindow.ui'
 #
-# Created: Tue May 26 21:51:15 2015
+# Created: Thu Jul 23 00:15:20 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,10 +26,12 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(747, 584)
+        MainWindow.resize(747, 595)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.centralwidget)
+        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.camera2 = QtGui.QLabel(self.centralwidget)
         self.camera2.setFrameShape(QtGui.QFrame.Box)
@@ -66,9 +68,13 @@ class Ui_MainWindow(object):
         self.camera3.setFrameShape(QtGui.QFrame.Box)
         self.camera3.setObjectName(_fromUtf8("camera3"))
         self.horizontalLayout_2.addWidget(self.camera3)
+        self.horizontalLayout_2.setStretch(0, 1)
+        self.horizontalLayout_2.setStretch(1, 1)
+        self.horizontalLayout_2.setStretch(2, 1)
+        self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 747, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 747, 31))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
