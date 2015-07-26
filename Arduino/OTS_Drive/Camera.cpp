@@ -12,8 +12,8 @@ Servo tiltServo, panServo;
 float mPanAngle;
 float mTiltAngle;
 
-const int panLowLimit = 60;
-const int panHighLimit = 80;
+const int panLowLimit = 70;
+const int panHighLimit = 110;
 
 const int tiltLowLimit = 45;
 const int tiltHighLimit = 170;
@@ -23,7 +23,7 @@ void initCameraTable()
     tiltServo.attach(CAMERA_TILT_SERVO);
     panServo.attach(CAMERA_PAN_SERVO);
     mTiltAngle = 90;
-    mPanAngle = 67;
+    mPanAngle = 90;
 
 
     update(mPanAngle, mTiltAngle);
@@ -32,7 +32,7 @@ void initCameraTable()
 void callbackCamera(const geometry_msgs::Twist & twist)
 {
     mTiltAngle += twist.angular.y;
-    float panCmd = mPanAngle + (twist.angular.z * 5);
+    float panCmd = mPanAngle + (twist.angular.z * 15);
 
     update(panCmd, mTiltAngle);
 }

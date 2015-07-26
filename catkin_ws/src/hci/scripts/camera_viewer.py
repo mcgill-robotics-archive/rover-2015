@@ -74,8 +74,9 @@ class CameraViewer(QtGui.QMainWindow):
             try:
                 qimageTop = QtGui.QImage.fromData(self.imageTop.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
-                rotated = imageTop.transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
-                                 #.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = imageTop.transformed(QtGui.QMatrix().rotate(-90), QtCore.Qt.SmoothTransformation)
+                #transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
+
             finally:
                 pass
             self.ui.camera2.setPixmap(rotated)
@@ -96,8 +97,8 @@ class CameraViewer(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         
-        rospy.Subscriber("/front_haz/image_mono/compressed", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber("/econ/image_mono/compressed", CompressedImage, self.receiveimageTop)
+        rospy.Subscriber("/econ", CompressedImage, self.receiveimageMain)
+        rospy.Subscriber("/left_nav/image_mono/compressed", CompressedImage, self.receiveimageTop)
         rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
     # def getimageTopic(self):

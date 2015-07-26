@@ -165,17 +165,17 @@ void setup()
 
 void loop()
 {
-    if ((millis() - lastReset) > 500)
-    {
-        disableMotors();
-        watchDog = true;
-    }
-
-//    if ((millis() - lastSend > 500))
+//    if ((millis() - lastReset) > 500)
 //    {
-//        data::sendMotorStatus(motorStatusPublisher);
-//        lastSend = millis();
+//        disableMotors();
+//        watchDog = true;
 //    }
+
+    if ((millis() - lastSend > 500))
+    {
+        data::sendMotorStatus(motorStatusPublisher);
+        lastSend = millis();
+    }
 
     nh.spinOnce();
     delay(1);

@@ -340,7 +340,7 @@ class CentralUi(QtGui.QMainWindow):
             self.toggle_coordinate()
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.profile.param_value["/joystick/translatory"]:
+        if self.profile.param_value["/joystick/skid_steer"]:
             self.ui.skid.setChecked(not self.ui.skid.isChecked())
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
@@ -348,14 +348,14 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
+        elif self.profile.param_value["/joystick/camera_mode"]:
+            self.set_controller_mode(3)
         elif self.profile.param_value["/joystick/arm_base_mode"]:
             self.set_controller_mode(1)
         elif self.profile.param_value["/joystick/end_effector_mode"]:
             self.set_controller_mode(2)
-        elif self.profile.param_value["/joystick/camera_mode"]:
-            self.set_controller_mode(3)
+
         self.controller.clear_buttons()
-        # minus sign to compensate for joystick inherent positive and negative mappings
         self.publish_controls()
 
     def toggle_coordinate(self):
