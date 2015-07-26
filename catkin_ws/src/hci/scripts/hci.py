@@ -273,9 +273,9 @@ class CentralUi(QtGui.QMainWindow):
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
-            self.ui.xActual.setValue(pose.position.x)
-            self.ui.yActual.setValue(pose.position.y)
-            self.ui.headingActual.setValue(pose.orientation.z)
+            # self.ui.xActual.setText(QtCore.QString(String(pose.position.x)))
+            # self.ui.yActual.setText(QtCore.QString(String(pose.position.y)))
+            # self.ui.headingActual.setText(QtCore.QString(String(pose.orientation.z)))
             self.new_x = [pose.position.x - self.dx]
             self.new_y = [pose.position.y - self.dy]
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')

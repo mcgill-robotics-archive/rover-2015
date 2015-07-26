@@ -24,12 +24,12 @@ float radToDeg(float rad)
 
 void driveCallback( const control_systems::SetPoints& setPoints )
 {
-    FLsetSpeed(setPoints.speedFL / 6);
-    FRsetSpeed(setPoints.speedFR / 6);
+    FLsetSpeed(setPoints.speedFL / 4);
+    FRsetSpeed(setPoints.speedFR / 4);
     MLsetSpeed(setPoints.speedML);
     MRsetSpeed(setPoints.speedMR);
-    BLsetSpeed(setPoints.speedRL / 6);
-    BRsetSpeed(setPoints.speedRR / 6);
+    BLsetSpeed(setPoints.speedRL / 4);
+    BRsetSpeed(setPoints.speedRR / 4);
 
     float flAngle = 90.0 + radToDeg(setPoints.thetaFL);
     float frAngle = 90.0 + radToDeg(setPoints.thetaFR);
