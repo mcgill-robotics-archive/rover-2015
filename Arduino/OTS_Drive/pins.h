@@ -41,7 +41,7 @@
 #define ML_DATA2_PIN 43
 
 #define MR_DATA1_PIN 38
-#define MR_DATA2_PIN 37 //WRONG
+#define MR_DATA2_PIN 37
 
 #define BL_DATA1_PIN 40
 #define BL_DATA2_PIN 41

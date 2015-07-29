@@ -120,7 +120,7 @@ void BRsetSpeed(double speed) {
     }
 }
 
-void enableMotors(bool watchDog)
+void enableMotors()
 {
     if (! watchDog)
     {
