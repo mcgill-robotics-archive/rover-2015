@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include <Servo.h>
 #include <ros.h>
 #include "pins.h"
@@ -10,6 +11,8 @@
 #include "DataControl.h"
 #include "rover_msgs/ResetWatchDog.h"
 #include "Camera.h"
+
+#define MOTOR_STATUS_UPDATE_RATE 100
 
 ros::NodeHandle nh;
 rover_msgs::MotorStatus motorStatus;
@@ -24,12 +27,12 @@ float radToDeg(float rad)
 
 void driveCallback( const control_systems::SetPoints& setPoints )
 {
-    FLsetSpeed(setPoints.speedFL / 4);
-    FRsetSpeed(setPoints.speedFR / 4);
+    FLsetSpeed(setPoints.speedFL);
+    FRsetSpeed(setPoints.speedFR);
     MLsetSpeed(setPoints.speedML);
     MRsetSpeed(setPoints.speedMR);
-    BLsetSpeed(setPoints.speedRL / 4);
-    BRsetSpeed(setPoints.speedRR / 4);
+    BLsetSpeed(setPoints.speedRL);
+    BRsetSpeed(setPoints.speedRR);
 
     float flAngle = 90.0 + radToDeg(setPoints.thetaFL);
     float frAngle = 90.0 + radToDeg(setPoints.thetaFR);
@@ -171,7 +174,7 @@ void loop()
 //        watchDog = true;
 //    }
 
-    if ((millis() - lastSend > 500))
+    if ((millis() - lastSend > MOTOR_STATUS_UPDATE_RATE))
     {
         data::sendMotorStatus(motorStatusPublisher);
         lastSend = millis();

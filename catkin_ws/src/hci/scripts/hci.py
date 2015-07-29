@@ -115,32 +115,32 @@ class CentralUi(QtGui.QMainWindow):
         rospy.Subscriber('/motor_status', MotorStatus, self.motor_status, queue_size=10)
 
     def motor_status(self, msg):
-        if msg.ok[0]:
+        if msg.fl:
             self.fl_signal_ok.emit()
         else:
             self.fl_signal_bad.emit()
 
-        if msg.ok[1]:
+        if msg.fr:
             self.fr_signal_ok.emit()
         else:
             self.fr_signal_bad.emit()
 
-        if msg.ok[2]:
+        if msg.ml:
             self.ml_signal_ok.emit()
         else:
             self.ml_signal_bad.emit()
 
-        if msg.ok[3]:
+        if msg.mr:
             self.mr_signal_ok.emit()
         else:
             self.mr_signal_bad.emit()
 
-        if msg.ok[4]:
+        if msg.bl:
             self.bl_signal_ok.emit()
         else:
             self.bl_signal_bad.emit()
 
-        if msg.ok[5]:
+        if msg.br:
             self.br_signal_ok.emit()
         else:
             self.br_signal_bad.emit()
