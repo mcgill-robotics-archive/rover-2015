@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include <Servo.h>
 #include <ros.h>
 #include <control_systems/SetPoints.h>
@@ -11,6 +12,8 @@
 #include "DataControl.h"
 #include "Camera.h"
 #include "Callbacks.h"
+
+#define MOTOR_STATUS_UPDATE_RATE 100
 
 ros::NodeHandle nh;
 rover_msgs::MotorStatus motorStatus;
@@ -91,7 +94,7 @@ void loop()
 //        watchDog = true;
 //    }
 
-    if ((millis() - lastSend > 500))
+    if ((millis() - lastSend > MOTOR_STATUS_UPDATE_RATE))
     {
         data::sendMotorStatus(motorStatusPublisher);
         lastSend = millis();

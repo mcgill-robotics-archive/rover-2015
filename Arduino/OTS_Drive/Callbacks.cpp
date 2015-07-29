@@ -11,6 +11,7 @@
 #include <DriveControl.h>
 #include <SteeringControl.h>
 #include "Callbacks.h"
+#include "Arduino.h"
 
 void driveCallback( const control_systems::SetPoints& setPoints )
 {

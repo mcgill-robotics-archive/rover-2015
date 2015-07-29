@@ -73,18 +73,13 @@ void data::setModeHighSpeed()
 
 void data::sendMotorStatus(ros::Publisher &publisher) {
     rover_msgs::MotorStatus message;
-    message.ok_length = 6;
 
-    bool status[] = {
-            (bool) digitalRead(FL_READY_PIN),
-            (bool) digitalRead(FR_READY_PIN),
-            (bool) digitalRead(ML_READY_PIN),
-            (bool) digitalRead(MR_READY_PIN),
-            (bool) digitalRead(BL_READY_PIN),
-            (bool) digitalRead(BR_READY_PIN)
-    };
-
-    memcpy(message.ok, status,6);
+    message.fl = (bool) digitalRead(FL_READY_PIN);
+    message.fr  = (bool) digitalRead(FR_READY_PIN);
+    message.ml  = (bool) digitalRead(ML_READY_PIN);
+    message.mr  = (bool) digitalRead(MR_READY_PIN);
+    message.bl  = (bool) digitalRead(BL_READY_PIN);
+    message.br  = (bool) digitalRead(BR_READY_PIN);
 
     publisher.publish(&message);
 
