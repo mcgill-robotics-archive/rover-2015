@@ -15,8 +15,8 @@ void setup()
   pinMode(DRE_1, OUTPUT);
   pinMode(DRE_0, OUTPUT);
   digitalWrite(DRE_3,1); // 0 to enable, 1 to disable. Only enable one at a time.
-  digitalWrite(DRE_2,0);
-  digitalWrite(DRE_1,1);
+  digitalWrite(DRE_2,1);
+  digitalWrite(DRE_1,0);
   digitalWrite(DRE_0,1);
   SPI.begin();
   SPI.setClockDivider(SPI_CLOCK_DIV8);

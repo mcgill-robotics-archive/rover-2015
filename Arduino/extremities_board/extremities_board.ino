@@ -4,15 +4,15 @@
     HOW TO CONNECT THE MOTORS:
     
   Linear actuators (up +, down -):
-    (Elbow)
+    (Elbow- White)
       -Black: M2B
       -White: M2A
-    (Shoulder)
-      -White: M1B
-      -Black: M1A
+    (Shoulder- Blue)
+      -White: M2A
+      -Black: M2B
       
   Banebot:(up + down -)
-    (Wrist)
+    (Wrist- Blue)
       -Black: M1B
       -White: M1A
       
@@ -79,11 +79,11 @@ void loop()
     {
       if(command.charAt(1) == 'u')
       {
-        setServoVelocity(50, ELBOW);
+        setServoVelocity(100, ELBOW);
       }
       else if(command.charAt(1) == 'd')
       {
-        setServoVelocity(-50, ELBOW);
+        setServoVelocity(-100, ELBOW);
       }
       else
       {
