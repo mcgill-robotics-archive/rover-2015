@@ -5,6 +5,7 @@
 #ifndef ARDUINO_TEST_DRIVECONTROL_H
 #define ARDUINO_TEST_DRIVECONTROL_H
 
+static bool watchDog = false;
 
 void FLsetSpeed(double speed);
 void FRsetSpeed(double speed);
@@ -13,7 +14,7 @@ void MRsetSpeed(double speed);
 void BLsetSpeed(double speed);
 void BRsetSpeed(double speed);
 
-void enableMotors(bool watchDog);
+void enableMotors();
 void disableMotors();
 
 #endif //ARDUINO_TEST_DRIVECONTROL_H

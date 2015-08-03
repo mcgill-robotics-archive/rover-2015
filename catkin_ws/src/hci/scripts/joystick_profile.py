@@ -5,16 +5,12 @@ param_names = ["/joystick/drive_mode",
                "/joystick/end_effector_mode",
                "/joystick/camera_mode",
                "/joystick/point_steer",
-               "/joystick/translatory",
+               "/joystick/skid_steer",
                "/joystick/ackreman",
                "/joystick/ackreman_moving",
                "/joystick/coord_system",
                "/joystick/camera/arm",
-               "/joystick/camera/pantilt",
-               "/joystick/camera/haz_front",
-               "/joystick/camera/haz_back",
-               "/joystick/camera/haz_right",
-               "/joystick/camera/haz_left"]
+               "/joystick/camera/pantilt"]
 
 
 class ProfileParser():

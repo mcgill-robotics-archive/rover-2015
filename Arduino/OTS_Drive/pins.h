@@ -41,7 +41,7 @@
 #define ML_DATA2_PIN 43
 
 #define MR_DATA1_PIN 38
-#define MR_DATA2_PIN 37 //WRONG
+#define MR_DATA2_PIN 37
 
 #define BL_DATA1_PIN 40
 #define BL_DATA2_PIN 41
@@ -51,5 +51,12 @@
 
 #define CAMERA_PAN_SERVO 12
 #define CAMERA_TILT_SERVO 13
+
+#define FL_READY_PIN 47
+#define FR_READY_PIN 46
+#define ML_READY_PIN 49
+#define MR_READY_PIN 48
+#define BL_READY_PIN 51
+#define BR_READY_PIN 50
 
 #endif

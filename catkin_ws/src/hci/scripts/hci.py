@@ -115,32 +115,32 @@ class CentralUi(QtGui.QMainWindow):
         rospy.Subscriber('/motor_status', MotorStatus, self.motor_status, queue_size=10)
 
     def motor_status(self, msg):
-        if msg.ok[0]:
+        if msg.fl:
             self.fl_signal_ok.emit()
         else:
             self.fl_signal_bad.emit()
 
-        if msg.ok[1]:
+        if msg.fr:
             self.fr_signal_ok.emit()
         else:
             self.fr_signal_bad.emit()
 
-        if msg.ok[2]:
+        if msg.ml:
             self.ml_signal_ok.emit()
         else:
             self.ml_signal_bad.emit()
 
-        if msg.ok[3]:
+        if msg.mr:
             self.mr_signal_ok.emit()
         else:
             self.mr_signal_bad.emit()
 
-        if msg.ok[4]:
+        if msg.bl:
             self.bl_signal_ok.emit()
         else:
             self.bl_signal_bad.emit()
 
-        if msg.ok[5]:
+        if msg.br:
             self.br_signal_ok.emit()
         else:
             self.br_signal_bad.emit()
@@ -273,9 +273,9 @@ class CentralUi(QtGui.QMainWindow):
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
-            self.ui.xActual.setValue(pose.position.x)
-            self.ui.yActual.setValue(pose.position.y)
-            self.ui.headingActual.setValue(pose.orientation.z)
+            # self.ui.xActual.setText(QtCore.QString(String(pose.position.x)))
+            # self.ui.yActual.setText(QtCore.QString(String(pose.position.y)))
+            # self.ui.headingActual.setText(QtCore.QString(String(pose.orientation.z)))
             self.new_x = [pose.position.x - self.dx]
             self.new_y = [pose.position.y - self.dy]
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
@@ -340,7 +340,7 @@ class CentralUi(QtGui.QMainWindow):
             self.toggle_coordinate()
         if self.profile.param_value["/joystick/point_steer"]:
             self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.profile.param_value["/joystick/translatory"]:
+        if self.profile.param_value["/joystick/skid_steer"]:
             self.ui.skid.setChecked(not self.ui.skid.isChecked())
         if self.profile.param_value["/joystick/ackreman"]:
             self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
@@ -348,14 +348,14 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
+        elif self.profile.param_value["/joystick/camera_mode"]:
+            self.set_controller_mode(3)
         elif self.profile.param_value["/joystick/arm_base_mode"]:
             self.set_controller_mode(1)
         elif self.profile.param_value["/joystick/end_effector_mode"]:
             self.set_controller_mode(2)
-        elif self.profile.param_value["/joystick/camera_mode"]:
-            self.set_controller_mode(3)
+
         self.controller.clear_buttons()
-        # minus sign to compensate for joystick inherent positive and negative mappings
         self.publish_controls()
 
     def toggle_coordinate(self):

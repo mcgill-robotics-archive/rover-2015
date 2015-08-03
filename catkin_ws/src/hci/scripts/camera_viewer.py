@@ -24,10 +24,6 @@ class CameraViewer(QtGui.QMainWindow):
         self.signal = QtCore.QTimer(self)
         self.signal.timeout.connect(self.repaint_image)
         
-        self.ui.camera1.setScaledContents(true)
-        self.ui.camera2.setScaledContents(true)
-        self.ui.camera3.setScaledContents(true)
-
         self.ros_init()
 
         self.signal.start(1000 / 60)
@@ -55,6 +51,7 @@ class CameraViewer(QtGui.QMainWindow):
             try:
                 qimageMain = QtGui.QImage.fromData(self.imageMain.data)
                 imageMain = QtGui.QPixmap.fromImage(qimageMain)
+                #imageMain = imageMain.scaled(QtCore.QSize(self.ui.camera1.width()-1, self.ui.camera1.height()-1),0)
 
                 if self.ui.rot0.isChecked():
                     self.ui.camera1.setPixmap(imageMain)
@@ -77,8 +74,9 @@ class CameraViewer(QtGui.QMainWindow):
             try:
                 qimageTop = QtGui.QImage.fromData(self.imageTop.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
-                rotated = imageTop.transformed(Qtransform().scale(-1,1))  # mirror on the y axis
-                                 #.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = imageTop.transformed(QtGui.QMatrix().rotate(-90), QtCore.Qt.SmoothTransformation)
+                #transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
+
             finally:
                 pass
             self.ui.camera2.setPixmap(rotated)
@@ -99,8 +97,8 @@ class CameraViewer(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         
-        rospy.Subscriber("/front_haz/image_mono/compressed", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber("/econ/image_mono/compressed", CompressedImage, self.receiveimageTop)
+        rospy.Subscriber("/econ", CompressedImage, self.receiveimageMain)
+        rospy.Subscriber("/left_nav/image_mono/compressed", CompressedImage, self.receiveimageTop)
         rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receiveimageBottom)
 
     # def getimageTopic(self):
