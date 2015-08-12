@@ -196,7 +196,7 @@ void loop()
         wristSetpoint = constrain(command.substring(1, 4).toInt(), 100, 270);
       }
     }
-    else if(command.charA(0) == 'b')
+    else if(command.charAt(0) == 'b')
     {
       if(command.charAt(1) == 'w') // clock_W_ise
       {
