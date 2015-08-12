@@ -14,28 +14,34 @@ Wrist rotation: cw +, ccw -
 
 // Enable pins. Underscore prefix indicates that pin is active-low.
 const int _EN_CLAW = 23;
-const int _DRE_UNUSED = 32;  // Encoder port 3
-const int _DRE_WRIST = 34;   // Encoder port 2
+const int _DRE_UNUSED = 32;   // Encoder port 3
+const int _DRE_WRIST = 34;    // Encoder port 2
 const int _DRE_SHOULDER = 36; // Encoder port 1
-const int _DRE_ELBOW = 38;   // Encoder port 0
+const int _DRE_ELBOW = 38;    // Encoder port 0
 
 // Stepper motor pins
 const int STEP_CLAW = 25;
 const int DIR_CLAW = 27;
 
-//Servo motor pins
+// Servo motor pins
 const int WRIST = 5;
+const int BASE = 4;
 const int SHOULDER = 3;
 const int ELBOW = 2;
-const int WRIST_ROT_0 = 10; // Servo port 0
-const int WRIST_ROT_1 = 9;  // Servo port 1
+
+// Wrist rotation pins
+const int WRIST_ROT_0_DIR_A = 26;
+const int WRIST_ROT_0_DIR_B = 28;
+const int WRIST_ROT_0_PWM = 12;
+const int WRIST_ROT_1_DIR_A = 22;
+const int WRIST_ROT_1_DIR_B = 24;
+const int WRIST_ROT_1_PWM = 11;
 
 // Servo objects for motors.
 Servo Wrist;
+Servo Base;
 Servo Shoulder;
 Servo Elbow;
-Servo WristRot0;
-Servo WristRot1; 
 
 // Variables needed for PID control.
 double wristInput;
@@ -50,7 +56,7 @@ double elbowOutput;
 
 // PID object interacts with variables via pointers.
 // Just need to call controller.Compute() and the value of output will be updated.  
-PID WristController(&wristInput, &wristOutput, &wristSetpoint, 0.75, 0.5, 0.005, DIRECT);
+PID WristController(&wristInput, &wristOutput, &wristSetpoint, 0.8, 0.1, 0, DIRECT);
 PID ShoulderController(&shoulderInput, &shoulderOutput, &shoulderSetpoint, 5, 1, 0, DIRECT);
 PID ElbowController(&elbowInput, &elbowOutput, &elbowSetpoint, 5, 0, 0, DIRECT);
   
@@ -71,13 +77,18 @@ void setup()
   pinMode(WRIST, OUTPUT);
   pinMode(SHOULDER, OUTPUT);
   pinMode(ELBOW, OUTPUT);
-  pinMode(WRIST_ROT_0, OUTPUT);
-  pinMode(WRIST_ROT_1, OUTPUT);
   Wrist.attach(WRIST);
+  Base.attach(BASE);
   Shoulder.attach(SHOULDER);
   Elbow.attach(ELBOW);
-  WristRot0.attach(WRIST_ROT_0);
-  WristRot1.attach(WRIST_ROT_1);
+  
+  // Wrist rotation setup
+  pinMode(WRIST_ROT_0_DIR_A, OUTPUT);
+  pinMode(WRIST_ROT_0_DIR_B, OUTPUT);
+  pinMode(WRIST_ROT_0_PWM, OUTPUT);
+  pinMode(WRIST_ROT_1_DIR_A, OUTPUT);
+  pinMode(WRIST_ROT_1_DIR_B, OUTPUT);
+  pinMode(WRIST_ROT_1_PWM, OUTPUT);
   
   // Encoder setup
   pinMode(_DRE_WRIST, OUTPUT);
@@ -106,9 +117,9 @@ void setup()
   WristController.SetOutputLimits(-100, 100);  
   ShoulderController.SetOutputLimits(-100, 100);  
   ElbowController.SetOutputLimits(-100, 100);
-  WristController.SetSampleTime(10);
-  ShoulderController.SetSampleTime(10);;
-  ElbowController.SetSampleTime(10); 
+  WristController.SetSampleTime(1);
+  ShoulderController.SetSampleTime(1);;
+  ElbowController.SetSampleTime(1); 
   WristController.Compute();
   ShoulderController.Compute();
   ElbowController.Compute();  
@@ -121,25 +132,94 @@ void loop()
     String command = Serial.readString();
     if(command.charAt(0) == 's')
     {
-      shoulderSetpoint = constrain(command.substring(1, 4).toInt(), 150, 180);
+      if(command.charAt(1) == 'u')
+      {
+        setLinkVelocity(100, Shoulder);
+        shoulderInput = readEncoder(SHOULDER);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setLinkVelocity(-100, Shoulder);
+        shoulderInput = readEncoder(SHOULDER);
+      }
+      else if(command.charAt(1) == 's')
+      {
+        setLinkVelocity(0, Shoulder);
+        shoulderInput = readEncoder(SHOULDER);
+      }
+      else
+      {
+        shoulderSetpoint = constrain(command.substring(1, 4).toInt(), 150, 180);
+      }
     }
     else if(command.charAt(0) == 'e')
     {
-      elbowSetpoint = constrain(command.substring(1, 4).toInt(), 10, 40);
+      if(command.charAt(1) == 'u')
+      {
+        setLinkVelocity(100, Elbow);
+        elbowInput = readEncoder(ELBOW);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setLinkVelocity(-100, Elbow);
+        elbowInput = readEncoder(ELBOW);
+      }
+      else if(command.charAt(1) == 's')
+      {
+        setLinkVelocity(0, Elbow);
+        elbowInput = readEncoder(ELBOW);
+      }
+      else
+      {
+        elbowSetpoint = constrain(command.substring(1, 4).toInt(), 10, 40);
+      }
     }
     else if(command.charAt(0) == 'w')
     {
-      wristSetpoint = constrain(command.substring(1, 4).toInt(), 100, 270);
+      if(command.charAt(1) == 'u')
+      {
+        setLinkVelocity(100, Wrist);
+        wristInput = readEncoder(WRIST);
+      }
+      else if(command.charAt(1) == 'd')
+      {
+        setLinkVelocity(-100, Wrist);
+        wristInput = readEncoder(WRIST);
+      }
+      else if(command.charAt(1) == 's')
+      {
+        setLinkVelocity(0, Wrist);
+        wristInput = readEncoder(WRIST);
+      }
+      else
+      {
+        wristSetpoint = constrain(command.substring(1, 4).toInt(), 100, 270);
+      }
+    }
+    else if(command.charA(0) == 'b')
+    {
+      if(command.charAt(1) == 'w') // clock_W_ise
+      {
+        setLinkVelocity(100, Base);
+      }
+      else if(command.charAt(1) == 'c') // _C_ounterclockwise
+      {
+        setLinkVelocity(-100, Base);
+      }
+      else
+      {
+        setLinkVelocity(0, Base);
+      }
     }
     else if(command.charAt(0) == 'r')
     {
       if(command.charAt(1) == 'w') // clock_W_ise
       {
-        setWristRotVelocity(100);
+        setWristRotVelocity(50);
       }
       else if(command.charAt(1) == 'c') // _C_ounterclockwise
       {
-        setWristRotVelocity(-100);
+        setWristRotVelocity(-50);
       }
       else
       {
@@ -170,7 +250,6 @@ void loop()
     Serial.print("\t");
     Serial.print(elbowOutput, 3);
     setLinkVelocity(elbowOutput, Elbow);
-    delay(10);
     shoulderInput = readEncoder(SHOULDER);
     ShoulderController.Compute();
     Serial.print("\t");
@@ -183,7 +262,6 @@ void loop()
     Serial.print("\t");
     Serial.print(-shoulderOutput, 3);
     setLinkVelocity(-shoulderOutput, Shoulder);
-    delay(10);
     wristInput = readEncoder(WRIST);
     WristController.Compute();
     Serial.print("\t");
@@ -196,7 +274,7 @@ void loop()
     Serial.print("\t");
     Serial.println(-wristOutput, 3);
     setLinkVelocity(-wristOutput, Wrist);
-    delay(10);
+    delay(1);
 }
 
 // Sets claw's displacement in rotations of the stepper.
@@ -224,8 +302,32 @@ void setClawDisplacement(float disp)
 // Sets velocity for the wrist rotation joint.
 void setWristRotVelocity(int vel)
 {
-  setServoVelocity(vel, WristRot0, 0, 180);
-  setServoVelocity(vel, WristRot1, 0, 180);
+  if(vel == 0 || vel > 100 || vel < -100)
+  {
+    analogWrite(WRIST_ROT_0_PWM, 0);
+    analogWrite(WRIST_ROT_1_PWM, 0);
+  }
+  else if(vel < 0)
+  {
+    vel *= -1;
+    digitalWrite(WRIST_ROT_0_DIR_A, HIGH);
+    digitalWrite(WRIST_ROT_0_DIR_B, LOW);
+    digitalWrite(WRIST_ROT_1_DIR_A, HIGH);
+    digitalWrite(WRIST_ROT_1_DIR_B, LOW);
+    int output = map(vel, 0, 100, 0, 255);
+    analogWrite(WRIST_ROT_0_PWM, output);
+    analogWrite(WRIST_ROT_1_PWM, output);
+  }
+  else
+  {
+    digitalWrite(WRIST_ROT_0_DIR_A, LOW);
+    digitalWrite(WRIST_ROT_0_DIR_B, HIGH);
+    digitalWrite(WRIST_ROT_1_DIR_A, LOW);
+    digitalWrite(WRIST_ROT_1_DIR_B, HIGH);
+    int output = map(vel, 0, 100, 0, 255);
+    analogWrite(WRIST_ROT_0_PWM, output);
+    analogWrite(WRIST_ROT_1_PWM, output);
+  }
 }
 
 // Sets velocity for a joint controlled by a sabertooth
@@ -243,7 +345,7 @@ void setServoVelocity(int vel, Servo servo, int minim, int maxim)
   {
     servo.write(90);
   }
-  else if(vel < 0)
+  /*else if(vel < 0)
   {
     vel *= -1;
     int servoVal = ceil(vel * (90 - minim) / 100);
@@ -252,6 +354,11 @@ void setServoVelocity(int vel, Servo servo, int minim, int maxim)
   else
   {
     int servoVal = 90 + floor(vel * (maxim - 90) / 100);
+    servo.write(servoVal);
+  }*/
+  else
+  {
+    int servoVal = map(vel, -100, 100, minim, maxim);
     servo.write(servoVal);
   }
 }
