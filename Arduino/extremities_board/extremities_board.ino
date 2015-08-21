@@ -12,6 +12,10 @@ Wrist rotation: cw +, ccw -
 #include <SPI.h>
 #include <PID_v1.h>
 
+// ENABLES OR DISABLES PID
+
+const bool PID_ON = true;
+
 // Enable pins. Underscore prefix indicates that pin is active-low.
 const int _EN_CLAW = 23;
 const int _DRE_UNUSED = 32;   // Encoder port 3
@@ -56,9 +60,9 @@ double elbowOutput;
 
 // PID object interacts with variables via pointers.
 // Just need to call controller.Compute() and the value of output will be updated.  
-PID WristController(&wristInput, &wristOutput, &wristSetpoint, 0.8, 0.1, 0, DIRECT);
+PID WristController(&wristInput, &wristOutput, &wristSetpoint, 2, 0.1, 0, DIRECT);
 PID ShoulderController(&shoulderInput, &shoulderOutput, &shoulderSetpoint, 5, 1, 0, DIRECT);
-PID ElbowController(&elbowInput, &elbowOutput, &elbowSetpoint, 5, 0, 0, DIRECT);
+PID ElbowController(&elbowInput, &elbowOutput, &elbowSetpoint, 5, 1, 0, DIRECT);
   
 void setup()
 {
@@ -156,12 +160,12 @@ void loop()
     {
       if(command.charAt(1) == 'u')
       {
-        setLinkVelocity(100, Elbow);
+        setLinkVelocity(-100, Elbow);
         elbowInput = readEncoder(ELBOW);
       }
       else if(command.charAt(1) == 'd')
       {
-        setLinkVelocity(-100, Elbow);
+        setLinkVelocity(100, Elbow);
         elbowInput = readEncoder(ELBOW);
       }
       else if(command.charAt(1) == 's')
@@ -193,7 +197,7 @@ void loop()
       }
       else
       {
-        wristSetpoint = constrain(command.substring(1, 4).toInt(), 100, 270);
+        wristSetpoint = constrain(command.substring(1, 4).toInt(), 75, 235);
       }
     }
     else if(command.charAt(0) == 'b')
@@ -241,40 +245,43 @@ void loop()
       }
     }
   }
-    elbowInput = readEncoder(ELBOW);
-    ElbowController.Compute();
-    Serial.print("elbow ");
-    Serial.print(elbowSetpoint, 3);
-    Serial.print("\t");
-    Serial.print(elbowInput, 3);
-    Serial.print("\t");
-    Serial.print(elbowOutput, 3);
-    setLinkVelocity(elbowOutput, Elbow);
-    shoulderInput = readEncoder(SHOULDER);
-    ShoulderController.Compute();
-    Serial.print("\t");
-    Serial.print("\t");
-    Serial.print("\t");
-    Serial.print("shoulder ");
-    Serial.print(shoulderSetpoint, 3);
-    Serial.print("\t");
-    Serial.print(shoulderInput, 3);
-    Serial.print("\t");
-    Serial.print(-shoulderOutput, 3);
-    setLinkVelocity(-shoulderOutput, Shoulder);
-    wristInput = readEncoder(WRIST);
-    WristController.Compute();
-    Serial.print("\t");
-    Serial.print("\t");
-    Serial.print("\t");
-    Serial.print("wrist ");
-    Serial.print(wristSetpoint, 3);
-    Serial.print("\t");
-    Serial.print(wristInput, 3);
-    Serial.print("\t");
-    Serial.println(-wristOutput, 3);
-    setLinkVelocity(-wristOutput, Wrist);
-    delay(1);
+    if(PID_ON)
+    {
+      elbowInput = readEncoder(ELBOW);
+      ElbowController.Compute();
+      Serial.print("elbow ");
+      Serial.print(elbowSetpoint, 3);
+      Serial.print("\t");
+      Serial.print(elbowInput, 3);
+      Serial.print("\t");
+      Serial.print(elbowOutput, 3);
+      setLinkVelocity(elbowOutput, Elbow);
+      shoulderInput = readEncoder(SHOULDER);
+      ShoulderController.Compute();
+      Serial.print("\t");
+      Serial.print("\t");
+      Serial.print("\t");
+      Serial.print("shoulder ");
+      Serial.print(shoulderSetpoint, 3);
+      Serial.print("\t");
+      Serial.print(shoulderInput, 3);
+      Serial.print("\t");
+      Serial.print(-shoulderOutput, 3);
+      setLinkVelocity(-shoulderOutput, Shoulder);
+      wristInput = readEncoder(WRIST);
+      WristController.Compute();
+      Serial.print("\t");
+      Serial.print("\t");
+      Serial.print("\t");
+      Serial.print("wrist ");
+      Serial.print(wristSetpoint, 3);
+      Serial.print("\t");
+      Serial.print(wristInput, 3);
+      Serial.print("\t");
+      Serial.println(-wristOutput, 3);
+      setLinkVelocity(-wristOutput, Wrist);
+      delay(1);
+    }
 }
 
 // Sets claw's displacement in rotations of the stepper.
