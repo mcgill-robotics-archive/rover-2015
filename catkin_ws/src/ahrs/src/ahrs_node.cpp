@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
     ros::Publisher ahrsPublisher = nh.advertise<rover_msgs::AhrsStatusMessage>("ahrs_status", 100);
     lineranger::ahrs::AhrsStatus ahrsStatus;
 
-    ros::Rate loopRate(10);
+    ros::Rate loopRate(2);
     rover_msgs::AhrsStatusMessage msg;
     ROS_INFO("ahrs_node ready, starting acquisition");
     while (ros::ok())

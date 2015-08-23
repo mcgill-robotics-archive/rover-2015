@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
-    <height>595</height>
+    <width>950</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,18 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1">
       <item>
        <widget class="QLabel" name="camera2">
+        <property name="minimumSize">
+         <size>
+          <width>240</width>
+          <height>426</height>
+         </size>
+        </property>
+        <property name="sizeIncrement">
+         <size>
+          <width>1</width>
+          <height>1</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
@@ -33,8 +45,14 @@
          <widget class="QLabel" name="camera1">
           <property name="minimumSize">
            <size>
-            <width>0</width>
-            <height>510</height>
+            <width>426</width>
+            <height>240</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>1</width>
+            <height>1</height>
            </size>
           </property>
           <property name="frameShape">
@@ -105,6 +123,24 @@
       </item>
       <item>
        <widget class="QLabel" name="camera3">
+        <property name="minimumSize">
+         <size>
+          <width>240</width>
+          <height>426</height>
+         </size>
+        </property>
+        <property name="sizeIncrement">
+         <size>
+          <width>1</width>
+          <height>1</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>240</width>
+          <height>426</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
@@ -122,7 +158,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>747</width>
+     <width>950</width>
      <height>31</height>
     </rect>
    </property>

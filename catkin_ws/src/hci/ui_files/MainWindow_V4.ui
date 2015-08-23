@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_9">
+   <layout class="QHBoxLayout" name="horizontalLayout_10">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -97,6 +97,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
          <widget class="QLabel" name="label_12">
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>15</pointsize>
@@ -113,7 +119,7 @@
          <widget class="QLabel" name="xActual">
           <property name="font">
            <font>
-            <pointsize>15</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -123,6 +129,12 @@
         </item>
         <item>
          <widget class="QLabel" name="label_15">
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>15</pointsize>
@@ -139,7 +151,7 @@
          <widget class="QLabel" name="yActual">
           <property name="font">
            <font>
-            <pointsize>15</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -165,11 +177,96 @@
          <widget class="QLabel" name="headingActual">
           <property name="font">
            <font>
-            <pointsize>15</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
            <string>0.00</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_18">
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>P</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="pitchLBL">
+          <property name="text">
+           <string>Pitch</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_19">
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>R</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="rollLBL">
+          <property name="text">
+           <string>Roll</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_20">
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="yawLBL">
+          <property name="text">
+           <string>Yaw</string>
           </property>
          </widget>
         </item>
@@ -629,6 +726,17 @@
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
   </widget>
   <action name="actionQuit">
    <property name="text">

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/VideoWindow.ui'
 #
-# Created: Thu Jul 23 00:15:20 2015
+# Created: Sun Aug 23 12:30:14 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(747, 595)
+        MainWindow.resize(950, 483)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -34,13 +34,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.camera2 = QtGui.QLabel(self.centralwidget)
+        self.camera2.setMinimumSize(QtCore.QSize(240, 426))
+        self.camera2.setSizeIncrement(QtCore.QSize(1, 1))
         self.camera2.setFrameShape(QtGui.QFrame.Box)
         self.camera2.setObjectName(_fromUtf8("camera2"))
         self.horizontalLayout_2.addWidget(self.camera2)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.camera1 = QtGui.QLabel(self.centralwidget)
-        self.camera1.setMinimumSize(QtCore.QSize(0, 510))
+        self.camera1.setMinimumSize(QtCore.QSize(426, 240))
+        self.camera1.setSizeIncrement(QtCore.QSize(1, 1))
         self.camera1.setFrameShape(QtGui.QFrame.Box)
         self.camera1.setObjectName(_fromUtf8("camera1"))
         self.verticalLayout.addWidget(self.camera1)
@@ -65,6 +68,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_2.addLayout(self.verticalLayout)
         self.camera3 = QtGui.QLabel(self.centralwidget)
+        self.camera3.setMinimumSize(QtCore.QSize(240, 426))
+        self.camera3.setSizeIncrement(QtCore.QSize(1, 1))
+        self.camera3.setBaseSize(QtCore.QSize(240, 426))
         self.camera3.setFrameShape(QtGui.QFrame.Box)
         self.camera3.setObjectName(_fromUtf8("camera3"))
         self.horizontalLayout_2.addWidget(self.camera3)
@@ -74,7 +80,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 747, 31))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 950, 31))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
