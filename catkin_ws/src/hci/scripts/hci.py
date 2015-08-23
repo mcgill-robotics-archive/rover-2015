@@ -10,12 +10,13 @@ import sys
 import rospy
 import Queue
 import os
+import math
+import numpy
 
 from std_msgs.msg import *
-from geometry_msgs.msg import Pose
 from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
-from rover_msgs.msg import MotorControllerMode, MotorStatus
+from rover_msgs.msg import MotorControllerMode, MotorStatus, AhrsStatusMessage
 from rover_msgs.srv import ResetWatchDog
 
 
@@ -45,6 +46,13 @@ def lbl_bg_norm(thing):
     thing.setText("Ok")
 
 
+def formatAngle(angle):
+
+    deg = math.degrees(angle)
+    string = "%.2f" % deg
+    return string
+
+
 class CentralUi(QtGui.QMainWindow):
 
     fl_signal_ok = QtCore.pyqtSignal()
@@ -64,6 +72,7 @@ class CentralUi(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(CentralUi, self).__init__(parent)
 
+        self.points_counter = 0
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -92,6 +101,7 @@ class CentralUi(QtGui.QMainWindow):
         self.new_y = []
         self.w1 = None
         self.s1 = None
+        self.s2 = None
         self.x_waypoints = []
         self.y_waypoints = []
 
@@ -111,7 +121,7 @@ class CentralUi(QtGui.QMainWindow):
 
     def init_ros(self):
         rospy.init_node('listener', anonymous=False)
-        rospy.Subscriber('pose', Pose, self.handle_pose, queue_size=10)
+        rospy.Subscriber('ahrs_status', AhrsStatusMessage, self.handle_pose, queue_size=10)
         rospy.Subscriber('/motor_status', MotorStatus, self.motor_status, queue_size=10)
 
     def motor_status(self, msg):
@@ -177,7 +187,6 @@ class CentralUi(QtGui.QMainWindow):
         self.mr_signal_bad.connect(lambda lbl=self.ui.mr_ok: lbl_bg_red(lbl))
         self.bl_signal_bad.connect(lambda lbl=self.ui.bl_ok: lbl_bg_red(lbl))
         self.br_signal_bad.connect(lambda lbl=self.ui.br_ok: lbl_bg_red(lbl))
-
 
     def init_timers(self):
         # signal quality timer
@@ -260,24 +269,52 @@ class CentralUi(QtGui.QMainWindow):
 
         self.s1 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)
         self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
+        self.s2 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('r'), pxMode=True)
         self.w1.addItem(self.s1)
+        self.w1.addItem(self.s2)
 
     def handle_pose(self, data):
         if not self.first_point:
             self.first_point = True
-            self.dy = data.position.y
-            self.dx = data.position.x
+            self.dy = data.gpsLongitude
+            self.dx = data.gpsLatitude
         # add (x,y) to tempPose queue
         self.tempPose.put(data)
 
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
-            # self.ui.xActual.setText(QtCore.QString(String(pose.position.x)))
-            # self.ui.yActual.setText(QtCore.QString(String(pose.position.y)))
-            # self.ui.headingActual.setText(QtCore.QString(String(pose.orientation.z)))
-            self.new_x = [pose.position.x - self.dx]
-            self.new_y = [pose.position.y - self.dy]
+
+            self.new_x = [(pose.gpsLatitude - self.dx)/10000000.0]
+            self.new_y = [(pose.gpsLongitude - self.dy)/10000000.0]
+            self.ui.xActual.setText(str(pose.gpsLatitude/10000000.0))
+            self.ui.yActual.setText(str(pose.gpsLongitude/10000000.0))
+
+            self.ui.pitchLBL.setText(formatAngle(pose.pitch))
+            self.ui.rollLBL.setText(formatAngle(pose.roll))
+            self.ui.yawLBL.setText(formatAngle(pose.yaw))
+
+            self.points_counter += 1
+            #
+            # if self.points_counter % 10 == 0:
+            #     graphData = self.s2.getData()
+            #     # print graphData[0]
+            #     # print graphData[0][:-10]
+            #     lastXmean = numpy.mean(graphData[0][-10:])
+            #     newDataX = graphData[0][:-10].tolist()
+            #     newDataX.append(lastXmean)
+            #     # print newDataX
+            #     # print graphData[1]
+            #     # print graphData[1][:-10]
+            #     lastYmean = numpy.mean(graphData[1][-10:])
+            #     newDataY = graphData[1][:-10].tolist()
+            #     newDataY.append(lastYmean)
+            #
+            #     # print(lastXmean)
+            #     # print(lastYmean)
+            #
+            #     self.s1.setData(newDataX, newDataY, size=3, symbol='o', brush='r')
+
             self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
             if self.ui.zoomGraph.isChecked():
                 self.w1.autoRange()
