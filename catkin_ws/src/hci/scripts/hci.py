@@ -6,12 +6,10 @@ from JoystickController import JoystickController
 from publisher import Publisher
 import pyqtgraph as pg
 
-import sys
 import rospy
 import Queue
 import os
 import math
-import numpy
 
 from std_msgs.msg import *
 from joystick_profile import ProfileParser
@@ -46,7 +44,16 @@ def lbl_bg_norm(thing):
     thing.setText("Ok")
 
 
-def formatAngle(angle):
+def format_dms(dec_deg):
+    deg = int(dec_deg)
+    mins = (abs(dec_deg - deg) * 60)
+    mins_i = int(mins)
+    sec = (mins - mins_i) * 60
+
+    return "%i%c %i' %.3f''" % (deg, chr(176), mins_i, sec)
+
+
+def format_euler_angle(angle):
 
     deg = math.degrees(angle)
     string = "%.2f" % deg
@@ -88,7 +95,6 @@ class CentralUi(QtGui.QMainWindow):
         self.addPointTimer = None
         self.controller_timer = None
         self.watchdog_timer = None
-
 
         self.sub = None
 
@@ -160,10 +166,14 @@ class CentralUi(QtGui.QMainWindow):
 
     def init_connects(self):
         # joystick mode buttons signal connect
-        QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"), lambda index = 0: self.set_controller_mode(index))
-        QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"), lambda index = 1: self.set_controller_mode(index))
-        QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"), lambda index = 2: self.set_controller_mode(index))
-        QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"), lambda index = 3: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.DriveMode, QtCore.SIGNAL("clicked()"),
+                               lambda index=0: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.ArmBaseMode, QtCore.SIGNAL("clicked()"),
+                               lambda index=1: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.EndEffectorMode, QtCore.SIGNAL("clicked()"),
+                               lambda index=2: self.set_controller_mode(index))
+        QtCore.QObject.connect(self.ui.function4, QtCore.SIGNAL("clicked()"),
+                               lambda index=3: self.set_controller_mode(index))
         QtCore.QObject.connect(self.ui.screenshot, QtCore.SIGNAL("clicked()"), self.take_screenshot)
         QtCore.QObject.connect(self.ui.pointSteer, QtCore.SIGNAL("toggled(bool)"), self.set_point_steer)
         QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
@@ -176,7 +186,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
         QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
 
-        #motor readys
+        # motor readys
         self.fl_signal_ok.connect(lambda lbl=self.ui.fl_ok: lbl_bg_norm(lbl))
         self.fr_signal_ok.connect(lambda lbl=self.ui.fr_ok: lbl_bg_norm(lbl))
         self.ml_signal_ok.connect(lambda lbl=self.ui.ml_ok: lbl_bg_norm(lbl))
@@ -279,26 +289,27 @@ class CentralUi(QtGui.QMainWindow):
         self.map_point_list[-1].addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
     def handle_pose(self, data):
-        if not self.first_point:
-            self.first_point = True
-            self.dy = data.gpsLongitude
-            self.dx = data.gpsLatitude
+        if data.gpsLongitude is not 0:
+            if not self.first_point:
+                self.first_point = True
+                self.dx = data.gpsLongitude
+                self.dy = data.gpsLatitude
 
-        # add (x,y) to tempPose queue
-        self.tempPose.put(data)
+            # add (x,y) to tempPose queue
+            self.tempPose.put(data)
 
     def add_point_timeout(self):
         while not self.tempPose.empty():
             pose = self.tempPose.get()
 
-            self.new_x = [(pose.gpsLatitude - self.dx)/10000000.0]
-            self.new_y = [(pose.gpsLongitude - self.dy)/10000000.0]
-            self.ui.xActual.setText(str(pose.gpsLatitude/10000000.0))
-            self.ui.yActual.setText(str(pose.gpsLongitude/10000000.0))
+            self.new_x = [(pose.gpsLongitude - self.dx)]
+            self.new_y = [(pose.gpsLatitude - self.dy)]
+            self.ui.latActual.setText(format_dms(pose.gpsLatitude))
+            self.ui.lonActual.setText(format_dms(pose.gpsLongitude))
 
-            self.ui.pitchLBL.setText(formatAngle(pose.pitch))
-            self.ui.rollLBL.setText(formatAngle(pose.roll))
-            self.ui.yawLBL.setText(formatAngle(pose.yaw))
+            self.ui.pitchLBL.setText(format_euler_angle(pose.pitch))
+            self.ui.rollLBL.setText(format_euler_angle(pose.roll))
+            self.ui.yawLBL.setText(format_euler_angle(pose.yaw))
 
             self.points_counter += 1
             if self.points_counter % 1000 == 0:

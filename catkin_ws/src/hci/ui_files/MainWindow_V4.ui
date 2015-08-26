@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
-    <height>683</height>
+    <width>1036</width>
+    <height>745</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,22 +47,22 @@
         <item>
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>X</string>
+           <string>Lon</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="x"/>
+         <widget class="QDoubleSpinBox" name="x"/>
         </item>
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Y</string>
+           <string>Lat</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="y"/>
+         <widget class="QDoubleSpinBox" name="y"/>
         </item>
         <item>
          <widget class="QPushButton" name="addMarkedWaypoint">
@@ -99,7 +99,7 @@
          <widget class="QLabel" name="label_12">
           <property name="maximumSize">
            <size>
-            <width>18</width>
+            <width>54</width>
             <height>16777215</height>
            </size>
           </property>
@@ -111,12 +111,12 @@
            </font>
           </property>
           <property name="text">
-           <string>X</string>
+           <string>Lon</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="xActual">
+         <widget class="QLabel" name="lonActual">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -131,7 +131,7 @@
          <widget class="QLabel" name="label_15">
           <property name="maximumSize">
            <size>
-            <width>18</width>
+            <width>54</width>
             <height>16777215</height>
            </size>
           </property>
@@ -143,38 +143,12 @@
            </font>
           </property>
           <property name="text">
-           <string>Y</string>
+           <string>Lat</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="yActual">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>0.00</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_17">
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Heading</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="headingActual">
+         <widget class="QLabel" name="latActual">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -714,7 +688,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>907</width>
+     <width>1036</width>
      <height>31</height>
     </rect>
    </property>
