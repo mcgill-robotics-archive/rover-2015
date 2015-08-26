@@ -40,15 +40,15 @@ int main(int argc, char ** argv)
     ros::Publisher ahrsPublisher = nh.advertise<rover_msgs::AhrsStatusMessage>("ahrs_status", 100);
     lineranger::ahrs::AhrsStatus ahrsStatus;
 
-    ros::Rate loopRate(2);
+    ros::Rate loopRate(10);
     rover_msgs::AhrsStatusMessage msg;
     ROS_INFO("ahrs_node ready, starting acquisition");
     while (ros::ok())
     {
         ahrsStatus = ahrs->getStatus();
-        msg.gpsLongitude = ahrsStatus.gpsLongitude;
-        msg.gpsAltitude = ahrsStatus.gpsAltitude;
-        msg.gpsLatitude = ahrsStatus.gpsLatitude;
+        msg.gpsLongitude = ahrsStatus.gpsLongitude / 10000000.0;
+        msg.gpsAltitude = ahrsStatus.gpsAltitude / 1000.0;
+        msg.gpsLatitude = ahrsStatus.gpsLatitude / 10000000.0;
 
         msg.heading = ahrsStatus.heading;
         msg.pitch = ahrsStatus.pitch;
