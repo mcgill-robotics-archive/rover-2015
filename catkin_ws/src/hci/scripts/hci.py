@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import sys
 
 from RoverWindow import *
 from PyQt4 import QtCore, QtGui
@@ -179,7 +180,8 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.ackreman, QtCore.SIGNAL("toggled(bool)"), self.set_ackreman)
         QtCore.QObject.connect(self.ui.skid, QtCore.SIGNAL("toggled(bool)"), self.set_skid)
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
-        QtCore.QObject.connect(self.ui.addMarkedWaypoint, QtCore.SIGNAL("clicked()"), self.addCoord)
+        QtCore.QObject.connect(self.ui.add_waypoint_dd, QtCore.SIGNAL("clicked()"), self.add_coord_dd)
+        QtCore.QObject.connect(self.ui.add_waypoint_dms, QtCore.SIGNAL("clicked()"), self.add_coord_dms)
 
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.add_way_point)
@@ -274,6 +276,7 @@ class CentralUi(QtGui.QMainWindow):
         new_set = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)  # create new point set
         self.map_point_list.append(new_set)  # add point set to member list
         self.w1.addItem(self.map_point_list[-1])  # add point set to graph window
+        rospy.loginfo("Added new scatter plot item")
 
     def setup_minimap(self):
 
@@ -326,12 +329,30 @@ class CentralUi(QtGui.QMainWindow):
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
-    def addCoord(self):
+    def add_coord_dms(self):
+        longitude = self.ui.lon_deg.value() + self.ui.lon_min.value() / 60.0 + self.ui.lon_sec.value() / 3600.0
+        latitude = self.ui.lat_deg.value() + self.ui.lat_min.value() / 60.0 + self.ui.lat_sec.value() / 3600.0
+
+        if self.ui.lat_sign.currentIndex() == 1:
+            latitude = - latitude
+
+        if self.ui.lon_sign.currentIndex() == 1:
+            longitude = - longitude
+
+        x = longitude - self.dx
+        y = latitude - self.dy
+        self.x_waypoints.append(x)
+        self.y_waypoints.append(y)
+        self.map_point_list[-1].addPoints([x], [y], size=10, symbol='t', brush='r')
+        if self.ui.zoomGraph.isChecked():
+            self.w1.autoRange()
+
+    def add_coord_dd(self):
         x = self.ui.x.value() - self.dx
         y = self.ui.y.value() - self.dy
         self.x_waypoints.append(x)
         self.y_waypoints.append(y)
-        self.map_point_list[-1].addPoints([x], [y], size=10, symbol='t', brush='b')
+        self.map_point_list[-1].addPoints([x], [y], size=10, symbol='t', brush='r')
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
