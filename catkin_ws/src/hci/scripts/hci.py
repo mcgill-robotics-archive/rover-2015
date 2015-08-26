@@ -101,7 +101,7 @@ class CentralUi(QtGui.QMainWindow):
         self.new_y = []
         self.w1 = None
         self.s1 = None
-        self.s2 = None
+
         self.x_waypoints = []
         self.y_waypoints = []
 
@@ -111,6 +111,9 @@ class CentralUi(QtGui.QMainWindow):
         self.first_point = False
         self.dx = 0
         self.dy = 0
+
+        # list for set of points in mini-map
+        self.map_point_list = []
 
         self.init_ros()
         self.init_connects()
@@ -257,6 +260,11 @@ class CentralUi(QtGui.QMainWindow):
         else:
             rospy.logwarn("fail save")
 
+    def add_point_set_to_mini_map(self):
+        new_set = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)  # create new point set
+        self.map_point_list.append(new_set)  # add point set to member list
+        self.w1.addItem(self.map_point_list[-1])  # add point set to graph window
+
     def setup_minimap(self):
 
         self.w1 = self.ui.graphicsView.addViewBox()
@@ -267,17 +275,15 @@ class CentralUi(QtGui.QMainWindow):
         self.x_waypoints.append(0)
         self.y_waypoints.append(0)
 
-        self.s1 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)
-        self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
-        self.s2 = pg.ScatterPlotItem(size=10, pen=pg.mkPen('r'), pxMode=True)
-        self.w1.addItem(self.s1)
-        self.w1.addItem(self.s2)
+        self.add_point_set_to_mini_map()
+        self.map_point_list[-1].addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
     def handle_pose(self, data):
         if not self.first_point:
             self.first_point = True
             self.dy = data.gpsLongitude
             self.dx = data.gpsLatitude
+
         # add (x,y) to tempPose queue
         self.tempPose.put(data)
 
@@ -295,34 +301,17 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.yawLBL.setText(formatAngle(pose.yaw))
 
             self.points_counter += 1
-            #
-            # if self.points_counter % 10 == 0:
-            #     graphData = self.s2.getData()
-            #     # print graphData[0]
-            #     # print graphData[0][:-10]
-            #     lastXmean = numpy.mean(graphData[0][-10:])
-            #     newDataX = graphData[0][:-10].tolist()
-            #     newDataX.append(lastXmean)
-            #     # print newDataX
-            #     # print graphData[1]
-            #     # print graphData[1][:-10]
-            #     lastYmean = numpy.mean(graphData[1][-10:])
-            #     newDataY = graphData[1][:-10].tolist()
-            #     newDataY.append(lastYmean)
-            #
-            #     # print(lastXmean)
-            #     # print(lastYmean)
-            #
-            #     self.s1.setData(newDataX, newDataY, size=3, symbol='o', brush='r')
+            if self.points_counter % 1000 == 0:
+                self.add_point_set_to_mini_map()
 
-            self.s1.addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
+            self.map_point_list[-1].addPoints(self.new_x, self.new_y, size=3, symbol='o', brush='w')
             if self.ui.zoomGraph.isChecked():
                 self.w1.autoRange()
 
     def add_way_point(self):
         self.x_waypoints.append(self.new_x[0])
         self.y_waypoints.append(self.new_y[0])
-        self.s1.addPoints([self.new_x[0]], [self.new_y[0]], size=10, symbol='t', brush='b')
+        self.map_point_list[-1].addPoints([self.new_x[0]], [self.new_y[0]], size=10, symbol='t', brush='b')
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
@@ -331,7 +320,7 @@ class CentralUi(QtGui.QMainWindow):
         y = self.ui.y.value() - self.dy
         self.x_waypoints.append(x)
         self.y_waypoints.append(y)
-        self.s1.addPoints([x], [y], size=10, symbol='t', brush='b')
+        self.map_point_list[-1].addPoints([x], [y], size=10, symbol='t', brush='b')
         if self.ui.zoomGraph.isChecked():
             self.w1.autoRange()
 
@@ -340,8 +329,8 @@ class CentralUi(QtGui.QMainWindow):
         self.dx = 0
         self.dy = 0
         
-        self.s1.setData([], [], size=10, symbol='o', brush='r')
-        self.s1.addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
+        self.map_point_list[-1].setData([], [], size=10, symbol='o', brush='r')
+        self.map_point_list[-1].addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
     def get_signal_quality(self):
         # s = os.popen("ping -c 1 air")
