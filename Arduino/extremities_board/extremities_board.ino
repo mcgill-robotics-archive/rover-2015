@@ -2,7 +2,7 @@
   TODO:
 Allow variable stepper speed.
 
-  DIRECTIONS
+  DIRECTIONS:
 Arm links: up+, down -
 Claw: open +, close -
 Wrist rotation: cw +, ccw -
@@ -13,8 +13,10 @@ Wrist rotation: cw +, ccw -
 #include <PID_v1.h>
 
 // ENABLES OR DISABLES PID
+bool PID_ON = true;
 
-const bool PID_ON = true;
+// ENABLES OR DISABLES SERIAL DEBUG INPUT
+bool SERIAL_ON = true;
 
 // Enable pins. Underscore prefix indicates that pin is active-low.
 const int _EN_CLAW = 23;
@@ -131,157 +133,207 @@ void setup()
 
 void loop()
 {
-  if(Serial.available() > 0)
+  if(SERIAL_ON)
   {
-    String command = Serial.readString();
-    if(command.charAt(0) == 's')
+    if(Serial.available() > 0)
     {
-      if(command.charAt(1) == 'u')
+      String command = Serial.readString();
+      if(command.charAt(0) == 's')
       {
-        setLinkVelocity(100, Shoulder);
-        shoulderInput = readEncoder(SHOULDER);
+        if(command.charAt(1) == 'u')
+        {
+          setShoulderVel(100);
+        }
+        else if(command.charAt(1) == 'd')
+        {
+          setShoulderVel(-100);
+        }
+        else if(command.charAt(1) == 's')
+        {
+          setShoulderVel(0);
+        }
+        else
+        {
+          setShoulderPos(command.substring(1, 4).toInt());
+        }
       }
-      else if(command.charAt(1) == 'd')
+      else if(command.charAt(0) == 'e')
       {
-        setLinkVelocity(-100, Shoulder);
-        shoulderInput = readEncoder(SHOULDER);
+        if(command.charAt(1) == 'u')
+        {
+          setElbowVel(100);
+        }
+        else if(command.charAt(1) == 'd')
+        {
+          setElbowVel(-100);
+        }
+        else if(command.charAt(1) == 's')
+        {
+          setElbowVel(0);
+        }
+        else
+        {
+          setElbowPos(command.substring(1, 4).toInt());
+        }
       }
-      else if(command.charAt(1) == 's')
+      else if(command.charAt(0) == 'w')
       {
-        setLinkVelocity(0, Shoulder);
-        shoulderInput = readEncoder(SHOULDER);
+        if(command.charAt(1) == 'u')
+        {
+          setWristVel(100);
+        }
+        else if(command.charAt(1) == 'd')
+        {
+          setWristVel(-100);
+        }
+        else if(command.charAt(1) == 's')
+        {
+          setWristVel(0);
+        }
+        else
+        {
+          setWristPos(command.substring(1, 4).toInt());
+        }
       }
-      else
+      else if(command.charAt(0) == 'b')
       {
-        shoulderSetpoint = constrain(command.substring(1, 4).toInt(), 150, 180);
+        if(command.charAt(1) == 'w') // clock_W_ise
+        {
+          setBaseVel(100);
+        }
+        else if(command.charAt(1) == 'c') // _C_ounterclockwise
+        {
+          setBaseVel(-100);
+        }
+        else
+        {
+          setBaseVel(0);
+        }
       }
-    }
-    else if(command.charAt(0) == 'e')
-    {
-      if(command.charAt(1) == 'u')
+      else if(command.charAt(0) == 'r')
       {
-        setLinkVelocity(-100, Elbow);
-        elbowInput = readEncoder(ELBOW);
-      }
-      else if(command.charAt(1) == 'd')
-      {
-        setLinkVelocity(100, Elbow);
-        elbowInput = readEncoder(ELBOW);
-      }
-      else if(command.charAt(1) == 's')
-      {
-        setLinkVelocity(0, Elbow);
-        elbowInput = readEncoder(ELBOW);
-      }
-      else
-      {
-        elbowSetpoint = constrain(command.substring(1, 4).toInt(), 10, 40);
-      }
-    }
-    else if(command.charAt(0) == 'w')
-    {
-      if(command.charAt(1) == 'u')
-      {
-        setLinkVelocity(100, Wrist);
-        wristInput = readEncoder(WRIST);
-      }
-      else if(command.charAt(1) == 'd')
-      {
-        setLinkVelocity(-100, Wrist);
-        wristInput = readEncoder(WRIST);
-      }
-      else if(command.charAt(1) == 's')
-      {
-        setLinkVelocity(0, Wrist);
-        wristInput = readEncoder(WRIST);
-      }
-      else
-      {
-        wristSetpoint = constrain(command.substring(1, 4).toInt(), 75, 235);
-      }
-    }
-    else if(command.charAt(0) == 'b')
-    {
-      if(command.charAt(1) == 'w') // clock_W_ise
-      {
-        setLinkVelocity(100, Base);
-      }
-      else if(command.charAt(1) == 'c') // _C_ounterclockwise
-      {
-        setLinkVelocity(-100, Base);
-      }
-      else
-      {
-        setLinkVelocity(0, Base);
-      }
-    }
-    else if(command.charAt(0) == 'r')
-    {
-      if(command.charAt(1) == 'w') // clock_W_ise
-      {
-        setWristRotVelocity(50);
-      }
-      else if(command.charAt(1) == 'c') // _C_ounterclockwise
-      {
-        setWristRotVelocity(-50);
-      }
-      else
-      {
-        setWristRotVelocity(0);
-      }
-    }
-    else if(command.charAt(0) == 'c')
-    {
-      if(command.charAt(1) == 'o')
-      {
-        setClawDisplacement(0.5);
+        if(command.charAt(1) == 'w') // clock_W_ise
+        {
+          setRollVel(50);
+        }
+        else if(command.charAt(1) == 'c') // _C_ounterclockwise
+        {
+          setRollVel(-50);
+        }
+        else
+        {
+          setRollVel(0);
+        }
       }
       else if(command.charAt(0) == 'c')
       {
-        setClawDisplacement(-0.5);
-      }
-      else
-      {
+        if(command.charAt(1) == 'o')
+        {
+          setClawDisplacement(0.5); //TODO UPDATE TO MORE CONVENIENT VALUE
+        }
+        else if(command.charAt(0) == 'c')
+        {
+          setClawDisplacement(-0.5);
+        }
+        else
+        {
+        }
       }
     }
   }
-    if(PID_ON)
-    {
-      elbowInput = readEncoder(ELBOW);
-      ElbowController.Compute();
-      Serial.print("elbow ");
-      Serial.print(elbowSetpoint, 3);
-      Serial.print("\t");
-      Serial.print(elbowInput, 3);
-      Serial.print("\t");
-      Serial.print(elbowOutput, 3);
-      setLinkVelocity(elbowOutput, Elbow);
-      shoulderInput = readEncoder(SHOULDER);
-      ShoulderController.Compute();
-      Serial.print("\t");
-      Serial.print("\t");
-      Serial.print("\t");
-      Serial.print("shoulder ");
-      Serial.print(shoulderSetpoint, 3);
-      Serial.print("\t");
-      Serial.print(shoulderInput, 3);
-      Serial.print("\t");
-      Serial.print(-shoulderOutput, 3);
-      setLinkVelocity(-shoulderOutput, Shoulder);
-      wristInput = readEncoder(WRIST);
-      WristController.Compute();
-      Serial.print("\t");
-      Serial.print("\t");
-      Serial.print("\t");
-      Serial.print("wrist ");
-      Serial.print(wristSetpoint, 3);
-      Serial.print("\t");
-      Serial.print(wristInput, 3);
-      Serial.print("\t");
-      Serial.println(-wristOutput, 3);
-      setLinkVelocity(-wristOutput, Wrist);
-      delay(1);
-    }
+  if(PID_ON)
+  {
+    stepPID();
+  }
+}
+
+//PUBLIC METHODS
+
+void setPID_ON(bool val)
+{
+	PID_ON = val;
+}
+
+void setSERIAL_ON(bool val)
+{
+	SERIAL_ON = val;
+}
+
+void setShoulderVel(int vel)
+{
+	setLinkVelocity(vel, Shoulder);
+}
+
+void setShoulderPos(int pos)
+{
+	shoulderSetpoint = constrain(pos, 150, 180);
+}
+
+double getShoulderPos()
+{
+	return readEncoder(SHOULDER);
+}
+
+void setElbowVel(int vel)
+{
+	setLinkVelocity(-vel, Elbow);
+}
+
+void setElbowPos(int pos)
+{
+	elbowSetpoint = constrain(pos, 10, 40);
+}
+
+double getElbowPos()
+{
+	return readEncoder(ELBOW);
+}
+
+void setWristVel(int vel)
+{
+	setLinkVelocity(vel, Wrist);
+}
+
+void setWristPos(int pos)
+{
+	wristSetpoint = constrain(pos, 75, 235);
+}
+
+double getWristPos()
+{
+	return readEncoder(WRIST);
+}
+
+void setBaseVel(int vel)
+{
+	setLinkVelocity(vel, Base); //TODO POSITIVE OR NEGATIVE?
+}
+
+void setRollVel(int vel)
+{
+	setWristRotVelocity(vel); //TODO VERIFY DIRECTION
+}
+
+void setClawDisp(int disp)
+{
+	setClawDisplacement(disp); //TODO MORE CONVENIENT UNITS
+}
+
+//PRIVATE METHODS
+
+// Update PID outputs based on new inputs
+void stepPID()
+{
+  elbowInput = readEncoder(ELBOW);
+  ElbowController.Compute();
+  setLinkVelocity(elbowOutput, Elbow);
+  shoulderInput = readEncoder(SHOULDER);
+  ShoulderController.Compute();
+  setLinkVelocity(-shoulderOutput, Shoulder);
+  wristInput = readEncoder(WRIST);
+  WristController.Compute();
+  setLinkVelocity(-wristOutput, Wrist);
+  delay(1);
 }
 
 // Sets claw's displacement in rotations of the stepper.
@@ -352,7 +404,7 @@ void setServoVelocity(int vel, Servo servo, int minim, int maxim)
   {
     servo.write(90);
   }
-  /*else if(vel < 0)
+  /*else if(vel < 0) // This is the old code that was used to map speeds to PWM outputs.
   {
     vel *= -1;
     int servoVal = ceil(vel * (90 - minim) / 100);
