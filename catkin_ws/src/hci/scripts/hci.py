@@ -184,7 +184,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.add_waypoint_dms, QtCore.SIGNAL("clicked()"), self.add_coord_dms)
 
         # camera feed selection signal connects
-        QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.add_way_point)
+        QtCore.QObject.connect(self.ui.waypoint, QtCore.SIGNAL("clicked()"), self.add_way_point)
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
         QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
 
@@ -360,7 +360,13 @@ class CentralUi(QtGui.QMainWindow):
         self.first_point = False
         self.dx = 0
         self.dy = 0
-        
+
+        for item in self.map_point_list:
+            self.w1.removeItem(item)
+            self.map_point_list.remove(item)
+
+        self.add_point_set_to_mini_map()
+
         self.map_point_list[-1].setData([], [], size=10, symbol='o', brush='r')
         self.map_point_list[-1].addPoints(self.x_waypoints, self.y_waypoints, size=10, symbol='t', brush='b')
 
