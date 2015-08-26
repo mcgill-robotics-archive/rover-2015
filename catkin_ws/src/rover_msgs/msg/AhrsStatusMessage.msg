@@ -1,9 +1,9 @@
-#Longitude in degrees (1e-7)
-int32 gpsLongitude
-#Latitude in degrees (1e-7)
-int32 gpsLatitude
-#Height above sea level in mm
-int32 gpsAltitude
+#Longitude in degrees
+float32 gpsLongitude
+#Latitude in degrees
+float32 gpsLatitude
+#Height above sea level in m
+float32 gpsAltitude
 
 #The pitch angle in radians from the euler angles
 float32 pitch
