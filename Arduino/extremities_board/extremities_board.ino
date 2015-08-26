@@ -13,7 +13,7 @@ Wrist rotation: cw +, ccw -
 #include <PID_v1.h>
 
 // ENABLES OR DISABLES PID
-bool PID_ON = true;
+bool PID_ON = false;
 
 // ENABLES OR DISABLES SERIAL DEBUG INPUT
 bool SERIAL_ON = true;
@@ -62,7 +62,7 @@ double elbowOutput;
 
 // PID object interacts with variables via pointers.
 // Just need to call controller.Compute() and the value of output will be updated.  
-PID WristController(&wristInput, &wristOutput, &wristSetpoint, 2, 0.1, 0, DIRECT);
+PID WristController(&wristInput, &wristOutput, &wristSetpoint, 2, 0, 0, DIRECT);
 PID ShoulderController(&shoulderInput, &shoulderOutput, &shoulderSetpoint, 5, 1, 0, DIRECT);
 PID ElbowController(&elbowInput, &elbowOutput, &elbowSetpoint, 5, 1, 0, DIRECT);
   
@@ -81,6 +81,7 @@ void setup()
   
   // Servo setup
   pinMode(WRIST, OUTPUT);
+  pinMode(BASE, OUTPUT);
   pinMode(SHOULDER, OUTPUT);
   pinMode(ELBOW, OUTPUT);
   Wrist.attach(WRIST);
@@ -240,6 +241,30 @@ void loop()
         }
       }
     }
+    Serial.print("elbow ");
+    Serial.print(elbowSetpoint, 3);
+    Serial.print("\t");
+    Serial.print(elbowInput, 3);
+    Serial.print("\t");
+    Serial.print(elbowOutput, 3);
+    Serial.print("\t");
+    Serial.print("\t");
+    Serial.print("\t");
+    Serial.print("shoulder ");
+    Serial.print(shoulderSetpoint, 3);
+    Serial.print("\t");
+    Serial.print(shoulderInput, 3);
+    Serial.print("\t");
+    Serial.print(-shoulderOutput, 3);
+    Serial.print("\t");
+    Serial.print("\t");
+    Serial.print("\t");
+    Serial.print("wrist ");
+    Serial.print(wristSetpoint, 3);
+    Serial.print("\t");
+    Serial.print(wristInput, 3);
+    Serial.print("\t");
+    Serial.println(-wristOutput, 3);
   }
   if(PID_ON)
   {
@@ -251,72 +276,72 @@ void loop()
 
 void setPID_ON(bool val)
 {
-	PID_ON = val;
+  PID_ON = val;
 }
 
 void setSERIAL_ON(bool val)
 {
-	SERIAL_ON = val;
+  SERIAL_ON = val;
 }
 
 void setShoulderVel(int vel)
 {
-	setLinkVelocity(vel, Shoulder);
+  setLinkVelocity(vel, Shoulder);
 }
 
 void setShoulderPos(int pos)
 {
-	shoulderSetpoint = constrain(pos, 150, 180);
+  shoulderSetpoint = constrain(pos, 150, 180);
 }
 
 double getShoulderPos()
 {
-	return readEncoder(SHOULDER);
+  return readEncoder(SHOULDER);
 }
 
 void setElbowVel(int vel)
 {
-	setLinkVelocity(-vel, Elbow);
+  setLinkVelocity(-vel, Elbow);
 }
 
 void setElbowPos(int pos)
 {
-	elbowSetpoint = constrain(pos, 10, 40);
+  elbowSetpoint = constrain(pos, 10, 40);
 }
 
 double getElbowPos()
 {
-	return readEncoder(ELBOW);
+  return readEncoder(ELBOW);
 }
 
 void setWristVel(int vel)
 {
-	setLinkVelocity(vel, Wrist);
+  setLinkVelocity(vel, Wrist);
 }
 
 void setWristPos(int pos)
 {
-	wristSetpoint = constrain(pos, 75, 235);
+  wristSetpoint = constrain(pos, 75, 235);
 }
 
 double getWristPos()
 {
-	return readEncoder(WRIST);
+  return readEncoder(WRIST);
 }
 
 void setBaseVel(int vel)
 {
-	setLinkVelocity(vel, Base); //TODO POSITIVE OR NEGATIVE?
+  setLinkVelocity(vel, Base); //TODO POSITIVE OR NEGATIVE?
 }
 
 void setRollVel(int vel)
 {
-	setWristRotVelocity(vel); //TODO VERIFY DIRECTION
+  setWristRotVelocity(vel); //TODO VERIFY DIRECTION
 }
 
 void setClawDisp(int disp)
 {
-	setClawDisplacement(disp); //TODO MORE CONVENIENT UNITS
+  setClawDisplacement(disp); //TODO MORE CONVENIENT UNITS
 }
 
 //PRIVATE METHODS
@@ -329,10 +354,10 @@ void stepPID()
   setLinkVelocity(elbowOutput, Elbow);
   shoulderInput = readEncoder(SHOULDER);
   ShoulderController.Compute();
-  setLinkVelocity(-shoulderOutput, Shoulder);
+  setLinkVelocity(shoulderOutput, Shoulder);
   wristInput = readEncoder(WRIST);
   WristController.Compute();
-  setLinkVelocity(-wristOutput, Wrist);
+  setLinkVelocity(wristOutput, Wrist);
   delay(1);
 }
 
