@@ -17,6 +17,7 @@ from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
 from rover_msgs.msg import MotorControllerMode, MotorStatus, AhrsStatusMessage
 from rover_msgs.srv import ResetWatchDog
+from sensor_msgs.msg import CompressedImage
 
 
 def reset_watchdog():
@@ -96,11 +97,18 @@ class CentralUi(QtGui.QMainWindow):
         self.addPointTimer = None
         self.controller_timer = None
         self.watchdog_timer = None
+        self.redraw_signal = None
 
         self.sub = None
 
         self.modeId = 0
         self.grip = 0
+
+        # image
+        self.imageMain = None
+        self.imageLeft = None
+        self.imageRight = None
+        self.main_camera_subscriber = None
 
         # map place holders
         self.tempPose = Queue.Queue()
@@ -133,6 +141,9 @@ class CentralUi(QtGui.QMainWindow):
         rospy.init_node('listener', anonymous=False)
         rospy.Subscriber('ahrs_status', AhrsStatusMessage, self.handle_pose, queue_size=10)
         rospy.Subscriber('/motor_status', MotorStatus, self.motor_status, queue_size=10)
+        self.main_camera_subscriber = rospy.Subscriber("/econ", CompressedImage, self.receive_image_main)
+        rospy.Subscriber("/left_nav/image_mono/compressed", CompressedImage, self.receive_image_left)
+        rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receive_image_right)
 
     def motor_status(self, msg):
         if msg.fl:
@@ -224,6 +235,10 @@ class CentralUi(QtGui.QMainWindow):
 
         self.controller_timer = QtCore.QTimer()
         QtCore.QObject.connect(self.controller_timer, QtCore.SIGNAL("timeout()"), self.read_controller)
+
+        self.redraw_signal = QtCore.QTimer(self)
+        QtCore.QObject.connect(self.redraw_signal, QtCore.SIGNAL("timeout()"), self.repaint_image)
+        self.redraw_signal.start(100)
 
         if self.controller.controller is not None:
             self.controller_timer.start(100)
@@ -487,6 +502,72 @@ class CentralUi(QtGui.QMainWindow):
             self.ui.ArmBaseMode.setChecked(False)
             self.ui.EndEffectorMode.setChecked(False)
             self.ui.function4.setChecked(True)
+
+    def receive_image_main(self, data):
+        try:
+            self.imageMain = data
+        finally:
+            pass
+
+    def receive_image_left(self, data):
+        try:
+            self.imageLeft = data
+        finally:
+            pass
+
+    def receive_image_right(self, data):
+        try:
+            self.imageRight = data
+        finally:
+            pass
+
+    def repaint_image(self):
+        if self.imageMain is not None:
+            try:
+                qimageMain = QtGui.QImage.fromData(self.imageMain.data)
+                imageMain = QtGui.QPixmap.fromImage(qimageMain)
+                #imageMain = imageMain.scaled(QtCore.QSize(self.ui.camera1.width()-1, self.ui.camera1.height()-1),0)
+
+                if self.ui.rot0.isChecked():
+                    self.ui.camera1.setPixmap(imageMain)
+                elif self.ui.rot90.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+                elif self.ui.rot180.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+                elif self.ui.rot270.isChecked():
+                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
+                    self.ui.camera1.setPixmap(rotated)
+
+            finally:
+                pass
+        else:
+            self.ui.camera1.setText("no video feed")
+
+        if self.imageLeft is not None:
+            try:
+                qimageTop = QtGui.QImage.fromData(self.imageLeft.data)
+                imageTop = QtGui.QPixmap.fromImage(qimageTop)
+                rotated = imageTop.transformed(QtGui.QMatrix().rotate(-90), QtCore.Qt.SmoothTransformation)
+                #transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
+
+            finally:
+                pass
+            self.ui.camera2.setPixmap(rotated)
+        else:
+            self.ui.camera2.setText("no video feed")
+
+        if self.imageRight is not None:
+            try:
+                qimageBottom = QtGui.QImage.fromData(self.imageRight.data)
+                imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
+                rotated = imageBottom.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+            finally:
+                pass
+            self.ui.camera3.setPixmap(rotated)
+        else:
+            self.ui.camera3.setText("no video feed")
 
 
 if __name__ == "__main__":
