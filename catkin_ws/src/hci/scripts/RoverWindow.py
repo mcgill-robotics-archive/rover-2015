@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Thu Aug 27 12:05:50 2015
+# Created: Thu Aug 27 12:55:20 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,6 +35,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.setObjectName(_fromUtf8("verticalLayout_9"))
         self.horizontalLayout_12 = QtGui.QHBoxLayout()
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
+        self.camera2 = QtGui.QLabel(self.centralwidget)
+        self.camera2.setMinimumSize(QtCore.QSize(0, 0))
+        self.camera2.setSizeIncrement(QtCore.QSize(1, 1))
+        self.camera2.setFrameShape(QtGui.QFrame.Box)
+        self.camera2.setObjectName(_fromUtf8("camera2"))
+        self.horizontalLayout_12.addWidget(self.camera2)
         self.camera3 = QtGui.QLabel(self.centralwidget)
         self.camera3.setMinimumSize(QtCore.QSize(0, 0))
         self.camera3.setSizeIncrement(QtCore.QSize(1, 1))
@@ -42,12 +48,6 @@ class Ui_MainWindow(object):
         self.camera3.setFrameShape(QtGui.QFrame.Box)
         self.camera3.setObjectName(_fromUtf8("camera3"))
         self.horizontalLayout_12.addWidget(self.camera3)
-        self.camera2 = QtGui.QLabel(self.centralwidget)
-        self.camera2.setMinimumSize(QtCore.QSize(0, 0))
-        self.camera2.setSizeIncrement(QtCore.QSize(1, 1))
-        self.camera2.setFrameShape(QtGui.QFrame.Box)
-        self.camera2.setObjectName(_fromUtf8("camera2"))
-        self.horizontalLayout_12.addWidget(self.camera2)
         self.verticalLayout_9.addLayout(self.horizontalLayout_12)
         self.camera1 = QtGui.QLabel(self.centralwidget)
         self.camera1.setMinimumSize(QtCore.QSize(0, 0))
@@ -517,8 +517,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
-        self.camera3.setText(_translate("MainWindow", "camRight", None))
         self.camera2.setText(_translate("MainWindow", "camLeft", None))
+        self.camera3.setText(_translate("MainWindow", "camRight", None))
         self.camera1.setText(_translate("MainWindow", "camMain", None))
         self.camera_selector.setItemText(0, _translate("MainWindow", "camera/pan_tilt", None))
         self.camera_selector.setItemText(1, _translate("MainWindow", "camera/wide_angle", None))

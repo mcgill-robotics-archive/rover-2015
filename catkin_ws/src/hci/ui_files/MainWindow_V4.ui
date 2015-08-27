@@ -20,6 +20,28 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
+         <widget class="QLabel" name="camera2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>1</width>
+            <height>1</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="text">
+           <string>camLeft</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="camera3">
           <property name="minimumSize">
            <size>
@@ -44,28 +66,6 @@
           </property>
           <property name="text">
            <string>camRight</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="camera2">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="sizeIncrement">
-           <size>
-            <width>1</width>
-            <height>1</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
-          <property name="text">
-           <string>camLeft</string>
           </property>
          </widget>
         </item>
