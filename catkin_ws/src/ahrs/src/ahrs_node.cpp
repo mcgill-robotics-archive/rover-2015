@@ -24,6 +24,7 @@ int main(int argc, char ** argv)
 
     lineranger::ahrs::AhrsConfig config;
     config.setSimulation(false);
+    config.setDeviceName("/dev/ahrs");
     boost::scoped_ptr<lineranger::ahrs::Ahrs> ahrs;
     try
     {
@@ -31,7 +32,7 @@ int main(int argc, char ** argv)
     }
     catch (const std::runtime_error& error)
     {
-        ROS_ERROR(error.what());
+        //ROS_ERROR(error.what());
         config.setSimulation(true);
         ROS_WARN("real ahrs not found, creating virtual ahrs");
         ahrs.reset(lineranger::ahrs::Ahrs::createAhrs(config));
