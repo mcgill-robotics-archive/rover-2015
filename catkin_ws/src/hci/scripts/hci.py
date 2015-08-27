@@ -135,6 +135,7 @@ class CentralUi(QtGui.QMainWindow):
         self.init_connects()
         self.init_timers()
         self.setup_minimap()
+        self.get_feed_topic_params()
 
         rospy.loginfo("HCI initialization completed")
 
@@ -199,7 +200,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.waypoint, QtCore.SIGNAL("clicked()"), self.add_way_point)
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
         QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
-        QtCore.QObject.connect(self.ui.camera_selector, QtCore.SIGNAL("currentIndexChanged()"), self.change_video_feed)
+        QtCore.QObject.connect(self.ui.camera_selector, QtCore.SIGNAL("currentIndexChanged(int)"), self.change_video_feed)
 
         # motor readys
         self.fl_signal_ok.connect(lambda lbl=self.ui.fl_ok: lbl_bg_norm(lbl))
@@ -450,8 +451,8 @@ class CentralUi(QtGui.QMainWindow):
             param_value = rospy.get_param(box_text, "")
             self.feed_topics.append(param_value)
 
-    def change_video_feed(self):
-        next_topic = self.feed_topics[self.ui.camera_selector.currentIndex()]
+    def change_video_feed(self, index):
+        next_topic = self.feed_topics[index]
         if next_topic is not "":
             self.main_camera_subscriber.unregister()
             self.main_camera_subscriber = rospy.Subscriber(next_topic, CompressedImage, self.receive_image_main)
