@@ -97,17 +97,17 @@
        <widget class="QComboBox" name="camera_selector">
         <item>
          <property name="text">
-          <string>Pan Tilt</string>
+          <string>camera/pan_tilt</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Wide Angle</string>
+          <string>camera/wide_angle</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Arm</string>
+          <string>camera/arm</string>
          </property>
         </item>
        </widget>

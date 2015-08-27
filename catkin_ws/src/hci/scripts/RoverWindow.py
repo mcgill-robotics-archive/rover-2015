@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Thu Aug 27 11:21:19 2015
+# Created: Thu Aug 27 12:05:50 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -520,9 +520,9 @@ class Ui_MainWindow(object):
         self.camera3.setText(_translate("MainWindow", "camRight", None))
         self.camera2.setText(_translate("MainWindow", "camLeft", None))
         self.camera1.setText(_translate("MainWindow", "camMain", None))
-        self.camera_selector.setItemText(0, _translate("MainWindow", "Pan Tilt", None))
-        self.camera_selector.setItemText(1, _translate("MainWindow", "Wide Angle", None))
-        self.camera_selector.setItemText(2, _translate("MainWindow", "Arm", None))
+        self.camera_selector.setItemText(0, _translate("MainWindow", "camera/pan_tilt", None))
+        self.camera_selector.setItemText(1, _translate("MainWindow", "camera/wide_angle", None))
+        self.camera_selector.setItemText(2, _translate("MainWindow", "camera/arm", None))
         self.rot0.setText(_translate("MainWindow", "0", None))
         self.rot90.setText(_translate("MainWindow", "90", None))
         self.rot180.setText(_translate("MainWindow", "180", None))
