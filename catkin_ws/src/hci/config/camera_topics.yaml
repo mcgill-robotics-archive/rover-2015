@@ -1,3 +1,3 @@
-camera/wide_angle : "/haz_cam/image_mono/compressed"
+camera/wide_angle : "/wide_angle/image_mono/compressed"
 camera/arm        : "/camera_arm/image_color/compressed"
 camera/pan_tilt   : "/econ"

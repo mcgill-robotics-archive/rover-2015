@@ -1,17 +1,22 @@
 <launch>
-	<include file="$(find rover_camera)/launch/uvc.launch" >
-        <arg name="device" value="/dev/video3" />
+	<!--include file="$(find rover_camera)/launch/uvc.launch" >
+        <arg name="device" value="/dev/econ_camera" />
         <arg name="topic_name" value="econ" />
         <arg name="name" value="econ" />
-    </include>
+    </include-->
 
     <include file="$(find rover_camera)/launch/usb.launch">
+        <arg name="name" value="left_nav" />
+        <arg name="device" value="/dev/logitech2" />
+    </include>
+
+   <include file="$(find rover_camera)/launch/usb.launch">
         <arg name="name" value="right_nav" />
         <arg name="device" value="/dev/logitech1" />
     </include>
 
     <include file="$(find rover_camera)/launch/usb.launch">
-        <arg name="name" value="front_haz" />
+        <arg name="name" value="wide_angle" />
         <arg name="device" value="/dev/cam_ultra_wide" />
     </include>
 
