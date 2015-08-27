@@ -15,34 +15,34 @@ class CameraViewer(QtGui.QMainWindow):
 
         self.feedTopics = []
         self.imageMain = None
-        self.imageTop = None
-        self.imageBottom = None
+        self.imageLeft = None
+        self.imageRight = None
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.signal = QtCore.QTimer(self)
-        self.signal.timeout.connect(self.repaint_image)
+        self.redraw_signal = QtCore.QTimer(self)
+        self.redraw_signal.timeout.connect(self.repaint_image)
+        self.redraw_signal.start(1000 / 60)
         
         self.ros_init()
 
-        self.signal.start(1000 / 60)
 
-    def receiveimageMain(self, data):
+    def receive_image_main(self, data):
         try:
             self.imageMain = data
         finally:
             pass
 
-    def receiveimageTop(self, data):
+    def receive_image_left(self, data):
         try:
-            self.imageTop = data
+            self.imageLeft = data
         finally:
             pass
 
-    def receiveimageBottom(self, data):
+    def receive_image_right(self, data):
         try:
-            self.imageBottom = data
+            self.imageRight = data
         finally:
             pass
 
@@ -70,9 +70,9 @@ class CameraViewer(QtGui.QMainWindow):
         else:
             self.ui.camera1.setText("no video feed")
 
-        if self.imageTop is not None:
+        if self.imageLeft is not None:
             try:
-                qimageTop = QtGui.QImage.fromData(self.imageTop.data)
+                qimageTop = QtGui.QImage.fromData(self.imageLeft.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
                 rotated = imageTop.transformed(QtGui.QMatrix().rotate(-90), QtCore.Qt.SmoothTransformation)
                 #transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
@@ -83,9 +83,9 @@ class CameraViewer(QtGui.QMainWindow):
         else:
             self.ui.camera2.setText("no video feed")
 
-        if self.imageBottom is not None:
+        if self.imageRight is not None:
             try:
-                qimageBottom = QtGui.QImage.fromData(self.imageBottom.data)
+                qimageBottom = QtGui.QImage.fromData(self.imageRight.data)
                 imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
                 rotated = imageBottom.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
             finally:
@@ -97,9 +97,9 @@ class CameraViewer(QtGui.QMainWindow):
     def ros_init(self):
         rospy.init_node('camera_viewer', anonymous=True)
         
-        rospy.Subscriber("/econ", CompressedImage, self.receiveimageMain)
-        rospy.Subscriber("/left_nav/image_mono/compressed", CompressedImage, self.receiveimageTop)
-        rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receiveimageBottom)
+        rospy.Subscriber("/econ", CompressedImage, self.receive_image_main)
+        rospy.Subscriber("/left_nav/image_mono/compressed", CompressedImage, self.receive_image_left)
+        rospy.Subscriber("/right_nav/image_mono/compressed", CompressedImage, self.receive_image_right)
 
     # def getimageTopic(self):
     #     self.feedTopics.append(rospy.get_param("feed/topicMain", "/feed1/image_raw"))
