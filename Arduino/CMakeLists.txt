@@ -17,3 +17,4 @@ include_directories(${ROS_LIB_DIR})
 
 add_subdirectory(OTS_Drive)
 add_subdirectory(calibrateMegaServo)
+add_subdirectory(LidarTable)
