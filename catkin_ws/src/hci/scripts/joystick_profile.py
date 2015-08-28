@@ -10,10 +10,12 @@ param_names = ["/joystick/drive_mode",
                "/joystick/ackreman_moving",
                "/joystick/coord_system",
                "/joystick/camera/arm",
+               "joystick/prev_cam",
+               "joystick/next_cam",
                "/joystick/camera/pantilt"]
 
 
-class ProfileParser():
+class ProfileParser:
     def __init__(self, controller):
         self.controller = controller
         self.param_value = {}

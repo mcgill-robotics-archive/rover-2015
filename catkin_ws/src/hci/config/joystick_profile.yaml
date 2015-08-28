@@ -1,9 +1,12 @@
 joystick/drive_mode :           "4"
-joystick/arm_base_mode :        "8"
-joystick/end_effector_mode :    "9"
 joystick/camera_mode :          "5"
 joystick/point_steer :          "3"
 joystick/ackreman :             "2"
 joystick/ackreman_moving :      "1" # motor enable
+joystick/next_cam :             "6"
+joystick/prev_cam :             "7"
+
 joystick/skid_steer :          "10"
 joystick/coord_system :         "11"
+joystick/arm_base_mode :        "8"
+joystick/end_effector_mode :    "9"

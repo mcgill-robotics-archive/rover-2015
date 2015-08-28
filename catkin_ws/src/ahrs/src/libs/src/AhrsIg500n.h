@@ -13,7 +13,7 @@
 
 #include <Ahrs.h>
 
-#define UPDATE_FREQUENCY_MS 10
+#define UPDATE_FREQUENCY_MS 50
 #define OUTPUT_DIVISOR 1
 
 namespace lineranger
