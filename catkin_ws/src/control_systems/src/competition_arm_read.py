@@ -7,6 +7,7 @@ from math import sqrt, atan, pi, cos, sin
 import rospy
 from control_systems.msg import ArmMotion, ArmAngles
 from numpy import random
+from math import radians
 
 # a1 is the length of the upper arm (touches base)
 a1 = rospy.get_param('control/ln_upperarm', 0.439)
@@ -19,12 +20,14 @@ a3 = rospy.get_param('control/ln_wrist', 0.189)
 zero = 1e-10
 
 # bounds on forearm and upperarm angles
-forMin = pi/18  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
-forMax = 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
-uppMin = pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
-uppMax = 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+forMin = radians(70)  # 60* pi/180.0  # rospy.get_param('control/bound_lower_forearm',-30*pi/36)
+forMax = radians(140)  # 7*pi/18  # rospy.get_param('control/bound_upper_forearm',31*pi/36)
+uppMin = radians(10)  # pi/18  # rospy.get_param('control/bound_lower_upperarm',pi/18)
+uppMax = radians(60)  # 7*pi/18  # rospy.get_param('control/bound_upper_upperarm',8*pi/18)
+
 rotMin = -pi  # rospy.get_param('control/bound_lower_orientation',-7*pi/8)
 rotMax = pi # rospy.get_param('control/bound_upper_orientation',7*pi/8)
+
 #wrist!
 wriMin = -pi/2 
 wriMax = pi/2
@@ -365,7 +368,7 @@ class ArmControlReader(object):
             verbose = rospy.get_param("~verbose", False)
             if verbose:
                 rospy.loginfo(self.angles)  # next iteration
-        r.sleep()
+            r.sleep()
 
 
 #distance between points

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Thu Aug 27 12:55:20 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created: Fri Aug 28 22:55:10 2015
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -379,6 +379,8 @@ class Ui_MainWindow(object):
         self.DriveMode.setObjectName(_fromUtf8("DriveMode"))
         self.gridLayout_3.addWidget(self.DriveMode, 0, 0, 1, 1)
         self.EndEffectorMode = QtGui.QPushButton(self.frame)
+        self.EndEffectorMode.setEnabled(False)
+        self.EndEffectorMode.setText(_fromUtf8(""))
         self.EndEffectorMode.setCheckable(True)
         self.EndEffectorMode.setChecked(False)
         self.EndEffectorMode.setObjectName(_fromUtf8("EndEffectorMode"))
@@ -554,7 +556,7 @@ class Ui_MainWindow(object):
         self.label_20.setText(_translate("MainWindow", "Y", None))
         self.yawLBL.setText(_translate("MainWindow", "Yaw", None))
         self.ackMoving.setText(_translate("MainWindow", "Motor Enable", None))
-        self.screenshot.setText(_translate("MainWindow", "Capture Arm cam", None))
+        self.screenshot.setText(_translate("MainWindow", "Capture cam", None))
         self.ackreman.setText(_translate("MainWindow", "Ackreman", None))
         self.skid.setText(_translate("MainWindow", "Skid", None))
         self.pointSteer.setText(_translate("MainWindow", "Point steer ?", None))
@@ -574,8 +576,7 @@ class Ui_MainWindow(object):
         self.br_ok.setText(_translate("MainWindow", "Ok", None))
         self.label_3.setText(_translate("MainWindow", "Joystick Control Function", None))
         self.DriveMode.setText(_translate("MainWindow", "Drive", None))
-        self.EndEffectorMode.setText(_translate("MainWindow", "End Effector", None))
-        self.ArmBaseMode.setText(_translate("MainWindow", "Arm Base", None))
+        self.ArmBaseMode.setText(_translate("MainWindow", "Arm Mode", None))
         self.function4.setText(_translate("MainWindow", "Camera", None))
         self.label_2.setText(_translate("MainWindow", "Arm mode", None))
         self.arm_mode.setItemText(0, _translate("MainWindow", "Position Control", None))
