@@ -11,6 +11,7 @@ import rospy
 import Queue
 import os
 import math
+import datetime
 
 from std_msgs.msg import *
 from joystick_profile import ProfileParser
@@ -101,6 +102,7 @@ class CentralUi(QtGui.QMainWindow):
 
         self.sub = None
         self.feed_topics = []
+        self.feed_topics_hires = []
 
         self.modeId = 0
         self.grip = 0
@@ -277,18 +279,22 @@ class CentralUi(QtGui.QMainWindow):
         pass
 
     def take_screenshot(self):
-        self.sub = rospy.Subscriber("/image_raw", Image, self.screenshot_callback, queue_size=1)
-        rospy.loginfo("created screenshot subscriber")
+        topic = self.feed_topics_hires[self.ui.camera_selector.currentIndex()]
+        self.sub = rospy.Subscriber(topic, Image, self.screenshot_callback, queue_size=1)
+        rospy.loginfo("created screenshot subscriber " + topic)
 
     def screenshot_callback(self, msg):
         rospy.loginfo("shot callback")
         self.sub.unregister()
         image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
-        save = image.save("screen.jpeg")  # TODO: give right topic for arm camera
+        time = datetime.datetime.now().strftime("%H:%M:%S")
+        topic = self.feed_topics_hires[self.ui.camera_selector.currentIndex()]
+        filename = "screenshot_" + time + "_"+ topic +".jpeg"
+        save = image.save(filename)
         if save:
-            rospy.loginfo("save successful")
+            rospy.loginfo("save successful" + topic)
         else:
-            rospy.logwarn("fail save")
+            rospy.logwarn("fail save" + topic)
 
     def add_point_set_to_mini_map(self):
         new_set = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)  # create new point set
@@ -450,6 +456,12 @@ class CentralUi(QtGui.QMainWindow):
             box_text = self.ui.camera_selector.itemText(index)
             param_value = rospy.get_param(box_text, "")
             self.feed_topics.append(param_value)
+            hires_topic = box_text+"_hires"
+            param_value = rospy.get_param(hires_topic, "")
+            self.feed_topics_hires.append(param_value)
+
+        rospy.loginfo(self.feed_topics)
+        rospy.loginfo(self.feed_topics_hires)
 
     def change_video_feed(self, index):
         next_topic = self.feed_topics[index]
