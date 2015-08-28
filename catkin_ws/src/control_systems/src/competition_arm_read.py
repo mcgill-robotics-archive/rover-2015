@@ -155,7 +155,7 @@ class ArmControlReader(object):
             # add on old settings
             msg.x += self.settings.x
             msg.y += self.settings.y
-            msg.theta += self.settings.theta
+            #msg.theta += self.settings.theta
 
         #go to closest orientation value
         if rotMin<=msg.theta<=rotMax:
