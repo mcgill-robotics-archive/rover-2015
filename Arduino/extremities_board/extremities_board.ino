@@ -13,7 +13,7 @@ Wrist rotation: cw +, ccw -
 #include <PID_v1.h>
 
 // ENABLES OR DISABLES PID
-bool PID_ON = false;
+bool PID_ON = true;
 
 // ENABLES OR DISABLES SERIAL DEBUG INPUT
 bool SERIAL_ON = true;
@@ -34,6 +34,7 @@ const int WRIST = 5;
 const int BASE = 4;
 const int SHOULDER = 3;
 const int ELBOW = 2;
+const int SCIENCE = 10; // Servo port 0
 
 // Wrist rotation pins
 const int WRIST_ROT_0_DIR_A = 26;
@@ -43,11 +44,18 @@ const int WRIST_ROT_1_DIR_A = 22;
 const int WRIST_ROT_1_DIR_B = 24;
 const int WRIST_ROT_1_PWM = 11;
 
+// Voltmeter pin
+const int VOLT = A6;
+
+// Humidity pin
+const int HUMID = A7;
+
 // Servo objects for motors.
 Servo Wrist;
 Servo Base;
 Servo Shoulder;
 Servo Elbow;
+Servo Science;
 
 // Variables needed for PID control.
 double wristInput;
@@ -84,10 +92,12 @@ void setup()
   pinMode(BASE, OUTPUT);
   pinMode(SHOULDER, OUTPUT);
   pinMode(ELBOW, OUTPUT);
+  pinMode(SCIENCE, OUTPUT);
   Wrist.attach(WRIST);
   Base.attach(BASE);
   Shoulder.attach(SHOULDER);
   Elbow.attach(ELBOW);
+  Science.attach(SCIENCE);
   
   // Wrist rotation setup
   pinMode(WRIST_ROT_0_DIR_A, OUTPUT);
@@ -144,14 +154,17 @@ void loop()
         if(command.charAt(1) == 'u')
         {
           setShoulderVel(100);
+          shoulderSetpoint = readEncoder(SHOULDER);
         }
         else if(command.charAt(1) == 'd')
         {
           setShoulderVel(-100);
+          shoulderSetpoint = readEncoder(SHOULDER);
         }
         else if(command.charAt(1) == 's')
         {
           setShoulderVel(0);
+          shoulderSetpoint = readEncoder(SHOULDER);
         }
         else
         {
@@ -163,14 +176,17 @@ void loop()
         if(command.charAt(1) == 'u')
         {
           setElbowVel(100);
+          elbowSetpoint = readEncoder(ELBOW);
         }
         else if(command.charAt(1) == 'd')
         {
           setElbowVel(-100);
+          elbowSetpoint = readEncoder(ELBOW);
         }
         else if(command.charAt(1) == 's')
         {
           setElbowVel(0);
+          elbowSetpoint = readEncoder(ELBOW);
         }
         else
         {
@@ -182,14 +198,17 @@ void loop()
         if(command.charAt(1) == 'u')
         {
           setWristVel(100);
+          wristSetpoint = readEncoder(WRIST);
         }
         else if(command.charAt(1) == 'd')
         {
           setWristVel(-100);
+          wristSetpoint = readEncoder(WRIST);
         }
         else if(command.charAt(1) == 's')
         {
           setWristVel(0);
+          wristSetpoint = readEncoder(WRIST);
         }
         else
         {
@@ -232,7 +251,7 @@ void loop()
         {
           setClawDisplacement(0.5); //TODO UPDATE TO MORE CONVENIENT VALUE
         }
-        else if(command.charAt(0) == 'c')
+        else if(command.charAt(1) == 'c')
         {
           setClawDisplacement(-0.5);
         }
@@ -240,31 +259,48 @@ void loop()
         {
         }
       }
+      else if(command.charAt(0) == 'p')
+      {
+        if(command.charAt(1) == 'e')
+        {
+          setPID_ON(true);
+        }
+        else if(command.charAt(1) == 'd')
+        {
+          setPID_ON(false);
+        }
+        else
+        {
+        }
+      }
     }
-    Serial.print("elbow ");
+    Serial.print("PID ON: ");
+    Serial.print(PID_ON);
+    Serial.print("\t");
+    Serial.print("Elbow ");
     Serial.print(elbowSetpoint, 3);
     Serial.print("\t");
-    Serial.print(elbowInput, 3);
+    Serial.print(readEncoder(ELBOW), 3);
     Serial.print("\t");
-    Serial.print(elbowOutput, 3);
+    Serial.print(-elbowOutput, 3);
     Serial.print("\t");
     Serial.print("\t");
     Serial.print("\t");
-    Serial.print("shoulder ");
+    Serial.print("Shoulder ");
     Serial.print(shoulderSetpoint, 3);
     Serial.print("\t");
-    Serial.print(shoulderInput, 3);
+    Serial.print(readEncoder(SHOULDER), 3);
     Serial.print("\t");
     Serial.print(-shoulderOutput, 3);
     Serial.print("\t");
     Serial.print("\t");
     Serial.print("\t");
-    Serial.print("wrist ");
+    Serial.print("Wrist ");
     Serial.print(wristSetpoint, 3);
     Serial.print("\t");
-    Serial.print(wristInput, 3);
+    Serial.print(readEncoder(WRIST), 3);
     Serial.print("\t");
-    Serial.println(-wristOutput, 3);
+    Serial.println(wristOutput, 3);
   }
   if(PID_ON)
   {
@@ -286,12 +322,12 @@ void setSERIAL_ON(bool val)
 
 void setShoulderVel(int vel)
 {
-  setLinkVelocity(vel, Shoulder);
+  setLinkVelocity(-vel, Shoulder);
 }
 
 void setShoulderPos(int pos)
 {
-  shoulderSetpoint = constrain(pos, 150, 180);
+  shoulderSetpoint = constrain(pos, 10, 60);
 }
 
 double getShoulderPos()
@@ -306,7 +342,7 @@ void setElbowVel(int vel)
 
 void setElbowPos(int pos)
 {
-  elbowSetpoint = constrain(pos, 10, 40);
+  elbowSetpoint = constrain(pos, 70, 140);
 }
 
 double getElbowPos()
@@ -321,7 +357,7 @@ void setWristVel(int vel)
 
 void setWristPos(int pos)
 {
-  wristSetpoint = constrain(pos, 75, 235);
+  wristSetpoint = constrain(pos, 100, 260);
 }
 
 double getWristPos()
@@ -344,6 +380,69 @@ void setClawDisp(int disp)
   setClawDisplacement(disp); //TODO MORE CONVENIENT UNITS
 }
 
+// Sets position of the science servo.
+void setSciencePos(int pos)
+{
+  Science.write(pos);
+}
+
+double getVoltage()
+{
+  /*
+  Written by Olivier Lamarre on July 6th 2015
+  
+  Voltage reading (for 0-30V sources).
+  Using a voltage divider circuit: 102k and 12k resistors (real resistances 102.1k and 12.2k)
+  Arduino voltage measured across the 12k resistor, using VOLT and GND pins).
+  Maximum voltage that the arduino will read is about 3.6V (when the source is at 30V). This is safely below the 5V limit.
+  
+  any problem with my code? DEAL WITH IT.
+  */
+  
+  double maxSensorVal = 643.0;
+  double sensorVal = analogRead(VOLT);
+  sensorVal = constrain(sensorVal, 0.0, maxSensorVal);
+  return sensorVal / maxSensorVal * 30.0;
+}
+
+
+
+float singlePHRead()
+{
+  Serial3.print("R\r");
+  while (!Serial3.available()>0){;}
+  if (Serial3.available()>0)
+  {
+    String Reading = Serial3.readStringUntil('\r');
+    return Reading.toFloat();
+  }
+}
+
+void setPHTemp(int temp) // Must be run every time the probe is turned on.
+{
+  String T = String(temp);
+  Serial3.print("T,");
+  Serial3.print(T);
+  Serial3.print("\r");
+
+  //uncomment all of this if you want to get a confirmation string from the device for new set temp
+  //delay(50);
+  //Serial3.print("T,?\r");
+  //while (!Serial3.available()>0){;}
+  //if (Serial3.available()>0)
+  //{
+    //String Reading = Serial3.readStringUntil('\r');
+    //Serial.println(Reading);
+  //}
+}
+
+float singleHumidRead()
+{
+  int res = analogRead(A7);
+  // INSERT CODE HERE TO TRANSFORM READING INTO A MEANINGFUL UNIT
+  return res;
+}
+
 //PRIVATE METHODS
 
 // Update PID outputs based on new inputs
@@ -351,10 +450,10 @@ void stepPID()
 {
   elbowInput = readEncoder(ELBOW);
   ElbowController.Compute();
-  setLinkVelocity(elbowOutput, Elbow);
+  setLinkVelocity(-elbowOutput, Elbow);
   shoulderInput = readEncoder(SHOULDER);
   ShoulderController.Compute();
-  setLinkVelocity(shoulderOutput, Shoulder);
+  setLinkVelocity(-shoulderOutput, Shoulder);
   wristInput = readEncoder(WRIST);
   WristController.Compute();
   setLinkVelocity(wristOutput, Wrist);
@@ -383,7 +482,7 @@ void setClawDisplacement(float disp)
   }
 }
 
-// Sets velocity for the wrist rotation joint.
+// Sets velocity for the wrist rotation joint (polulu) .
 void setWristRotVelocity(int vel)
 {
   if(vel == 0 || vel > 100 || vel < -100)
@@ -476,6 +575,19 @@ float readEncoder(int pin)
   byte dB = SPI.transfer(0x00);
   int x= ((dA & 0x7F)<<6) | (dB>>2);
   float ax = x*359.956/8191.000;
-  return ax;
+  switch(pin) // Enables only the selected encoder.
+  {
+    case WRIST:
+      return ax;
+      break;
+    case SHOULDER:
+      return 90.0 - ax;
+      break;
+    case ELBOW:
+      return 360.0 - ax;
+      break;
+    default: 
+      return ax;
+  }
 }
 
