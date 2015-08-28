@@ -8,6 +8,7 @@ Claw: open +, close -
 Wrist rotation: cw +, ccw -
 */
 
+#include "Arduino.h"
 #include <Servo.h>
 #include <SPI.h>
 #include <PID_v1.h>
@@ -16,7 +17,7 @@ Wrist rotation: cw +, ccw -
 bool PID_ON = true;
 
 // ENABLES OR DISABLES SERIAL DEBUG INPUT
-bool SERIAL_ON = true;
+#define SERIAL_ON
 
 // Enable pins. Underscore prefix indicates that pin is active-low.
 const int _EN_CLAW = 23;
@@ -144,7 +145,7 @@ void setup()
 
 void loop()
 {
-  if(SERIAL_ON)
+  #ifdef SERIAL_ON
   {
     if(Serial.available() > 0)
     {
@@ -302,6 +303,8 @@ void loop()
     Serial.print("\t");
     Serial.println(wristOutput, 3);
   }
+
+#endif
   if(PID_ON)
   {
     stepPID();
@@ -317,7 +320,7 @@ void setPID_ON(bool val)
 
 void setSERIAL_ON(bool val)
 {
-  SERIAL_ON = val;
+//  SERIAL_ON = val;
 }
 
 void setShoulderVel(int vel)

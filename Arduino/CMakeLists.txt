@@ -15,6 +15,8 @@ include_directories(${ROS_LIB_DIR})
 # Remove this if using an Arduino without native USB (eg, other than Leonardo)
 # add_definitions(-DUSB_CON)
 
+add_subdirectory(pid)
 add_subdirectory(OTS_Drive)
 add_subdirectory(calibrateMegaServo)
 add_subdirectory(LidarTable)
+add_subdirectory(ArmRos)
