@@ -17,6 +17,7 @@ from std_msgs.msg import *
 from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
 from rover_msgs.msg import MotorControllerMode, MotorStatus, AhrsStatusMessage
+from rover_camera.srv import ChangeFeed
 from rover_msgs.srv import ResetWatchDog
 from sensor_msgs.msg import CompressedImage
 
@@ -101,6 +102,7 @@ class CentralUi(QtGui.QMainWindow):
         self.redraw_signal = None
 
         self.sub = None
+        self.param_list = []
         self.feed_topics = []
         self.feed_topics_hires = []
 
@@ -201,8 +203,10 @@ class CentralUi(QtGui.QMainWindow):
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.waypoint, QtCore.SIGNAL("clicked()"), self.add_way_point)
         QtCore.QObject.connect(self.ui.clearMap, QtCore.SIGNAL("clicked()"), self.clear_map)
-        QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"), self.set_motor_controller_mode)
-        QtCore.QObject.connect(self.ui.camera_selector, QtCore.SIGNAL("currentIndexChanged(int)"), self.change_video_feed)
+        QtCore.QObject.connect(self.ui.driveModeSelection, QtCore.SIGNAL("currentIndexChanged(int)"),
+                               self.set_motor_controller_mode)
+        QtCore.QObject.connect(self.ui.camera_selector, QtCore.SIGNAL("currentIndexChanged(int)"),
+                               self.change_video_feed)
 
         # motor readys
         self.fl_signal_ok.connect(lambda lbl=self.ui.fl_ok: lbl_bg_norm(lbl))
@@ -454,7 +458,9 @@ class CentralUi(QtGui.QMainWindow):
     def get_feed_topic_params(self):
         for index in xrange(0, self.ui.camera_selector.count()):
             box_text = self.ui.camera_selector.itemText(index)
+            print box_text
             param_value = rospy.get_param(box_text, "")
+            self.param_list.append(box_text)
             self.feed_topics.append(param_value)
             hires_topic = box_text+"_hires"
             param_value = rospy.get_param(hires_topic, "")
@@ -465,9 +471,20 @@ class CentralUi(QtGui.QMainWindow):
 
     def change_video_feed(self, index):
         next_topic = self.feed_topics[index]
+        try:
+            rospy.wait_for_service("/changeFeed", timeout=2)
+            service = rospy.ServiceProxy("/changeFeed", ChangeFeed)
+        except rospy.ROSException:
+            rospy.logerr("Timeout trying to find service /changeFeed")
+            return
+
         if next_topic is not "":
             self.main_camera_subscriber.unregister()
             self.main_camera_subscriber = rospy.Subscriber(next_topic, CompressedImage, self.receive_image_main)
+
+        param = self.param_list[index]
+        response = service("/" + str(param))
+        print response
 
     def toggle_coordinate(self):
         self.ui.coordinateSystem.setCurrentIndex((self.ui.coordinateSystem.currentIndex()+1) % 2)

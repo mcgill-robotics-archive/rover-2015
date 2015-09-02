@@ -1,7 +1,11 @@
 <launch>
+    <rosparam command="load" file="$(find hci)/config/camera_topics.yaml"/>
+    <node name="feed_changer" pkg="rover_camera" type="feedSwitcher.py" respawn="true"/>
+
 	<!--include file="$(find rover_camera)/launch/uvc.launch" >
         <arg name="device" value="/dev/econ_camera" />
         <arg name="topic_name" value="econ" />
+        <arg name="topic" value="True" />
         <arg name="name" value="econ" />
     </include-->
 
@@ -15,9 +19,9 @@
         <arg name="device" value="/dev/logitech1" />
     </include>
 
-    <include file="$(find rover_camera)/launch/usb.launch">
+    <!--include file="$(find rover_camera)/launch/usb.launch">
         <arg name="name" value="wide_angle" />
         <arg name="device" value="/dev/cam_ultra_wide" />
-    </include>
+    </include-->
 
 </launch>

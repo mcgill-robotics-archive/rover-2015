@@ -1,5 +1,4 @@
-int16 screenId
-int16 feedId
+string camera_name
 ---
 int16 success
-int16[] feedList
+int16 pid
