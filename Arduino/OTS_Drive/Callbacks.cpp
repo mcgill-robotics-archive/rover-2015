@@ -15,12 +15,12 @@
 
 void driveCallback( const control_systems::SetPoints& setPoints )
 {
-    FLsetSpeed(setPoints.speedFL / 4);
-    FRsetSpeed(setPoints.speedFR / 4);
+    FLsetSpeed(setPoints.speedFL);
+    FRsetSpeed(setPoints.speedFR);
     MLsetSpeed(setPoints.speedML);
     MRsetSpeed(setPoints.speedMR);
-    BLsetSpeed(setPoints.speedRL / 4);
-    BRsetSpeed(setPoints.speedRR / 4);
+    BLsetSpeed(setPoints.speedRL);
+    BRsetSpeed(setPoints.speedRR);
 
     float flAngle = 90.0 + radToDeg(setPoints.thetaFL);
     float frAngle = 90.0 + radToDeg(setPoints.thetaFR);
