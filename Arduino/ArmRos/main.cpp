@@ -14,7 +14,7 @@ void handleAngles(const control_systems::ArmAngles& armAngles)
     setPID_ON(true);
     setShoulderPos((int) degrees(armAngles.shoulderElevation));
     setElbowPos((int) (180 - degrees(armAngles.elbow)));
-    setWristPos((int) (180 + degrees(armAngles.wristElevation)));
+//    setWristPos((int) (180 + degrees(armAngles.wristElevation))); // will not work since encoder board broke
     setBaseVel((int) armAngles.shoulderOrientation * 50); //TODO: Scale properly
     //TODO: claw and roll
 }

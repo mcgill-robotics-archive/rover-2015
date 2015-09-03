@@ -1,0 +1,6 @@
+ValueControl shoulder
+ValueControl elbow
+ValueControl wrist
+ValueControl roll
+ValueControl grip
+ValueControl base

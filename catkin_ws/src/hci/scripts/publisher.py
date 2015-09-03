@@ -3,9 +3,10 @@ import rospy
 from geometry_msgs.msg import Twist
 from control_systems.msg import MotionType, ArmMotion, EndEffector
 from std_msgs.msg import Bool
-from rover_msgs.msg import PanTiltZoom, MotorControllerMode
+from rover_msgs.msg import PanTiltZoom, MotorControllerMode, JointSpeedArm, ValueControl
 
 max_speed = 2
+
 
 class Publisher(object):
     def __init__(self):
@@ -21,6 +22,7 @@ class Publisher(object):
                                                    MotionType, queue_size=10)
         self.moving_bool_pub = rospy.Publisher("is_moving", Bool, queue_size=10)
         self.mode_publisher = rospy.Publisher("mc_mode", MotorControllerMode, queue_size=10)
+        self.joint_vel_publisher = rospy.Publisher("arm_joint_speed", JointSpeedArm, queue_size=10)
 
     # publisher for velocity
     def publish_velocity(self, angular, linear, on):
@@ -55,6 +57,50 @@ class Publisher(object):
         msg.x = armHeight*0.01  # rotation of the joystick moves the target point up and down
 
         self.arm_movement_pub.publish(msg)
+
+    def publish_arm_joint_velocity(self, joystick, motor_dict):
+        message = JointSpeedArm()
+        value_active = ValueControl()
+        value_active.Enable = True
+        value_active.Value = joystick
+
+        value_disable = ValueControl()
+        value_active.Enable = False
+
+        message.shoulder = value_disable
+        message.elbow = value_disable
+        message.wrist = value_disable
+        message.roll = value_disable
+        message.grip = value_disable
+        message.base = value_disable
+
+        try:
+            if motor_dict["shoulder"].isChecked():
+                message.shoulder = value_active
+                message.shoulder.Enable = True
+            elif motor_dict["elbow"].isChecked():
+                message.elbow = value_active
+                message.elbow.Enable = True
+            elif motor_dict["wrist"].isChecked():
+                message.wrist = value_active
+                message.wrist.Enable = True
+            elif motor_dict["roll"].isChecked():
+                message.roll = value_active
+                message.roll.Enable = True
+            elif motor_dict["grip"].isChecked():
+                message.grip = value_active
+                message.grip.Enable = True
+            elif motor_dict["base"].isChecked():
+                message.base = value_active
+                message.base.Enable = True
+
+        except KeyError:
+            rospy.logwarn("Invalid dictionary received")
+            return
+
+        rospy.loginfo(message)
+        self.joint_vel_publisher.publish(message)
+        pass
     
     # publish end effector position
     def publish_endEffector(self, x, y, rotate, grip):

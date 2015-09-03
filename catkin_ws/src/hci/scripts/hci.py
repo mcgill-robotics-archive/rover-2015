@@ -125,8 +125,15 @@ class CentralUi(QtGui.QMainWindow):
         self.x_waypoints = []
         self.y_waypoints = []
 
-        # self.cam_x = 0
-        # self.cam_y = 0
+        self.current_motor_index = 0
+        self.motor_dict = {"shoulder": self.ui.shoulder_motor,
+                           "elbow": self.ui.elbow_motor,
+                           "wrist": self.ui.wrist_motor,
+                           "roll": self.ui.roll_motor,
+                           "grip": self.ui.grip_motor,
+                           "base": self.ui.base_motor}
+        self.motor_list = ["shoulder", "elbow", "wrist", "roll", "grip", "base"]
+        self.set_arm_motor(self.current_motor_index)
 
         self.first_point = False
         self.dx = 0
@@ -282,6 +289,10 @@ class CentralUi(QtGui.QMainWindow):
         self.publisher.publish_mode(msg)
         pass
 
+    def set_arm_motor(self, index):
+        self.motor_dict[self.motor_list[index]].setChecked(True)
+        self.current_motor_index = index
+
     def take_screenshot(self):
         topic = self.feed_topics_hires[self.ui.camera_selector.currentIndex()]
         self.sub = rospy.Subscriber(topic, Image, self.screenshot_callback, queue_size=1)
@@ -428,29 +439,48 @@ class CentralUi(QtGui.QMainWindow):
         self.controller.update()
         self.profile.update_values()
 
-        if self.profile.param_value["/joystick/coord_system"]:
-            self.toggle_coordinate()
-        if self.profile.param_value["/joystick/point_steer"]:
-            self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-        if self.profile.param_value["/joystick/skid_steer"]:
-            self.ui.skid.setChecked(not self.ui.skid.isChecked())
-        if self.profile.param_value["/joystick/ackreman"]:
-            self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
-        if self.profile.param_value["/joystick/ackreman_moving"]:
-            self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
         elif self.profile.param_value["/joystick/camera_mode"]:
             self.set_controller_mode(3)
         elif self.profile.param_value["/joystick/arm_base_mode"]:
             self.set_controller_mode(1)
-        elif self.profile.param_value["/joystick/end_effector_mode"]:
-            self.set_controller_mode(2)
+        # elif self.profile.param_value["/joystick/end_effector_mode"]:
+        #     self.set_controller_mode(2)
 
-        if self.profile.param_value["joystick/prev_cam"]:
-            self.ui.camera_selector.setCurrentIndex((self.ui.camera_selector.currentIndex() - 1) % self.ui.camera_selector.count())
-        elif self.profile.param_value["joystick/next_cam"]:
-            self.ui.camera_selector.setCurrentIndex((self.ui.camera_selector.currentIndex() + 1) % self.ui.camera_selector.count())
+        if self.modeId == 0:
+            if self.profile.param_value["/joystick/toggle_point_steer"]:
+                if self.ui.ackreman.isChecked():
+                    self.ui.pointSteer.setChecked(True)
+                else:
+                    self.ui.ackreman.setChecked(True)
+
+            # if self.profile.param_value["/joystick/point_steer"]:
+            #     self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
+            # if self.profile.param_value["/joystick/ackreman"]:
+            #     self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
+            if self.profile.param_value["/joystick/ackreman_moving"]:
+                self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
+
+            pass
+
+        elif self.modeId == 1:
+            if self.profile.param_value["/joystick/coord_system"]:
+                self.toggle_coordinate()
+
+            if self.profile.param_value["/joystick/next_arm_joint"]:
+                rospy.loginfo("Going to joint index " + str(self.current_motor_index + 1))
+                self.set_arm_motor((self.current_motor_index + 1) % len(self.motor_list))
+            elif self.profile.param_value["/joystick/prev_arm_joint"]:
+                rospy.loginfo("Going to joint index " + str(self.current_motor_index - 1))
+                self.set_arm_motor((self.current_motor_index - 1) % len(self.motor_list))
+
+        elif self.modeId == 3:
+            # currently in camera control
+            if self.profile.param_value["joystick/prev_cam"]:
+                self.ui.camera_selector.setCurrentIndex((self.ui.camera_selector.currentIndex() - 1) % self.ui.camera_selector.count())
+            elif self.profile.param_value["joystick/next_cam"]:
+                self.ui.camera_selector.setCurrentIndex((self.ui.camera_selector.currentIndex() + 1) % self.ui.camera_selector.count())
 
         self.controller.clear_buttons()
         self.publish_controls()
@@ -500,17 +530,21 @@ class CentralUi(QtGui.QMainWindow):
             self.publisher.publish_velocity(self.controller.a1, -self.controller.a2, self.ui.ackMoving.isChecked())
 
         elif self.modeId == 1:
-            # arm base mode
-            length = -self.controller.a2
-            height = self.controller.a1
-            angle = self.controller.a3
-            cart = False
-            vel = False
-            if self.ui.coordinateSystem.currentIndex() is 1:
-                cart = True
-            if self.ui.arm_mode.currentIndex() is 1:
-                vel = True
-            self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
+            if self.ui.arm_mode.currentIndex() == 0:
+                # arm base mode
+                length = -self.controller.a2
+                height = self.controller.a1
+                angle = self.controller.a3
+                cart = False
+                vel = False
+                if self.ui.coordinateSystem.currentIndex() is 1:
+                    cart = True
+                if self.ui.arm_mode.currentIndex() is 1:
+                    vel = True
+                self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
+            elif self.ui.arm_mode.currentIndex() == 1:
+                # rospy.loginfo()
+                self.publisher.publish_arm_joint_velocity(self.controller.a2, self.motor_dict)
 
         elif self.modeId == 2:
             # end effector mode
@@ -530,6 +564,7 @@ class CentralUi(QtGui.QMainWindow):
             self.publisher.publish_endEffector(x, y, rotate, grip)
 
         elif self.modeId == 3:
+            # Camera mode
             # self.cam_x += self.controller.a1
             # self.cam_y += self.controller.a2
             self.publisher.publish_camera(self.controller.a1, -self.controller.a2)

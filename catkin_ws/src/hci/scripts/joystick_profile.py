@@ -1,18 +1,24 @@
 import rospy
-
+               # mode selection
 param_names = ["/joystick/drive_mode",
                "/joystick/arm_base_mode",
-               "/joystick/end_effector_mode",
                "/joystick/camera_mode",
-               "/joystick/point_steer",
-               "/joystick/skid_steer",
-               "/joystick/ackreman",
+
+               # drive mode:
+               "/joystick/toggle_point_steer",
                "/joystick/ackreman_moving",
-               "/joystick/coord_system",
-               "/joystick/camera/arm",
+               # "/joystick/point_steer",
+               # "/joystick/ackreman",
+
                "joystick/prev_cam",
                "joystick/next_cam",
-               "/joystick/camera/pantilt"]
+
+               # arm mode:
+               "/joystick/next_arm_joint",
+               "/joystick/prev_arm_joint",
+
+               "/joystick/coord_system",
+               ]
 
 
 class ProfileParser:

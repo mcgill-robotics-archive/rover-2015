@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Thu Sep  3 10:11:19 2015
+# Created: Thu Sep  3 22:50:50 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1175, 723)
+        MainWindow.resize(1282, 858)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout_13 = QtGui.QHBoxLayout(self.centralwidget)
@@ -365,6 +365,31 @@ class Ui_MainWindow(object):
         self.br_ok.setObjectName(_fromUtf8("br_ok"))
         self.gridLayout.addWidget(self.br_ok, 2, 1, 1, 1)
         self.verticalLayout_6.addLayout(self.gridLayout)
+        self.groupBox_2 = QtGui.QGroupBox(self.centralwidget)
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.gridLayout_7 = QtGui.QGridLayout(self.groupBox_2)
+        self.gridLayout_7.setSpacing(0)
+        self.gridLayout_7.setContentsMargins(0, 8, 0, 0)
+        self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
+        self.shoulder_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.shoulder_motor.setObjectName(_fromUtf8("shoulder_motor"))
+        self.gridLayout_7.addWidget(self.shoulder_motor, 0, 0, 1, 1)
+        self.wrist_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.wrist_motor.setObjectName(_fromUtf8("wrist_motor"))
+        self.gridLayout_7.addWidget(self.wrist_motor, 2, 0, 1, 1)
+        self.grip_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.grip_motor.setObjectName(_fromUtf8("grip_motor"))
+        self.gridLayout_7.addWidget(self.grip_motor, 4, 0, 1, 1)
+        self.elbow_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.elbow_motor.setObjectName(_fromUtf8("elbow_motor"))
+        self.gridLayout_7.addWidget(self.elbow_motor, 0, 1, 1, 1)
+        self.roll_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.roll_motor.setObjectName(_fromUtf8("roll_motor"))
+        self.gridLayout_7.addWidget(self.roll_motor, 2, 1, 1, 1)
+        self.base_motor = QtGui.QRadioButton(self.groupBox_2)
+        self.base_motor.setObjectName(_fromUtf8("base_motor"))
+        self.gridLayout_7.addWidget(self.base_motor, 4, 1, 1, 1)
+        self.verticalLayout_6.addWidget(self.groupBox_2)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_6.addItem(spacerItem)
         self.frame = QtGui.QFrame(self.centralwidget)
@@ -474,7 +499,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1175, 31))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1282, 31))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -587,6 +612,13 @@ class Ui_MainWindow(object):
         self.ml_ok.setText(_translate("MainWindow", "Ok", None))
         self.bl_ok.setText(_translate("MainWindow", "Ok", None))
         self.br_ok.setText(_translate("MainWindow", "Ok", None))
+        self.groupBox_2.setTitle(_translate("MainWindow", "Arm Motor", None))
+        self.shoulder_motor.setText(_translate("MainWindow", "Shoulder", None))
+        self.wrist_motor.setText(_translate("MainWindow", "Wrist", None))
+        self.grip_motor.setText(_translate("MainWindow", "Grip", None))
+        self.elbow_motor.setText(_translate("MainWindow", "Elbow", None))
+        self.roll_motor.setText(_translate("MainWindow", "Roll", None))
+        self.base_motor.setText(_translate("MainWindow", "Base", None))
         self.label_3.setText(_translate("MainWindow", "Joystick Control Function", None))
         self.DriveMode.setText(_translate("MainWindow", "Drive", None))
         self.ArmBaseMode.setText(_translate("MainWindow", "Arm Mode", None))

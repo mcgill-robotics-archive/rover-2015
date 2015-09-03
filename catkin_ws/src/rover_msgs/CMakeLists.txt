@@ -55,6 +55,8 @@ find_package(catkin REQUIRED COMPONENTS
    MotorControllerMode.msg
    AhrsStatusMessage.msg
    MotorStatus.msg
+   ValueControl.msg
+   JointSpeedArm.msg
  )
 
 ## Generate services in the 'srv' folder
