@@ -470,6 +470,11 @@ class CentralUi(QtGui.QMainWindow):
         rospy.loginfo(self.feed_topics_hires)
 
     def change_video_feed(self, index):
+        if index == 0:
+            self.ui.flip_vertical.setChecked(True)
+        else:
+            self.ui.flip_vertical.setChecked(False)
+
         next_topic = self.feed_topics[index]
         try:
             rospy.wait_for_service("/changeFeed", timeout=2)
@@ -527,7 +532,7 @@ class CentralUi(QtGui.QMainWindow):
         elif self.modeId == 3:
             # self.cam_x += self.controller.a1
             # self.cam_y += self.controller.a2
-            self.publisher.publish_camera(-self.controller.a1, -self.controller.a2)
+            self.publisher.publish_camera(self.controller.a1, -self.controller.a2)
 
     def set_controller_mode(self, mode_id):
         self.modeId = mode_id
@@ -574,19 +579,23 @@ class CentralUi(QtGui.QMainWindow):
         if self.imageMain is not None:
             try:
                 qimageMain = QtGui.QImage.fromData(self.imageMain.data)
-                imageMain = QtGui.QPixmap.fromImage(qimageMain)
-                #imageMain = imageMain.scaled(QtCore.QSize(self.ui.camera1.width()-1, self.ui.camera1.height()-1),0)
+                image_main = QtGui.QPixmap.fromImage(qimageMain)
+
+                if self.ui.flip_vertical.isChecked():
+                    image_main = image_main.transformed(QtGui.QTransform().scale(-1, 1))  # mirror on the y axis
+
+                image_main = image_main.scaled(QtCore.QSize(image_main.width() * 2, image_main.height() * 2), 0)
 
                 if self.ui.rot0.isChecked():
-                    self.ui.camera1.setPixmap(imageMain)
+                    self.ui.camera1.setPixmap(image_main)
                 elif self.ui.rot90.isChecked():
-                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                    rotated = image_main.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
                     self.ui.camera1.setPixmap(rotated)
                 elif self.ui.rot180.isChecked():
-                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
+                    rotated = image_main.transformed(QtGui.QMatrix().rotate(180), QtCore.Qt.SmoothTransformation)
                     self.ui.camera1.setPixmap(rotated)
                 elif self.ui.rot270.isChecked():
-                    rotated = imageMain.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
+                    rotated = image_main.transformed(QtGui.QMatrix().rotate(270), QtCore.Qt.SmoothTransformation)
                     self.ui.camera1.setPixmap(rotated)
 
             finally:
@@ -599,6 +608,7 @@ class CentralUi(QtGui.QMainWindow):
                 qimageTop = QtGui.QImage.fromData(self.imageLeft.data)
                 imageTop = QtGui.QPixmap.fromImage(qimageTop)
                 rotated = imageTop.transformed(QtGui.QMatrix().rotate(-90), QtCore.Qt.SmoothTransformation)
+                rotated = rotated.scaled(QtCore.QSize(rotated.width() * 2, rotated.height() * 2), 0)
                 #transformed(QtGui.QTransform().scale(-1,1))  # mirror on the y axis
 
             finally:
@@ -612,6 +622,7 @@ class CentralUi(QtGui.QMainWindow):
                 qimageBottom = QtGui.QImage.fromData(self.imageRight.data)
                 imageBottom = QtGui.QPixmap.fromImage(qimageBottom)
                 rotated = imageBottom.transformed(QtGui.QMatrix().rotate(90), QtCore.Qt.SmoothTransformation)
+                rotated = rotated.scaled(QtCore.QSize(rotated.width() * 2, rotated.height() * 2), 0)
             finally:
                 pass
             self.ui.camera3.setPixmap(rotated)

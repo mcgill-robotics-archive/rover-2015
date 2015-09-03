@@ -32,7 +32,7 @@ void initCameraTable()
 void callbackCamera(const geometry_msgs::Twist & twist)
 {
     mTiltAngle += twist.angular.y;
-    float panCmd = mPanAngle + (twist.angular.z * 15);
+    float panCmd = mPanAngle + (twist.angular.z * 10);
 
     update(panCmd, mTiltAngle);
 }
