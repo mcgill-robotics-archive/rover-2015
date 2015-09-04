@@ -17,8 +17,11 @@
 #define CLAW_SPEED_FACTOR 0.5
 #define BASE_SPEED_FACTOR 25
 
+ros::NodeHandle nh;
+
 void handleAngles(const control_systems::ArmAngles& armAngles)
 {
+    nh.loginfo("Received wrist position message");
     setPID_ON(true);
     setShoulderPos((int) degrees(armAngles.shoulderElevation));
     setElbowPos((int) (180 - degrees(armAngles.elbow)));
@@ -29,6 +32,7 @@ void handleAngles(const control_systems::ArmAngles& armAngles)
 
 void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
 {
+    nh.loginfo("Received joint speed message");
     setPID_ON(false);
     if (jointSpeedArm.wrist.Enable)
         setWristVel((int) (jointSpeedArm.wrist.Value * WRIST_SPEED_FACTOR));
@@ -47,10 +51,10 @@ void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
 void handleVoltageRequest(const rover_msgs::GetVoltageRead::Request &request,
                           rover_msgs::GetVoltageRead::Response &response)
 {
+    nh.loginfo("Received voltage service request");
     response.Voltage = getVoltage();
 }
 
-ros::NodeHandle nh;
 ros::Subscriber<control_systems::ArmAngles> angleSubscriber("/arm", &handleAngles);
 ros::Subscriber<rover_msgs::JointSpeedArm> jointSubscriber("/arm_joint_speed", &handleJointSpeed);
 ros::ServiceServer<rover_msgs::GetVoltageRead::Request, rover_msgs::GetVoltageRead::Response>
@@ -63,6 +67,7 @@ void setup()
     nh.subscribe(angleSubscriber);
     nh.subscribe(jointSubscriber);
     nh.advertiseService(voltageServiceServer);
+    nh.loginfo("Completed arm interfce setup, ready for commands");
 }
 
 void loop()
