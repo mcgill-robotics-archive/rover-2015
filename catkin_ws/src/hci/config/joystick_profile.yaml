@@ -16,6 +16,4 @@ joystick/prev_cam :             "7"
 #arm mode:
 joystick/next_arm_joint :       "6"
 joystick/prev_arm_joint :       "7"
-
-joystick/skid_steer :          "10"
-joystick/coord_system :         "11"
+joystick/arm_mode :             "5"

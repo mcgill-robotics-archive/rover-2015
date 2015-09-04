@@ -304,7 +304,7 @@ class CentralUi(QtGui.QMainWindow):
         image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
         time = datetime.datetime.now().strftime("%H:%M:%S")
         topic = self.feed_topics_hires[self.ui.camera_selector.currentIndex()]
-        filename = "screenshot_" + time + "_"+ topic +".jpeg"
+        filename = "screenshot_" + time + "_"+ topic + ".jpeg"
         save = image.save(filename)
         if save:
             rospy.loginfo("save successful" + topic)
@@ -455,10 +455,6 @@ class CentralUi(QtGui.QMainWindow):
                 else:
                     self.ui.ackreman.setChecked(True)
 
-            # if self.profile.param_value["/joystick/point_steer"]:
-            #     self.ui.pointSteer.setChecked(not self.ui.pointSteer.isChecked())
-            # if self.profile.param_value["/joystick/ackreman"]:
-            #     self.ui.ackreman.setChecked(not self.ui.ackreman.isChecked())
             if self.profile.param_value["/joystick/ackreman_moving"]:
                 self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
 
@@ -467,6 +463,8 @@ class CentralUi(QtGui.QMainWindow):
         elif self.modeId == 1:
             if self.profile.param_value["/joystick/coord_system"]:
                 self.toggle_coordinate()
+            if self.profile.param_value["/joystick/arm_mode"]:
+                self.toggle_arm_mode()
 
             if self.profile.param_value["/joystick/next_arm_joint"]:
                 rospy.loginfo("Going to joint index " + str(self.current_motor_index + 1))
@@ -524,26 +522,35 @@ class CentralUi(QtGui.QMainWindow):
     def toggle_coordinate(self):
         self.ui.coordinateSystem.setCurrentIndex((self.ui.coordinateSystem.currentIndex()+1) % 2)
 
+    def toggle_arm_mode(self):
+        self.ui.arm_mode.setCurrentIndex((self.ui.arm_mode.currentIndex()+1) % 2)
+        if self.ui.arm_mode.currentIndex() == 0:
+            # position control
+            for item in self.motor_dict:
+                self.motor_dict[item].setEnabled(False)
+        else:
+            # velocity control
+            for item in self.motor_dict:
+                self.motor_dict[item].setEnabled(True)
+
     def publish_controls(self):
         if self.modeId == 0:
             # drive mode
             self.publisher.publish_velocity(self.controller.a1, -self.controller.a2, self.ui.ackMoving.isChecked())
 
         elif self.modeId == 1:
+            # arm base mode
             if self.ui.arm_mode.currentIndex() == 0:
-                # arm base mode
+                # position control
                 length = -self.controller.a2
                 height = self.controller.a1
                 angle = self.controller.a3
-                cart = False
-                vel = False
-                if self.ui.coordinateSystem.currentIndex() is 1:
-                    cart = True
-                if self.ui.arm_mode.currentIndex() is 1:
-                    vel = True
+                cart = self.ui.coordinateSystem.currentIndex() is 1
+                vel = self.ui.arm_mode.currentIndex() is 1
+
                 self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
+
             elif self.ui.arm_mode.currentIndex() == 1:
-                # rospy.loginfo()
                 self.publisher.publish_arm_joint_velocity(self.controller.a2, self.motor_dict)
 
         elif self.modeId == 2:

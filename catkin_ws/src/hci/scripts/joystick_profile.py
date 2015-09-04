@@ -18,7 +18,7 @@ param_names = ["/joystick/drive_mode",
                "/joystick/prev_arm_joint",
 
                "/joystick/coord_system",
-               ]
+               "/joystick/arm_mode"]
 
 
 class ProfileParser:
