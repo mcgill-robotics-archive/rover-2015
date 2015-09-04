@@ -538,6 +538,8 @@ class CentralUi(QtGui.QMainWindow):
 
     def toggle_arm_mode(self):
         self.ui.arm_mode.setCurrentIndex((self.ui.arm_mode.currentIndex()+1) % 2)
+        self.publisher.publish_arm_mode(self.ui.arm_mode.currentIndex())
+
         if self.ui.arm_mode.currentIndex() == 0:
             # position control
             for item in self.motor_dict:
@@ -560,7 +562,7 @@ class CentralUi(QtGui.QMainWindow):
                 height = self.controller.a1
                 angle = self.controller.a3
                 cart = self.ui.coordinateSystem.currentIndex() is 1
-                vel = self.ui.arm_mode.currentIndex() is 1
+                vel = True
 
                 self.publisher.publish_arm_base_movement(length, height, angle, cart, vel)
 
