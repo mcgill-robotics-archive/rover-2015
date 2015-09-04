@@ -130,7 +130,7 @@ void setRollVel(int vel)
     setWristRotVelocity(vel); //TODO VERIFY DIRECTION
 }
 
-void setClawDisp(int disp)
+void setClawDisp(float disp)
 {
     setClawDisplacement(disp); //TODO MORE CONVENIENT UNITS
 }

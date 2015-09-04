@@ -26,7 +26,7 @@ double getWristPos();
 
 void setBaseVel(int vel);
 void setRollVel(int vel);
-void setClawDisp(int disp);
+void setClawDisp(float disp);
 void setSciencePos(int pos);
 double getVoltage();
 float singlePHRead();
