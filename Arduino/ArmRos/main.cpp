@@ -40,7 +40,7 @@ void handleChangeArmMode(const rover_msgs::ArmModeControl & armModeControl)
 void handleAngles(const control_systems::ArmAngles& armAngles) {
     if (positionControl)
     {
-        nh.loginfo("Handeling wrist position message");
+        nh.logdebug("Handeling wrist position message");
         setPID_ON(true);
         setShoulderPos((int) degrees(armAngles.shoulderElevation));
         setElbowPos((int) (180 - degrees(armAngles.elbow)));
@@ -52,9 +52,10 @@ void handleAngles(const control_systems::ArmAngles& armAngles) {
 
 void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
 {
+    static char buffer[64];
     if (velocityControl)
     {
-        nh.loginfo("Handeling joint speed message");
+        nh.logdebug("Handeling joint speed message");
         setPID_ON(false);
         if (jointSpeedArm.wrist.Enable)
             setWristVel((int) (jointSpeedArm.wrist.Value * WRIST_SPEED_FACTOR));
@@ -66,8 +67,8 @@ void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
             setRollVel((int) (jointSpeedArm.roll.Value * ROLL_SPEED_FACTOR));
         else if (jointSpeedArm.grip.Enable) {
             int disp = (int) (jointSpeedArm.grip.Value * CLAW_SPEED_FACTOR);
-            String message = "Claw displacement %i" + String(disp);
-            nh.loginfo(message.c_str());
+            sprintf(buffer, "Grip message: %f, Claw steps: %i", jointSpeedArm.grip.Value, disp);
+            nh.loginfo(buffer);
             setClawDisp(disp);
         }
         else if (jointSpeedArm.base.Enable)
