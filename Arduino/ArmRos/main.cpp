@@ -40,7 +40,7 @@ void handleChangeArmMode(const rover_msgs::ArmModeControl & armModeControl)
 void handleAngles(const control_systems::ArmAngles& armAngles) {
     if (positionControl)
     {
-        nh.logdebug("Handeling wrist position message");
+        nh.loginfo("Handeling wrist position message");
         setPID_ON(true);
         setShoulderPos((int) degrees(armAngles.shoulderElevation));
         setElbowPos((int) (180 - degrees(armAngles.elbow)));
@@ -54,7 +54,7 @@ void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
 {
     if (velocityControl)
     {
-        nh.logdebug("Handeling joint speed message");
+        nh.loginfo("Handeling joint speed message");
         setPID_ON(false);
         if (jointSpeedArm.wrist.Enable)
             setWristVel((int) (jointSpeedArm.wrist.Value * WRIST_SPEED_FACTOR));
