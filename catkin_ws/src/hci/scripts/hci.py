@@ -18,7 +18,7 @@ from joystick_profile import ProfileParser
 from sensor_msgs.msg import Image
 from rover_msgs.msg import MotorControllerMode, MotorStatus, AhrsStatusMessage
 from rover_camera.srv import ChangeFeed
-from rover_msgs.srv import ResetWatchDog
+from rover_msgs.srv import ResetWatchDog, GetVoltageRead
 from sensor_msgs.msg import CompressedImage
 
 
@@ -206,6 +206,7 @@ class CentralUi(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.translatory, QtCore.SIGNAL("toggled(bool)"), self.set_translatory)
         QtCore.QObject.connect(self.ui.add_waypoint_dd, QtCore.SIGNAL("clicked()"), self.add_coord_dd)
         QtCore.QObject.connect(self.ui.add_waypoint_dms, QtCore.SIGNAL("clicked()"), self.add_coord_dms)
+        QtCore.QObject.connect(self.ui.read_voltage_button, QtCore.SIGNAL("clicked()"), self.read_voltage)
 
         # camera feed selection signal connects
         QtCore.QObject.connect(self.ui.waypoint, QtCore.SIGNAL("clicked()"), self.add_way_point)
@@ -287,6 +288,19 @@ class CentralUi(QtGui.QMainWindow):
             #
         print msg
         self.publisher.publish_mode(msg)
+        pass
+
+    def read_voltage(self):
+        try:
+            rospy.wait_for_service("get_voltage", timeout=2)
+            service = rospy.ServiceProxy("get_voltage", GetVoltageRead)
+        except rospy.ROSException:
+            rospy.logerr("Timeout, service get_voltage unavailable")
+            return
+
+        response = service()
+        self.ui.input_voltage_label.setText(str(response.Voltage))
+
         pass
 
     def set_arm_motor(self, index):

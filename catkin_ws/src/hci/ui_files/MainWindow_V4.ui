@@ -1006,7 +1006,7 @@
             <widget class="QLabel" name="label_2">
              <property name="maximumSize">
               <size>
-               <width>67</width>
+               <width>100</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1037,7 +1037,7 @@
             <widget class="QLabel" name="label_8">
              <property name="maximumSize">
               <size>
-               <width>71</width>
+               <width>120</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1062,56 +1062,26 @@
            </item>
           </layout>
          </item>
-         <item>
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="1" column="0">
-            <widget class="QDoubleSpinBox" name="armSetX"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QDoubleSpinBox" name="armSetY"/>
-           </item>
-           <item row="1" column="2">
-            <widget class="QDoubleSpinBox" name="armSetZ"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>X</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Y</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Z</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="sendCoords">
-           <property name="text">
-            <string>Send</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <item>
+         <widget class="QPushButton" name="read_voltage_button">
+          <property name="text">
+           <string>Read Voltage</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="input_voltage_label">
+          <property name="text">
+           <string>Input Voltage</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -1182,10 +1152,6 @@
   <tabstop>function4</tabstop>
   <tabstop>arm_mode</tabstop>
   <tabstop>coordinateSystem</tabstop>
-  <tabstop>armSetX</tabstop>
-  <tabstop>armSetY</tabstop>
-  <tabstop>armSetZ</tabstop>
-  <tabstop>sendCoords</tabstop>
   <tabstop>zoomGraph</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>x</tabstop>
@@ -1202,54 +1168,5 @@
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>armSetX</sender>
-   <signal>editingFinished()</signal>
-   <receiver>sendCoords</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>927</x>
-     <y>674</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1160</x>
-     <y>708</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>armSetY</sender>
-   <signal>editingFinished()</signal>
-   <receiver>sendCoords</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1043</x>
-     <y>674</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1160</x>
-     <y>708</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>armSetZ</sender>
-   <signal>editingFinished()</signal>
-   <receiver>sendCoords</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1159</x>
-     <y>674</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1160</x>
-     <y>708</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
