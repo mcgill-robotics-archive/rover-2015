@@ -64,8 +64,12 @@ void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
             setShoulderVel((int) (jointSpeedArm.shoulder.Value * SHOUL_SPEED_FACTOR));
         else if (jointSpeedArm.roll.Enable)
             setRollVel((int) (jointSpeedArm.roll.Value * ROLL_SPEED_FACTOR));
-        else if (jointSpeedArm.grip.Enable)
-            setClawDisp((int) (jointSpeedArm.grip.Value * CLAW_SPEED_FACTOR));
+        else if (jointSpeedArm.grip.Enable) {
+            int disp = (int) (jointSpeedArm.grip.Value * CLAW_SPEED_FACTOR);
+            String message = "Claw displacement %i" + String(disp);
+            nh.loginfo(message.c_str());
+            setClawDisp(disp);
+        }
         else if (jointSpeedArm.base.Enable)
             setBaseVel((int) (jointSpeedArm.base.Value * BASE_SPEED_FACTOR));
     }
