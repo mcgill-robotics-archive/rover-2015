@@ -292,8 +292,8 @@ class CentralUi(QtGui.QMainWindow):
 
     def read_voltage(self):
         try:
-            rospy.wait_for_service("get_voltage", timeout=2)
-            service = rospy.ServiceProxy("get_voltage", GetVoltageRead)
+            rospy.wait_for_service("arm/get_voltage", timeout=2)
+            service = rospy.ServiceProxy("arm/get_voltage", GetVoltageRead)
         except rospy.ROSException:
             rospy.logerr("Timeout, service get_voltage unavailable")
             return
@@ -318,12 +318,12 @@ class CentralUi(QtGui.QMainWindow):
         image = QtGui.QImage(msg.data, msg.width, msg.height, QtGui.QImage.Format_RGB888)
         time = datetime.datetime.now().strftime("%H:%M:%S")
         topic = self.feed_topics_hires[self.ui.camera_selector.currentIndex()]
-        filename = "screenshot_" + time + "_"+ topic + ".jpeg"
+        filename = "screenshot_" + time + ".jpg"
         save = image.save(filename)
         if save:
-            rospy.loginfo("save successful" + topic)
+            rospy.logwarn("save successful " + filename)
         else:
-            rospy.logwarn("fail save" + topic)
+            rospy.logwarn("fail save " + filename)
 
     def add_point_set_to_mini_map(self):
         new_set = pg.ScatterPlotItem(size=10, pen=pg.mkPen('w'), pxMode=True)  # create new point set

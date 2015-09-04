@@ -110,7 +110,6 @@ class Publisher(object):
             rospy.logwarn("Invalid dictionary received")
             return
 
-        rospy.loginfo(message)
         self.joint_vel_publisher.publish(message)
         pass
     
