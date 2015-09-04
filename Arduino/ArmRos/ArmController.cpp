@@ -37,7 +37,7 @@ const int WRIST_ROT_1_DIR_B = 24;
 const int WRIST_ROT_1_PWM = 11;
 
 // Voltmeter pin
-const int VOLT = A6;
+#define VOLT A6
 
 // Humidity pin
 const int HUMID = A7;

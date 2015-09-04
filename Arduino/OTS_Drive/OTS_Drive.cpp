@@ -26,7 +26,7 @@ ros::Subscriber<rover_msgs::MotorControllerMode> modeSubscriber("/mc_mode", &mcM
 ros::Subscriber<geometry_msgs::Twist> cameraSubscriber("/camera_motion", &callbackCamera);
 ros::Publisher motorStatusPublisher("motor_status", &motorStatus);
 ros::ServiceServer<rover_msgs::ResetWatchDog::Request, rover_msgs::ResetWatchDog::Response>
-        watchDogServer("reset_watchdog",&callbackResetWatchdog);
+        voltageServiceServer("reset_watchdog",&callbackResetWatchdog);
 
 void setup()
 {
@@ -81,7 +81,7 @@ void setup()
     nh.subscribe(movingSubscriber);
     nh.subscribe(modeSubscriber);
     nh.subscribe(cameraSubscriber);
-    nh.advertiseService(watchDogServer);
+    nh.advertiseService(voltageServiceServer);
     nh.advertise(motorStatusPublisher);
 
 }

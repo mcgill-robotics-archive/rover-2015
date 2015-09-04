@@ -7,7 +7,15 @@
 #include "ros.h"
 
 #include "control_systems/ArmAngles.h"
-#include "control_systems/ArmMotion.h"
+#include "rover_msgs/JointSpeedArm.h"
+#include "rover_msgs/GetVoltageRead.h"
+
+#define WRIST_SPEED_FACTOR 100
+#define ELBOW_SPEED_FACTOR 100
+#define SHOUL_SPEED_FACTOR 100
+#define ROLL_SPEED_FACTOR 60
+#define CLAW_SPEED_FACTOR 0.5
+#define BASE_SPEED_FACTOR 25
 
 void handleAngles(const control_systems::ArmAngles& armAngles)
 {
@@ -19,14 +27,42 @@ void handleAngles(const control_systems::ArmAngles& armAngles)
     //TODO: claw and roll
 }
 
+void handleJointSpeed(const rover_msgs::JointSpeedArm& jointSpeedArm)
+{
+    setPID_ON(false);
+    if (jointSpeedArm.wrist.Enable)
+        setWristVel((int) (jointSpeedArm.wrist.Value * WRIST_SPEED_FACTOR));
+    else if (jointSpeedArm.elbow.Enable)
+        setElbowVel((int) (jointSpeedArm.elbow.Value * ELBOW_SPEED_FACTOR));
+    else if (jointSpeedArm.shoulder.Enable)
+        setShoulderVel((int) (jointSpeedArm.shoulder.Value * SHOUL_SPEED_FACTOR));
+    else if (jointSpeedArm.roll.Enable)
+        setRollVel((int) (jointSpeedArm.roll.Value * ROLL_SPEED_FACTOR));
+    else if (jointSpeedArm.grip.Enable)
+        setClawDisp((int) (jointSpeedArm.grip.Value * CLAW_SPEED_FACTOR));
+    else if (jointSpeedArm.base.Enable)
+        setBaseVel((int) (jointSpeedArm.base.Value * BASE_SPEED_FACTOR));
+}
+
+void handleVoltageRequest(const rover_msgs::GetVoltageRead::Request &request,
+                          rover_msgs::GetVoltageRead::Response &response)
+{
+    response.Voltage = getVoltage();
+}
+
 ros::NodeHandle nh;
 ros::Subscriber<control_systems::ArmAngles> angleSubscriber("/arm", &handleAngles);
+ros::Subscriber<rover_msgs::JointSpeedArm> jointSubscriber("/arm_joint_speed", &handleJointSpeed);
+ros::ServiceServer<rover_msgs::GetVoltageRead::Request, rover_msgs::GetVoltageRead::Response>
+        voltageServiceServer("get_voltage",&handleVoltageRequest);
 
 void setup()
 {
     armSetup();
     nh.initNode();
     nh.subscribe(angleSubscriber);
+    nh.subscribe(jointSubscriber);
+    nh.advertiseService(voltageServiceServer);
 }
 
 void loop()

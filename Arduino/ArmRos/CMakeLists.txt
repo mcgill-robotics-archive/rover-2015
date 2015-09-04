@@ -3,5 +3,5 @@ generate_arduino_firmware(arm
     HDRS ArmController.h
     LIBS pid
     BOARD mega2560
-    PORT /dev/ttyACM0
+    PORT /dev/mega_arm
 )
