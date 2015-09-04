@@ -6,7 +6,7 @@
 #include "ros.h"
 #include "LidarTable.h"
 
-ros::NodeHandle nodeHandle;
+ros::NodeHandle nh;
 tf::TransformBroadcaster br;
 
 const char * tf_name_child = "laser";
@@ -42,7 +42,7 @@ void sendTransform() {
     transformStamped.transform = trsf;
     transformStamped.child_frame_id = tf_name_child;
     transformStamped.header.frame_id = base_tf;
-    transformStamped.header.stamp = nodeHandle.now();
+    transformStamped.header.stamp = nh.now();
 
 
     br.sendTransform(transformStamped);
@@ -76,7 +76,7 @@ float readEncoderRAD() {
 }
 
 void initROS() {
-    nodeHandle.initNode();
-    br.init(nodeHandle);
+    nh.initNode();
+    br.init(nh);
 }
 
