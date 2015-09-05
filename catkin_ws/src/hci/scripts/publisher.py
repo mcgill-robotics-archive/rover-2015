@@ -2,7 +2,7 @@ import rospy
 
 from geometry_msgs.msg import Twist
 from control_systems.msg import MotionType, ArmMotion, EndEffector
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, Int16
 from rover_msgs.msg import PanTiltZoom, MotorControllerMode, JointSpeedArm, ValueControl, ArmModeControl
 
 max_speed = 2
@@ -24,6 +24,12 @@ class Publisher(object):
         self.mode_publisher = rospy.Publisher("mc_mode", MotorControllerMode, queue_size=10)
         self.joint_vel_publisher = rospy.Publisher("arm_joint_speed", JointSpeedArm, queue_size=10)
         self.arm_mode_pub = rospy.Publisher("arm_mode", ArmModeControl, queue_size=10)
+        self.science_angle = rospy.Publisher("science_angle", Int16, queue_size=10)
+
+    def publish_science(self, angle):
+        message = Int16()
+        message.data = angle
+        self.science_angle.publish(angle)
 
     def publish_arm_mode(self, mode):
         message = ArmModeControl()

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Fri Sep  4 10:50:09 2015
+# Created: Sat Sep  5 11:21:45 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1282, 858)
+        MainWindow.resize(1411, 1103)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout_13 = QtGui.QHBoxLayout(self.centralwidget)
@@ -392,6 +392,33 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.groupBox_2)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_6.addItem(spacerItem)
+        self.label_9 = QtGui.QLabel(self.centralwidget)
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.verticalLayout_6.addWidget(self.label_9)
+        self.gridLayout_2 = QtGui.QGridLayout()
+        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
+        self.tr2 = QtGui.QPushButton(self.centralwidget)
+        self.tr2.setObjectName(_fromUtf8("tr2"))
+        self.gridLayout_2.addWidget(self.tr2, 4, 0, 1, 1)
+        self.tr1 = QtGui.QPushButton(self.centralwidget)
+        self.tr1.setObjectName(_fromUtf8("tr1"))
+        self.gridLayout_2.addWidget(self.tr1, 3, 0, 1, 1)
+        self.tr3 = QtGui.QPushButton(self.centralwidget)
+        self.tr3.setObjectName(_fromUtf8("tr3"))
+        self.gridLayout_2.addWidget(self.tr3, 5, 0, 1, 1)
+        self.tr4 = QtGui.QPushButton(self.centralwidget)
+        self.tr4.setObjectName(_fromUtf8("tr4"))
+        self.gridLayout_2.addWidget(self.tr4, 3, 1, 1, 1)
+        self.tr5 = QtGui.QPushButton(self.centralwidget)
+        self.tr5.setObjectName(_fromUtf8("tr5"))
+        self.gridLayout_2.addWidget(self.tr5, 4, 1, 1, 1)
+        self.tr6 = QtGui.QPushButton(self.centralwidget)
+        self.tr6.setObjectName(_fromUtf8("tr6"))
+        self.gridLayout_2.addWidget(self.tr6, 5, 1, 1, 1)
+        self.tr7 = QtGui.QPushButton(self.centralwidget)
+        self.tr7.setObjectName(_fromUtf8("tr7"))
+        self.gridLayout_2.addWidget(self.tr7, 6, 1, 1, 1)
+        self.verticalLayout_6.addLayout(self.gridLayout_2)
         self.frame = QtGui.QFrame(self.centralwidget)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
@@ -479,7 +506,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1282, 31))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1411, 31))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -592,6 +619,14 @@ class Ui_MainWindow(object):
         self.elbow_motor.setText(_translate("MainWindow", "Elbow", None))
         self.roll_motor.setText(_translate("MainWindow", "Roll", None))
         self.base_motor.setText(_translate("MainWindow", "Base", None))
+        self.label_9.setText(_translate("MainWindow", "Science box", None))
+        self.tr2.setText(_translate("MainWindow", "Tray 2", None))
+        self.tr1.setText(_translate("MainWindow", "Tray 1", None))
+        self.tr3.setText(_translate("MainWindow", "Tray 3", None))
+        self.tr4.setText(_translate("MainWindow", "Tray 4", None))
+        self.tr5.setText(_translate("MainWindow", "Tray 5", None))
+        self.tr6.setText(_translate("MainWindow", "Tray 6", None))
+        self.tr7.setText(_translate("MainWindow", "Tray 7", None))
         self.label_3.setText(_translate("MainWindow", "Joystick Control Function", None))
         self.DriveMode.setText(_translate("MainWindow", "Drive", None))
         self.ArmBaseMode.setText(_translate("MainWindow", "Arm Mode", None))

@@ -10,6 +10,7 @@
 #include "rover_msgs/JointSpeedArm.h"
 #include "rover_msgs/GetVoltageRead.h"
 #include "rover_msgs/ArmModeControl.h"
+#include "std_msgs/Int16.h"
 
 #define WRIST_SPEED_FACTOR 100
 #define ELBOW_SPEED_FACTOR 100
@@ -21,6 +22,11 @@
 ros::NodeHandle nh;
 bool positionControl = false;
 bool velocityControl = false;
+
+void hangleServoAngle(const std_msgs::Int16 & cmdAngle)
+{
+    setSciencePos(cmdAngle.data);
+}
 
 void handleChangeArmMode(const rover_msgs::ArmModeControl & armModeControl)
 {
@@ -86,6 +92,7 @@ void handleVoltageRequest(const rover_msgs::GetVoltageRead::Request &request,
 ros::Subscriber<control_systems::ArmAngles> angleSubscriber("/arm", &handleAngles);
 ros::Subscriber<rover_msgs::JointSpeedArm> jointSubscriber("/arm_joint_speed", &handleJointSpeed);
 ros::Subscriber<rover_msgs::ArmModeControl> modeSub("/arm_mode", &handleChangeArmMode);
+ros::Subscriber<std_msgs::Int16> scienceServoAngle("/science_angle", &hangleServoAngle);
 ros::ServiceServer<rover_msgs::GetVoltageRead::Request, rover_msgs::GetVoltageRead::Response>
         voltageServiceServer("get_voltage",&handleVoltageRequest);
 
@@ -96,6 +103,7 @@ void setup()
     nh.subscribe(angleSubscriber);
     nh.subscribe(jointSubscriber);
     nh.subscribe(modeSub);
+    nh.subscribe(scienceServoAngle);
     nh.advertiseService(voltageServiceServer);
     nh.loginfo("Completed arm interfce setup, ready for commands");
 }

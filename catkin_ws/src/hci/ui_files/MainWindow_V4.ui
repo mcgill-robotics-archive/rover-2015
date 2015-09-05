@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1282</width>
-    <height>858</height>
+    <width>1411</width>
+    <height>1103</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -877,6 +877,66 @@
        </spacer>
       </item>
       <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Science box</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="tr2">
+          <property name="text">
+           <string>Tray 2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="tr1">
+          <property name="text">
+           <string>Tray 1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QPushButton" name="tr3">
+          <property name="text">
+           <string>Tray 3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="tr4">
+          <property name="text">
+           <string>Tray 4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="tr5">
+          <property name="text">
+           <string>Tray 5</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="tr6">
+          <property name="text">
+           <string>Tray 6</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QPushButton" name="tr7">
+          <property name="text">
+           <string>Tray 7</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QFrame" name="frame">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -1094,7 +1154,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1282</width>
+     <width>1411</width>
      <height>31</height>
     </rect>
    </property>
