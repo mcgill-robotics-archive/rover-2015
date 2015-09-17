@@ -468,6 +468,9 @@ class CentralUi(QtGui.QMainWindow):
         self.controller.update()
         self.profile.update_values()
 
+        if self.profile.param_value["/joystick/ackreman_moving"]:
+                self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
+
         if self.profile.param_value["/joystick/drive_mode"]:
             self.set_controller_mode(0)
         elif self.profile.param_value["/joystick/camera_mode"]:
@@ -477,6 +480,33 @@ class CentralUi(QtGui.QMainWindow):
         # elif self.profile.param_value["/joystick/end_effector_mode"]:
         #     self.set_controller_mode(2)
 
+        if self.profile.param_value["/joystick/point_steer"]:
+            self.set_controller_mode(0)
+            self.ui.pointSteer.setChecked(True)
+
+        if self.profile.param_value["/joystick/ackreman"]:
+            self.set_controller_mode(0)
+            self.ui.ackreman.setChecked(True)
+
+        if self.profile.param_value["/logitech/shoulder"]:
+            self.set_controller_mode(1)
+            self.motor_dict["shoulder"].setChecked(True)
+        if self.profile.param_value["/logitech/elbow"]:
+            self.set_controller_mode(1)
+            self.motor_dict["elbow"].setChecked(True)
+        if self.profile.param_value["/logitech/wrist"]:
+            self.set_controller_mode(1)
+            self.motor_dict["wrist"].setChecked(True)
+        if self.profile.param_value["/logitech/roll"]:
+            self.set_controller_mode(1)
+            self.motor_dict["roll"].setChecked(True)
+        if self.profile.param_value["/logitech/grip"]:
+            self.set_controller_mode(1)
+            self.motor_dict["grip"].setChecked(True)
+        if self.profile.param_value["/logitech/base"]:
+            self.set_controller_mode(1)
+            self.motor_dict["base"].setChecked(True)
+
         if self.modeId == 0:
             if self.profile.param_value["/joystick/toggle_point_steer"]:
                 if self.ui.ackreman.isChecked():
@@ -484,8 +514,7 @@ class CentralUi(QtGui.QMainWindow):
                 else:
                     self.ui.ackreman.setChecked(True)
 
-            if self.profile.param_value["/joystick/ackreman_moving"]:
-                self.ui.ackMoving.setChecked(not self.ui.ackMoving.isChecked())
+
 
             pass
 

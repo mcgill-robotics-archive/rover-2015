@@ -7,8 +7,8 @@ param_names = ["/joystick/drive_mode",
                # drive mode:
                "/joystick/toggle_point_steer",
                "/joystick/ackreman_moving",
-               # "/joystick/point_steer",
-               # "/joystick/ackreman",
+               "/joystick/point_steer",
+               "/joystick/ackreman",
 
                "joystick/prev_cam",
                "joystick/next_cam",
@@ -18,7 +18,15 @@ param_names = ["/joystick/drive_mode",
                "/joystick/prev_arm_joint",
 
                "/joystick/coord_system",
-               "/joystick/arm_mode"]
+               "/joystick/arm_mode",
+
+               # logitech specific dofs
+               "/logitech/shoulder",
+               "/logitech/elbow",
+               "/logitech/wrist",
+               "/logitech/roll",
+               "/logitech/grip",
+               "/logitech/base"]
 
 
 class ProfileParser:
