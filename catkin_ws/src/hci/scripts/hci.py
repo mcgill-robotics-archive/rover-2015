@@ -217,19 +217,19 @@ class CentralUi(QtGui.QMainWindow):
                                self.change_video_feed)
 
         QtCore.QObject.connect(self.ui.tr1, QtCore.SIGNAL("clicked()"),
-                               lambda angle=5: self.publisher.science_angle(angle))
+                               lambda angle=5: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr2, QtCore.SIGNAL("clicked()"),
-                               lambda angle=30: self.publisher.science_angle(angle))
+                               lambda angle=30: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr3, QtCore.SIGNAL("clicked()"),
-                               lambda angle=56: self.publisher.science_angle(angle))
+                               lambda angle=56: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr4, QtCore.SIGNAL("clicked()"),
-                               lambda angle=82: self.publisher.science_angle(angle))
+                               lambda angle=82: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr5, QtCore.SIGNAL("clicked()"),
-                               lambda angle=108: self.publisher.science_angle(angle))
+                               lambda angle=108: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr6, QtCore.SIGNAL("clicked()"),
-                               lambda angle=133: self.publisher.science_angle(angle))
+                               lambda angle=133: self.publisher.publish_science(angle))
         QtCore.QObject.connect(self.ui.tr7, QtCore.SIGNAL("clicked()"),
-                               lambda angle=159: self.publisher.science_angle(angle))
+                               lambda angle=159: self.publisher.publish_science(angle))
 
         # motor readys
         self.fl_signal_ok.connect(lambda lbl=self.ui.fl_ok: lbl_bg_norm(lbl))
