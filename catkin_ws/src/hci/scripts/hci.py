@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import signal
 
 from RoverWindow import *
 from PyQt4 import QtCore, QtGui
@@ -731,9 +732,20 @@ class CentralUi(QtGui.QMainWindow):
         else:
             self.ui.camera3.setText("no video feed")
 
+def sigint_handler(*args):
+    """Handler for the SIGINT signal."""
+    sys.stderr.write('\r')
+    #if QtGui.QMessageBox.question(None, '', "Are you sure you want to quit?",
+    #                              QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+    #                              QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+    rospy.loginfo("[Front-end] EXITING")
+    QtGui.QApplication.quit()
+
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, sigint_handler)
     app = QtGui.QApplication(sys.argv)
+
     AppWindow = CentralUi()
     AppWindow.show()
     sys.exit(app.exec_())
