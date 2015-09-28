@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1411</width>
-    <height>1103</height>
+    <height>1001</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1155,7 +1155,7 @@
      <x>0</x>
      <y>0</y>
      <width>1411</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1228,5 +1228,22 @@
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>705</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../ui_files/MainWindow_V4.ui'
 #
-# Created: Sat Sep  5 11:21:45 2015
+# Created: Mon Sep 28 18:58:41 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1411, 1103)
+        MainWindow.resize(1411, 1001)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout_13 = QtGui.QHBoxLayout(self.centralwidget)
@@ -506,7 +506,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1411, 31))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1411, 22))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -524,6 +524,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.actionQuit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.waypoint, self.clearMap)
         MainWindow.setTabOrder(self.clearMap, self.ackMoving)
