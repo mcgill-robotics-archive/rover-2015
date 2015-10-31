@@ -18,4 +18,5 @@ Build Status
 
 | Branch   | Status                                                                                |
 |:--------:|:-------------------------------------------------------------------------------------:|
-| `master` | [![Build Status][Master Status]](http://dev.mcgillrobotics.com:8080/job/rover_master) |
+| `master` | [![Build Status][Master Status]](http://dev.mcgillrobotics.com:8080/job/rover_master-2015) |
+=======

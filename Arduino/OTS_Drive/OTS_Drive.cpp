@@ -86,6 +86,13 @@ void setup()
 
 }
 
+int freeRam () 
+{
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
+
 void loop()
 {
 //    if ((millis() - lastReset) > 500)
@@ -99,7 +106,10 @@ void loop()
         data::sendMotorStatus(motorStatusPublisher);
         lastSend = millis();
     }
-
+    char message[10];
+    int ram = freeRam();
+    sprintf(message, "Free ram: %d", ram);
+    nh.logdebug(message);
     nh.spinOnce();
     delay(1);
 }
